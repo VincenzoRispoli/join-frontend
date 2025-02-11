@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./CSS/font-styles.css">
+    <link rel="stylesheet" href="./CSS/templates.css">
+    <link rel="stylesheet" href="./CSS/add-task.css">
+    <link rel="stylesheet" href="./CSS/board.css">
+    <link rel="stylesheet" href="./CSS/style.css">
+    <title>Board</title>
+</head>
+
+<body onload="initBoard()">
+    <main id="main-container" class="main-container">
+        <!-- Single task overview -->
+        <div onclick="closeTaskOverview()" id="opacity-single-task-container"
+            class="opacity-single-task-container d-none">
+        </div>
+        <!-- end Single Task overview -->
+        <!-- Add Task overview -->
+        <div id="opacity-add-task-container" class="opacity-add-task-container d-none">
+
+        </div>
+        <!-- End of Add Task overview -->
+        <aside id="sidenav" w3-include-html="./assets/templates/sidenav.html"></aside>
+        <div class="header-and-content-container">
+            <header id="header" w3-include-html="./assets/templates/header.html"></header>
+            <div id="content-container" class="content-container">
+                <div class="board-header">
+                    <h1>Board</h1>
+                    <div class="search-input-and-add-task-btn-container">
+                        <div class="search-tasks-input-container">
+                            <input id="search-tasks-input" type="text">
+                            <img onclick="loadTasks()" src="./assets/img/search.png" alt="">
+                        </div>
+                        <button onclick="showCreateTaskOverview()" id="add-tasks-btn" class="add-tasks-btn">Add Tasks
+                            <img src="./assets/img/add.png" alt=""></button>
+                        <button onclick="backToAllTask()" id="all-tasks-btn" class="add-tasks-btn d-none"
+                            style="background-color: rgb(255, 123, 0);">Back to all Tasks</button>
+                    </div>
+                </div>
+                <div class="board-categories-container">
+                    <div class="todo-tasks-container task-column">
+                        <div class="category-task-title-and-icon">
+                            <h3>To Do</h3>
+                            <img src="./assets/img/plus-add-task.png" alt="">
+                        </div>
+
+                        <div ondrop="mooveTo('todo')" ondragover="allowDrop(event)" id="todo" class="cards-container">
+
+                        </div>
+
+                    </div>
+
+                    <div class="in-progress-tasks-container task-column">
+                        <div class="category-task-title-and-icon">
+                            <h3>In Progress</h3>
+                            <img src="./assets/img/plus-add-task.png" alt="">
+                        </div>
+
+                        <div ondrop="mooveTo('in-progress')" ondragover="allowDrop(event)" id="in-progress"
+                            class="cards-container">
+
+                        </div>
+                    </div>
+
+                    <div class="await-feedback-tasks-container task-column">
+                        <div class="category-task-title-and-icon">
+                            <h3>Await Feedback</h3>
+                            <img src="./assets/img/plus-add-task.png" alt="">
+                        </div>
+
+                        <div ondrop="mooveTo('await-feedback')" ondragover="allowDrop(event)" id="await-feedback"
+                            class="cards-container">
+
+                        </div>
+                    </div>
+                    <div class="done-tasks-container task-column">
+                        <div class="category-task-title-and-icon">
+                            <h3>Done</h3>
+                            <img src="./assets/img/plus-add-task.png" alt="">
+                        </div>
+
+                        <div ondrop="mooveTo('done')" ondragover="allowDrop(event)" id="done" class="cards-container">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+<script src="./JS/w3include.js"></script>
+<script src="./JS/header.js"></script>
+<script src="./templateFunctions/template-functions-board.js"></script>
+<script src="./models/subtask-class.js"></script>
+<script src="./models/task-class.js"></script>
+<script src="./JS/login.js"></script>
+<script src="./JS/contacts.js"></script>
+<script src="./JS/addTasks.js"></script>
+<script src="./JS/board.js"></script>
+
+</html>

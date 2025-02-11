@@ -1,0 +1,116 @@
+.header-title {
+    font-weight: 400;
+    font-size: 20px;
+    margin-block-start: 0;
+    margin-block-end: 0;
+    margin-left: 175px;
+}
+
+.help-icon {
+    height: 24px;
+    width: 24px;
+    cursor: pointer;
+}
+
+.info-and-initials-container {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.initials-container {
+    border-radius: 100%;
+    border: 2px solid black;
+    height: 56px;
+    width: 56px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.initials-current-user {
+    font-weight: 600;
+    font-size: 24px;
+    color: #29ABE2;
+}
+
+.submenu {
+    position: absolute;
+    top: 106px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-radius: 20px 0px 20px 20px;
+    background: #2A3647;
+    gap: 16px;
+    transition: all 0.125s cubic-bezier(.215, .61, .355, 1);
+}
+
+.submenu span {
+    color: #CDCDCD;
+    font-weight: 400;
+    font-size: 16px;
+    padding: 8px 16px;
+    cursor: pointer;
+}
+
+.submenu span:hover {
+    background: #364963;
+}
+
+
+/* Navbar Styles */
+.navbar-logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 33%;
+}
+
+.navbar-link-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 16px;
+    height: 33%;
+}
+
+.navbar-link {
+    width: 100%;
+    text-decoration: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 16px 0px;
+}
+
+.navbar-link:hover {
+    background: #091931;
+}
+
+.icon-and-text-link-container {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 60%;
+}
+
+
+.navbar-white-logo {
+    width: 100px;
+    height: 120px;
+    object-fit: cover;
+}
+
+.legal-policy-container {
+    height: 33%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+}

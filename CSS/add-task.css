@@ -1,0 +1,290 @@
+.add-tasks-title {
+    font-size: 61px;
+    font-weight: 700;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 120px;
+}
+
+.form-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 24px;
+}
+
+.label-and-writeField-container {
+    display: flex;
+    flex-direction: column;
+    height: 120px;
+}
+
+.input-title {
+    border: 1px solid #D1D1D1;
+    border-radius: 10px;
+    outline: none;
+    padding: 12px 21px
+}
+
+.textarea {
+    border: 1px solid #D1D1D1;
+    border-radius: 10px;
+    outline: none;
+    padding: 18px 16px;
+    resize: none;
+    display: flex;
+    flex: 1;
+}
+
+.textarea::-webkit-scrollbar {
+    width: 6px;
+}
+
+.textarea::-webkit-scrollbar-thumb {
+    border-radius: 100px;
+    background: #000;
+}
+
+.left-block {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    width: 45%;
+    gap: 24px;
+}
+
+.rigth-block {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    width: 45%;
+    gap: 24px;
+}
+
+.due-date-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-date {
+    border: 1px solid #D1D1D1;
+    padding: 12px 21px;
+    outline: none;
+    width: 90%;
+    border-radius: 10px;
+}
+
+.form-separator {
+    display: block;
+    width: 4px;
+    height: 100%;
+    background: #D1D1D1;
+}
+
+.prio-buttons-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+}
+
+.urgent-btn:hover {
+    background: #FF3D00;
+}
+
+.medium-btn:hover {
+    background: #FFA800;
+}
+
+.low-btn:hover {
+    background: #7AE229;
+}
+
+.prio-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 33%;
+    padding: 16px 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0px 0px 4px 0px #D1D1D1;
+}
+
+.category-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.assigned-to-container {
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.assignee {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    padding: 7px 16px;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: 400;
+}
+
+.assignee:hover {
+    background: #2A3647;
+    color: #fff;
+}
+
+.assignee-badge {
+    height: 42px;
+    width: 42px;
+    border-radius: 100%;
+    padding: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    cursor: pointer;
+}
+
+.input-search-assignee-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #D1D1D1;
+    border-radius: 10px;
+    padding: 12px 16px;
+    gap: 16px;
+    cursor: pointer;
+}
+
+.input-search-assignee {
+    border-radius: 10px;
+    outline: none;
+    border: none;
+    flex: 1;
+}
+
+.drop-down-menu-assignees-container {
+    height: 150px;
+    position: relative;
+    overflow: hidden;
+}
+
+.drop-down-menu-assignees {
+    position: absolute;
+    top: -135px;
+    left: 0;
+    right: 0;
+    border: 1px solid red;
+    border-radius: 10px;
+    overflow: auto;
+    transition: all 0.3s cubic-bezier(.215, .61, .355, 1);
+    max-height: 150px;
+    z-index: 1;
+}
+
+.moveDownDropDownMenu {
+    top: 0;
+}
+
+.arrow-drop-down {
+    transition: all 0.125s cubic-bezier(.215, .61, .355, 1);
+}
+
+.rotateArrowDropDown {
+    transform: rotate(180deg);
+}
+
+.drop-down-menu-assignees::-webkit-scrollbar {
+    width: 8px;
+}
+
+.drop-down-menu-assignees::-webkit-scrollbar-thumb {
+    border-radius: 100px;
+    background: #D1D1D1;
+}
+
+.categories {
+    padding: 12px 21px;
+    border: none;
+    outline: none;
+    border-radius: 10px;
+    border: 1px solid #D1D1D1;
+    cursor: pointer;
+}
+
+option {
+    font-size: 24px;
+    font-weight: 400;
+}
+
+.subtask-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.subtask-input-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #D1D1D1;
+    border-radius: 10px;
+}
+
+.input-subtask {
+    outline: none;
+    padding: 12px 21px;
+    border: none;
+    outline: none;
+    width: 90%;
+    border-radius: 10px;
+}
+
+.icons-subtask-container {
+    width: 10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.subtask-icon {
+    height: 18px;
+    width: 18px;
+    object-fit: contain;
+    cursor: pointer;
+}
+
+.cross-and-check-icons-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.buttons-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 16px;
+}
+
+button {
+    padding: 16px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+#submit-btn {
+    background: #2A3647;
+    color: #fff;
+}

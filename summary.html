@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./CSS/font-styles.css">
+    <link rel="stylesheet" href="./CSS/templates.css">
+    <link rel="stylesheet" href="./CSS/summary.css">
+    <link rel="stylesheet" href="./CSS/style.css">
+    <title>Join 360</title>
+</head>
+
+<body onload="initSummary()">
+    <main class="main-container">
+        <aside id="sidenav" w3-include-html="./assets/templates/sidenav.html"></aside>
+        <div class="header-and-content-container">
+            <header id="header" w3-include-html="./assets/templates/header.html"></header>
+            <div id="content-container" class="content-container">
+                <div class="summary-title-container">
+                    <h2>Join 360</h2>
+                    <span class="summary-title-separator"></span>
+                    <h3>Key Metrics at glance</h3>
+                </div>
+                <div class="summary-tasks-show-and-greating-container">
+                    <div class="summary-tasks-show">
+                        <div class="todo-and-done-block">
+                            <div class="todo-container">
+                                <div class="summary-icon-container">
+                                    <img class="summary-icon" src="./assets/img/pencil-white.png" alt="">
+                                </div>
+                                <div class="number-and-category-container">
+                                    <span id="number-of-todos" class="number"></span>
+                                    <span class="task-category">To-Do</span>
+                                </div>
+                            </div>
+                            <div class="done-container">
+                                <div class="summary-icon-container">
+                                    <img class="summary-icon" src="./assets/img/check-white.png" alt="">
+                                </div>
+                                <div class="number-and-category-container">
+                                    <span id="number-of-done" class="number"></span>
+                                    <span class="task-category">Done</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="urgent-and-date-block">
+                            <div class="urgent-container">
+                                <div class="summary-icon-container">
+                                    <img src="" alt="">
+                                </div>
+                                <div class="number-and-category-container">
+                                    <span id="number-of-urgent-tasks" class="number">2</span>
+                                    <span class="task-category">Urgent</span>
+                                </div>
+                            </div>
+                            <span class="urgent-block-separator"></span>
+                            <div class="date-container">
+                                <span id="date" class="date"></span>
+                            </div>
+                        </div>
+                        <div class="inBoard-inProgress-and-AwaitFeedback-block">
+                            <div class="tasks-in-board-container square-button">
+                                <span id="number-of-tasks-in-board" class="number"></span>
+                                <span class="task-category">Tasks in Board</span>
+                            </div>
+                            <div class="tasks-in-progress-container square-button">
+                                <span id="number-of-inProgress" class="number"></span>
+                                <span class="task-category">Tasks in Progress</span>
+                            </div>
+                            <div class="awaiting-feedback-container square-button">
+                                <span id="number-of-awaitFeedback" class="number"></span>
+                                <span class="task-category">Awaiting feedback</span>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="greating-container">
+                       <span id="greating" class="greating"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+
+<script src="JS/w3include.js"></script>
+<script src="./JS/header.js"></script>
+<script src="./JS/login.js"></script>
+<script src="./JS/addTasks.js"></script>
+<script src="./JS/board.js"></script>
+<script src="JS/summary.js"></script>
+
+</html>

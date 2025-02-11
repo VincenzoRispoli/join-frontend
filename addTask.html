@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./CSS/font-styles.css">
+    <link rel="stylesheet" href="./CSS/templates.css">
+    <link rel="stylesheet" href="./CSS/add-task.css">
+    <link rel="stylesheet" href="./CSS/style.css">
+    <title>Add Tasks</title>
+</head>
+
+<body onload="initAddTasks()">
+    <main class="main-container">
+        <aside id="sidenav" w3-include-html="./assets/templates/sidenav.html"></aside>
+        <div class="header-and-content-container">
+            <header id="header" w3-include-html="./assets/templates/header.html"></header>
+            <div id="content-container" class="content-container">
+                <h2 class="add-tasks-title">Add Tasks</h2>
+                <form onsubmit="createTasks(event); return false">
+                    <div class="form-container">
+                        <div class="left-block">
+                            <div class="label-and-writeField-container">
+                                <label for="title">Title</label>
+                                <input id="title" class="input-title" type="text" placeholder="Enter a title..."
+                                    name="title">
+                            </div>
+                            <div class="label-and-writeField-container">
+                                <label for="description">Description</label>
+                                <textarea id="description" class="textarea" name="description"
+                                    placeholder="Enter a description..." id=""></textarea>
+                            </div>
+                            <div class="assigned-to-container">
+                                <label for="">Assigned To</label>
+                                <div onclick="showAssigneesInTheDropDownMenu()" class="input-search-assignee-container">
+                                    <span class="input-search-assignee">Select contact to assign</span>
+                                    <img id="arrow-drop-down" class="arrow-drop-down" src="./assets/img/arrow_drop_down.png" alt="">
+                                </div>
+                                <div class="drop-down-menu-assignees-container">
+                                    <div id="drop-down-menu-assignees" class="drop-down-menu-assignees">
+    
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="form-separator"></span>
+                        <div class="rigth-block">
+                            <div class="due-date-container">
+                                <label for="due-date">Date</label>
+                                <input id="date" class="input-date" type="date" name="due-date">
+                            </div>
+                            <div class="prio-container">
+                                <span>Prio</span>
+                                <div class="prio-buttons-container">
+                                    <span onclick="fillButton('urgent')" id="urgent-btn"
+                                        class="urgent-btn prio-btn">Urgent <img src="" alt=""></span>
+                                    <span onclick="fillButton('medium')" id="medium-btn"
+                                        class="medium-btn prio-btn">Medium <img src="" alt=""></span>
+                                    <span onclick="fillButton('low')" id="low-btn" class="low-btn prio-btn">Low <img
+                                            src="" alt=""></span>
+                                </div>
+                            </div>
+                            <div class="category-container">
+                                <label for="categories">Category</label>
+                                <select onclick="selectCategory()" name="categories" id="categories" class="categories">
+                                    <option id="technical-task" value="technical-task">Technical Task</option>
+                                    <option id="user-story" value="user-story">User Story</option>
+                                </select>
+                            </div>
+                            <div class="subtasks-container">
+                                <label for="input-subtask">Subtask</label>
+                                <div onclick="writeSubtask()" class="subtask-input-container">
+                                    <input id="input-subtask" class="input-subtask" placeholder="Add new subtask"
+                                        type="text">
+                                    <div class="icons-subtask-container">
+                                        <img id="add-icon" class="subtask-icon" src="./assets/img/add.png" alt="">
+                                        <div id="cross-and-check-icon-container"
+                                            class="cross-and-check-icons-container d-none">
+                                            <img class="subtask-icon" src="" alt="">
+                                            <img onclick="addSubtasks()" class="subtask-icon"
+                                                src="./assets/img/check-small.png" alt="">
+                                        </div>
+                                    </div>
+                                </div>
+                                <ul id="subtask-list" class="subtask-list">
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="buttons-container">
+                        <button>Clear</button>
+                        <button id="submit-btn" type="submit">Create Task</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </main>
+</body>
+<script src="./models/subtask-class.js"></script>
+<script src="./models/task-class.js"></script>
+<script src="./JS/login.js"></script>
+<script src="./JS/w3include.js"></script>
+<script src="./JS/header.js"></script>
+<script src="./JS/summary.js"></script>
+<script src="./JS/board.js"></script>
+<script src="./JS/contacts.js"></script>
+<script src="./JS/addTasks.js"></script>
+
+
+</html>
