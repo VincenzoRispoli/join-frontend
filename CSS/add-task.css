@@ -109,6 +109,7 @@ form {
     display: flex;
     justify-content: center;
     align-items: center;
+    gap: 8px;
     width: 33%;
     padding: 16px 10px;
     border-radius: 10px;

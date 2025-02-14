@@ -4,7 +4,6 @@ let choosedCategory;
 let assignees = [];
 let selectedAssignees = [];
 let subtasksUrl = 'http://127.0.0.1:8000/kanban/subtasks/';
-let loggedUser;
 
 async function initAddTasks() {
   authenticated = JSON.parse(localStorage.getItem('authenticated'));
@@ -26,13 +25,7 @@ async function loadAssignees() {
   for (let i = 0; i < assignees.length; i++) {
     let assignee = assignees[i];
     let initials = assignee.first_name.charAt(0).toUpperCase() + assignee.last_name.charAt(0).toUpperCase();
-    assigneesContainer.innerHTML += /*html*/ `
-           <div id="assignee${i}" class="assignee">
-                <span class="assignee-badge" style="background:${assignee.badge_color}">${initials}</span>
-                <span class="assignee-name">${assignee.first_name} ${assignee.last_name}</span>
-                <input onchange="selectAssignees(${i}, this)" type="checkbox" name="checkbox" class="input-checkbox">
-            </div>
-          `
+    assigneesContainer.innerHTML += assigneeHTML(i, initials, assignee);
   }
   setInitialsCurrentUserInTheHeader(loggedUser);
 }
@@ -76,39 +69,44 @@ function addSubtasks() {
     subtaskListContainer.innerHTML = '';
     for (let i = 0; i < subtasksList.length; i++) {
       let subtask = subtasksList[i]
-      subtaskListContainer.innerHTML += `
-          <li id="subtask${i}">${subtask.title}</li>
-          `
+      subtaskListContainer.innerHTML += subtaskHTML(i, subtask);
     }
     subtaskTitle.value = "";
   }
 }
 
 function fillButton(priority) {
-  if (priority == "urgent") {
-    choosedPriority = "urgent"
-    document.getElementById('urgent-btn').style = 'background: #FF3D00'
-    document.getElementById('medium-btn').style = 'background: none';
-    document.getElementById('low-btn').style = 'background: none';
-  } else if (priority == "medium") {
-    choosedPriority = "medium"
-    document.getElementById('medium-btn').style = 'background: #FFA800'
-    document.getElementById('urgent-btn').style = 'background: none'
-    document.getElementById('low-btn').style = 'background: none';
-  } else {
-    choosedPriority = "low"
-    document.getElementById('low-btn').style = 'background: #7AE229'
-    document.getElementById('medium-btn').style = 'background: none'
-    document.getElementById('urgent-btn').style = 'background: none'
-  }
+  choosedPriority = priority
+  document.getElementById('urgent-btn').classList.remove('highlithedBtnEditTask');
+  document.getElementById('urgent-btn').classList.remove(`urgent-btn-edit-task`);
+  document.getElementById('urgent-icon').src = './assets/img/urgent.png'
+  document.getElementById('medium-btn').classList.remove('highlithedBtnEditTask');
+  document.getElementById('medium-btn').classList.remove(`medium-btn-edit-task`);
+  document.getElementById('medium-icon').src = './assets/img/medium.png';
+  document.getElementById('low-btn').classList.remove('highlithedBtnEditTask');
+  document.getElementById('low-btn').classList.remove(`low-btn-edit-task`);
+  document.getElementById('low-icon').src = './assets/img/low.png'
+  document.getElementById(`${priority}-btn`).classList.add(`${priority}-btn-edit-task`);
+  document.getElementById(`${priority}-btn`).classList.add('highlithedBtnEditTask');
+  document.getElementById(`${priority}-icon`).src = `./assets/img/${priority}-white.png`
 }
+
 
 function selectCategory() {
   choosedCategory = document.getElementById('categories').value;
-  console.log(choosedCategory);
 }
 
 async function createTasks(event) {
+  let newTask = createNewTaskFromTheForm(event);
+  try {
+    await postTheNewCreatedTask(newTask);
+  }
+  catch (e) {
+    console.log(e);
+  }
+}
+
+function createNewTaskFromTheForm(event) {
   event.preventDefault();
   let title = document.getElementById('title');
   let description = document.getElementById('description');
@@ -118,46 +116,64 @@ async function createTasks(event) {
   let state = 'todo';
   let contacts_ids = selectedAssignees
   let newTask = new Task(title.value, description.value, category, due_date.value, priority, contacts_ids, state);
+  clearAddTaskValues(title, description, due_date, priority, category);
+  return newTask
+}
+
+async function postTheNewCreatedTask(newTask) {
   try {
     let taskResponse = await fetch(tasksUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `${loggedUser.token}`
+        'Authorization': `Token ${loggedUser.token}`
       },
       body: JSON.stringify(newTask)
     })
+    await getTaskDataAndPostSubtask(taskResponse)
+  } catch (e) {
+    console.log(w);
+  }
+}
+
+async function getTaskDataAndPostSubtask(taskResponse) {
+  try {
     let taskData = await taskResponse.json();
     console.log("Task Data", taskData);
     if (taskData) {
-      sendSubtask(taskData)
+      await sendSubtasks(taskData)
     }
-  }
-  catch (e) {
+  } catch (e) {
     console.log(e);
   }
-  clearAddTaskValues(title, description, due_date, priority, category)
 }
 
-async function sendSubtask(taskData) {
-  for (let subtask of subtasksList) {
-    subtask.task_id = taskData.id
-    let subtaskResponse = await fetch(subtasksUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `${loggedUser.token}`
-      },
-      body: JSON.stringify(subtask)
-    })
-    let subtasksData = await subtaskResponse.json();
-    subtasksList = [];
-    if (window.location.href == "board.html") {
-      showCreateTaskOverview()
-    } else {
-      document.getElementById('subtask-list').innerHTML = "";
+async function sendSubtasks(taskData) {
+  try {
+    for (let subtask of subtasksList) {
+      subtask.task_id = taskData.id
+      let subtaskResponse = await fetch(subtasksUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Token ${loggedUser.token}`
+        },
+        body: JSON.stringify(subtask)
+      })
+      let subtasksData = await subtaskResponse.json();
     }
-    console.log("Subtask Data", subtasksData);
+    getAndClearSubtasksHTMLListAfterSend();
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+async function getAndClearSubtasksHTMLListAfterSend() {
+  subtasksList = [];
+  if (window.location.href == "board.html") {
+    showCreateTaskOverview()
+  } else {
+    document.getElementById('subtask-list').innerHTML = "";
   }
 }
 
@@ -168,7 +184,6 @@ function clearAddTaskValues(title, description, due_date, priority, category) {
   priority = "";
   category = "";
   users_ids = [];
-  subtasksList = [];
   let checkboxsesHTMLcollection = document.getElementsByClassName('input-checkbox');
   let checkboxes = [...checkboxsesHTMLcollection];
   checkboxes.forEach(c => {

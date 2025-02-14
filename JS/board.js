@@ -26,22 +26,23 @@ async function initBoard() {
         window.location.href = 'login.html'
     }
 }
+
 async function loadTasks() {
-    console.log(loggedUser);
-    let response = await fetch(tasksUrl, {
-        method: 'GET',
-        headers: {
-            'Authorization': `${loggedUser.token}`,
-            'Content-Type': 'application/json'
-        }
-    })
-    if (response.ok) {
-        let fetchedTasks = await response.json();
-        console.log(fetchedTasks);
-        tasks = fetchedTasks;
-    } else {
-        console.log('error');
+    try {
+        await getTaskData();
+    } catch (e) {
+        console.log(e);
     }
+    searchTasks();
+    divideTaskByCategory();
+
+    if (window.location.href === 'http://127.0.0.1:5500/board.html') {
+        setTasksInRelatedContainer();
+    }
+    setInitialsCurrentUserInTheHeader(loggedUser);
+}
+
+function searchTasks() {
     let searchText = document.getElementById('search-tasks-input');
     if (searchText && searchText.value.length > 0) {
         let matchedTasks = tasks.filter(t => t.title.toLowerCase().includes(searchText.value.toLowerCase()))
@@ -49,22 +50,24 @@ async function loadTasks() {
         console.log(tasks);
         document.getElementById('all-tasks-btn').classList.remove('d-none')
     }
+}
+
+function divideTaskByCategory() {
     todos = tasks.filter(t => t['state'] == 'todo');
     inProgress = tasks.filter(t => t['state'] == 'in-progress');
     awaitFeedBack = tasks.filter(t => t['state'] == 'await-feedback');
     dones = tasks.filter(t => t['state'] == 'done');
+}
 
-    if (window.location.href === 'http://127.0.0.1:5500/board.html') {
-        todoContainer = document.getElementById('todo');
-        inProgressContainer = document.getElementById('in-progress');
-        awaitFeedbackContainer = document.getElementById('await-feedback');
-        doneContainer = document.getElementById('done');
-        loadTodoContainer(todoContainer, todos);
-        loadinProgressContainer(inProgressContainer, inProgress);
-        loadAwaitFeedbackContainer(awaitFeedbackContainer, awaitFeedBack);
-        loadDoneContainer(doneContainer, dones);
-    }
-    setInitialsCurrentUserInTheHeader(loggedUser);
+function setTasksInRelatedContainer() {
+    todoContainer = document.getElementById('todo');
+    inProgressContainer = document.getElementById('in-progress');
+    awaitFeedbackContainer = document.getElementById('await-feedback');
+    doneContainer = document.getElementById('done');
+    loadTodoContainer(todoContainer, todos);
+    loadinProgressContainer(inProgressContainer, inProgress);
+    loadAwaitFeedbackContainer(awaitFeedbackContainer, awaitFeedBack);
+    loadDoneContainer(doneContainer, dones);
 }
 
 async function getLoggedUser() {
@@ -154,26 +157,22 @@ function showDropDownAssigneesEditTask(id) {
 }
 
 async function sendEditedTask(id, state, category) {
+    let newEditedTask = editAndCreateNewTask(state, category);
+    try {
+        await putTheNewEditedTask(newEditedTask);
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+function editAndCreateNewTask(state, category) {
     loggedUser = JSON.parse(localStorage.getItem('currentUser'));
     let editedTitle = document.getElementById(`task-title-edit${id}`).innerText;
     let editedDescription = document.getElementById(`task-description-edit${id}`).innerText;
     let editedDate = document.getElementById(`date${id}`);
     let editedAssignees = selectedAssignees;
     let newTask = new Task(editedTitle, editedDescription, category, editedDate.value, choosedPriorityEditTask, editedAssignees, state)
-    try {
-        let response = await fetch(tasksUrl + `${id}/`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `${loggedUser.token}`
-            },
-            body: JSON.stringify(newTask)
-        })
-        let editedTaskData = await response.json();
-        document.getElementById('opacity-single-task-container').classList.add('d-none')
-    } catch (e) {
-        console.log(e);
-    }
+    return newTask
 }
 
 function editPriority(prio, event) {
@@ -206,20 +205,19 @@ function rotateCard(i, id) {
 
 async function mooveTo(state) {
     let singleTaskUrl = `http://127.0.0.1:8000/kanban/tasks/${currentDraggedCard}/`;
+    let movedTask = setTheNewStateToMoovedTask(state);
+    try {
+        await updateTaskState(movedTask, singleTaskUrl);
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+function setTheNewStateToMoovedTask(state) {
     let indexOfMovedTask = tasks.findIndex(task => task.id == currentDraggedCard);
     let movedTask = tasks[indexOfMovedTask];
     movedTask.state = state;
-    let response = await fetch(singleTaskUrl, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `${loggedUser.token}`
-        },
-        body: JSON.stringify(movedTask)
-    })
-    let result = await response.json();
-    console.log(result);
-    loadTasks();
+    return movedTask
 }
 
 async function showTask(id) {
@@ -272,21 +270,9 @@ async function loadAllAssigneesFromDataBase(id, contacts) {
         let isAssigned = contacts.some(contact => contact.id == assignee.id);
         if (isAssigned) {
             selectedAssignees.push(assignee.id);
-            allAssigneesEditTaskContainer.innerHTML += /*html*/ `
-                    <div id="assignee-edit-task${j}" class="assignee">
-                        <span style="background: ${assignee.badge_color}" class="contact-badge-task-overview">${assignee.first_name.charAt(0)}${assignee.last_name.charAt(0)}</span>
-                        <span class="assignee-name">${assignee.first_name} ${assignee.last_name}</span>
-                        <input onclick="selectAssigneeEditTask(${j}, this)" id="input-checkbox-${j}" type="checkbox" checked="true">
-                    </div>
-                    `
+            allAssigneesEditTaskContainer.innerHTML += assigneeCheckedHTML(j, assignee)
         } else {
-            allAssigneesEditTaskContainer.innerHTML += /*html*/ `
-                    <div id="assignee-edit-task${j}" class="assignee">
-                        <span>${assignee.first_name.charAt(0)}${assignee.last_name.charAt(0)}</span>
-                        <span>${assignee.first_name}${assignee.last_name}</span>
-                        <input onclick="selectAssigneeEditTask(${j}, this)" id="input-checkbox-${j}" type="checkbox">
-                    </div>
-                    `
+            allAssigneesEditTaskContainer.innerHTML += assigneeNoCheckedHTML(j, assignee);
         }
     }
 }
@@ -304,71 +290,9 @@ function selectAssigneeEditTask(j, checkbox) {
     }
 }
 
-
-
-function highlightPriorityBtn(selectedTask) {
-    let priority = selectedTask.priority.toLowerCase();
-    let btn = document.getElementById(`edit-task-${priority}-btn`);
-    btn.classList.add(`${priority}-btn-edit-task`);
-    btn.classList.add('highlithedBtnEditTask');
-    btn.focus();
-    document.getElementById(`${priority}-icon`).src = `./assets/img/${priority}-white.png`
-}
-
-function highlightBtnOnHover(priority) {
-    let btn = document.getElementById(`edit-task-${priority}-btn`);
-    btn.classList.add(`${priority}-btn-edit-task`);
-    btn.classList.add('highlithedBtnEditTask');
-    document.getElementById(`${priority}-icon`).src = `./assets/img/${priority}-white.png`
-}
-
-function turnTheBtnOffOnLeave(priority) {
-    let btn = document.getElementById(`edit-task-${priority}-btn`);
-    if (btn.matches(':focus')) {
-        btn.classList.add(`${priority}-btn-edit-task`);
-        btn.classList.add('highlithedBtnEditTask');
-        document.getElementById(`${priority}-icon`).src = `./assets/img/${priority}-white.png`
-    } else {
-        if (priorityType != priority) {
-            btn.classList.remove(`${priority}-btn-edit-task`);
-            btn.classList.remove('highlithedBtnEditTask');
-            document.getElementById(`${priority}-icon`).src = `./assets/img/${priority}.png`
-        } else {
-            btn.classList.add(`${priority}-btn-edit-task`);
-            btn.classList.add('highlithedBtnEditTask');
-            document.getElementById(`${priority}-icon`).src = `./assets/img/${priority}-white.png`
-        }
-    }
-}
-
-function highlightBtnOnClick(priority) {
-    let btn = document.getElementById(`edit-task-${priority}-btn`);
-    btn.classList.add(`${priority}-btn-edit-task`);
-    btn.classList.add('highlithedBtnEditTask');
-    document.getElementById(`${priority}-icon`).src = `./assets/img/${priority}-white.png`
-}
-
-function removeHighlightOnBlur(priority) {
-    let btn = document.getElementById(`edit-task-${priority}-btn`);
-    btn.classList.remove(`${priority}-btn-edit-task`);
-    btn.classList.remove('highlithedBtnEditTask');
-    document.getElementById(`${priority}-icon`).src = `./assets/img/${priority}.png`
-}
-
-
-
 async function getSubtasks(taskId) {
     try {
-        let response = await fetch(subtasksUrl, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `${loggedUser.token}`
-            },
-        })
-        let subtasksDataFetched = await response.json();
-        taskRelatedSubtaskList = subtasksDataFetched.filter(s => s.task == taskId);
-        loadSubtasksInTheCardOverview(taskId, taskRelatedSubtaskList)
+        await getSubtasksData(taskId)
     } catch (e) {
         console.log(e);
     }
@@ -376,10 +300,7 @@ async function getSubtasks(taskId) {
 
 async function getSubtaskForEditTask(taskId) {
     try {
-        let response = await fetch(subtasksUrl)
-        let fetchedSubtasks = await response.json();
-        let subtasks = fetchedSubtasks.filter(s => s.task == taskId);
-        loadSubtasksInTheEditTaskOverview(subtasks, taskId);
+        getSubtasksDataForEditTask(taskId);
     } catch (e) {
         console.log(e);
     }
@@ -390,12 +311,7 @@ function loadSubtasksInTheCardOverview(id, taskRelatedSubtaskList) {
     subtaskList.innerHTML = ""
     for (let i = 0; i < taskRelatedSubtaskList.length; i++) {
         let subtask = taskRelatedSubtaskList[i]
-        subtaskList.innerHTML += /*html*/`
-        <div class="checkbox-and-subtaskTitle-container-task-overview">
-           <input onclick="updateTaskRelatedSubtask(${i}, ${id}, this)" type="checkbox">
-           <span>${subtask.title}</span>
-        </div>
-          `
+        subtaskList.innerHTML += subtaskForTaskOverviewHTML(i, id, subtask);
     }
 }
 
@@ -404,23 +320,9 @@ function loadSubtasksInTheEditTaskOverview(subtasks, taskId) {
     subtasksListEditTask.innerHTML = "";
     for (let i = 0; i < subtasks.length; i++) {
         let subtask = subtasks[i];
-        subtasksListEditTask.innerHTML += /*html*/ `
-        <div onmouseover="highlightContainerAndIcons(${i})" onmouseleave="turnhighlightContainerAndIconsOff(${i})" id="subtask-edit-task-overview-container${i}" class="subtask-edit-task-overview-container">
-                <li onblur="turnTheOriginalInputValueOfSubtaskBack(${i})" id="subtask-edit-task-overview${i}" contenteditable="false" class="subtask-edit-task-overview">
-                       ${subtask.title}
-                    </li>
-                    <div class="icon-edit-subtask-container">
-                        <img onclick="editSubtaskEditOverview(${i})" id="pencil-icon-edit${i}" src="./assets/img/pencil.png" alt="">
-                        <img onclick="updateTitleTaskRelatedSubtask(${i}, ${taskId})" id="check-icon-edit${i}" class="d-none" src="./assets/img/check-small.png" alt="">
-                        <span id="icon-separator-edit-subtask${i}" class="icon-separator-edit-subtask"></span>
-                        <img onclick="deleteSubtaskEditTask(${i}, ${taskId})" id="delete-icon-edit${i}" src="./assets/img/delete.png" alt="">
-                    </div>
-        </div>
-     `
+        subtasksListEditTask.innerHTML += subtaskForEditTaskOverview(i, taskId, subtask);
     }
 }
-
-
 
 function editSubtaskEditOverview(i) {
     actualValueInputEditSubtask = document.getElementById(`subtask-edit-task-overview${i}`).innerText;
@@ -472,34 +374,7 @@ async function addSubtaskEditTask(id) {
     let newSubtask = new Subtask(subtaskTitle.value, false);
     newSubtask.task_id = id
     try {
-        let response = await fetch(subtasksUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `${loggedUser.token}`
-            },
-            body: JSON.stringify(newSubtask)
-        })
-        let fetchedSubtask = await response.json();
-        let taskId = fetchedSubtask.task
-        getSubtaskForEditTask(taskId)
-    } catch (e) {
-        console.log(e);
-    }
-}
-
-async function deleteSubtaskEditTask(i, taskId) {
-    let subtask = taskRelatedSubtaskList[i];
-    let id = subtask.id;
-    try {
-        let response = await fetch(subtasksUrl + `${id}/`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `${loggedUser.token}`
-            }
-        })
-        getSubtaskForEditTask(taskId)
+        await postAndTheGetNewSubtaskEditTask(newSubtask);
     } catch (e) {
         console.log(e);
     }
@@ -512,15 +387,7 @@ async function updateTitleTaskRelatedSubtask(i, taskId) {
     editedSubtask.task_id = taskId
     editedSubtask.title = document.getElementById(`subtask-edit-task-overview${i}`).innerText;
     try {
-        let response = await fetch(subtasksUrl + `${id}/`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `${loggedUser.token}`
-            },
-            body: JSON.stringify(editedSubtask)
-        })
-        let subtasksData = await response.json();
+        await updateEditedTitle(id, editedSubtask);
     } catch (e) {
         console.log(e);
     }
@@ -540,18 +407,22 @@ async function updateTaskRelatedSubtask(i, taskId, checkbox) {
         selectedSubtask.is_completed = false;
     }
     try {
-        let response = await fetch(subtasksUrl + `${id}/`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `${loggedUser.token}`
-            },
-            body: JSON.stringify(selectedSubtask)
-        })
-        let subtaskData = await response.json();
+        updateCompletedStatusOfSubtask(id, selectedSubtask)
     } catch (e) {
         console.log(e);
     }
+}
+
+async function updateCompletedStatusOfSubtask(id, selectedSubtask) {
+    let response = await fetch(subtasksUrl + `${id}/`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `${loggedUser.token}`
+        },
+        body: JSON.stringify(selectedSubtask)
+    })
+    let subtaskData = await response.json();
 }
 
 function setTheColorOfCategoryTitle(selectedTask) {
@@ -573,15 +444,9 @@ function setIconOfPriorityBtn(selectedTask) {
 }
 
 async function deleteTask(id) {
-    let detailTaskUrl = tasksUrl + `${id}/`;
+    let singleTaskUrl = tasksUrl + `${id}/`;
     try {
-        await fetch(detailTaskUrl, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `${loggedUser.token}`
-            }
-        })
+        await deleteTaskData(singleTaskUrl);
         await loadTasks();
         document.getElementById('opacity-single-task-container').classList.add('d-none')
     } catch (e) {
@@ -609,6 +474,23 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-function allowDrop(ev) {
+function allowDrop(ev, state) {
     ev.preventDefault();
+}
+
+function highlightContainer(state, event) {
+    event.preventDefault();
+    document.getElementById(state).classList.add('dashed-border');
+}
+
+function removeBorderOnLeave(state, event) {
+    event.preventDefault();
+    setTimeout(() => {
+        document.getElementById(state).classList.remove('dashed-border')
+    })
+}
+
+function removeBorderOnDrop(state, event) {
+    event.preventDefault();
+    document.getElementById(state).classList.remove('dashed-border');
 }

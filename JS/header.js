@@ -2,8 +2,6 @@ let submenuStatus = false;
 function setInitialsCurrentUserInTheHeader(loggedUser) {
     let initials = loggedUser.first_name.charAt(0) + loggedUser.last_name.charAt(0)
     let initialsContainer = document.getElementById('initials-current-user');
-
-    console.log(initialsContainer);
     if (initialsContainer) {
         initialsContainer.innerText = `${initials}`
     }
@@ -18,7 +16,7 @@ async function logOut() {
         window.location.href = 'login.html'
         submenuStatus = false;
         showOrHideSubmenu();
-    } catch(e){
+    } catch (e) {
         console.log(e);
     }
 }

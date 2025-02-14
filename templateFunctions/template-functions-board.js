@@ -244,3 +244,48 @@ function addTaskOverviewHTML() {
     `
 }
 
+function assigneeCheckedHTML(j, assignee) {
+    return /*html*/ `
+        <div id="assignee-edit-task${j}" class="assignee">
+            <span style="background: ${assignee.badge_color}" class="contact-badge-task-overview">${assignee.first_name.charAt(0)}${assignee.last_name.charAt(0)}</span>
+            <span class="assignee-name">${assignee.first_name} ${assignee.last_name}</span>
+            <input onclick="selectAssigneeEditTask(${j}, this)" id="input-checkbox-${j}" type="checkbox" checked="true">
+        </div>
+    `
+}
+
+function assigneeNoCheckedHTML(j, assignee) {
+    return /*html*/ `
+        <div id="assignee-edit-task${j}" class="assignee">
+            <span>${assignee.first_name.charAt(0)}${assignee.last_name.charAt(0)}</span>
+            <span>${assignee.first_name}${assignee.last_name}</span>
+            <input onclick="selectAssigneeEditTask(${j}, this)" id="input-checkbox-${j}" type="checkbox">
+        </div>
+    `
+}
+
+function subtaskForTaskOverviewHTML(i, id, subtask) {
+    return /*html*/`
+    <div class="checkbox-and-subtaskTitle-container-task-overview">
+       <input onclick="updateTaskRelatedSubtask(${i}, ${id}, this)" type="checkbox">
+       <span>${subtask.title}</span>
+    </div>
+      `
+}
+
+function subtaskForEditTaskOverview(i, taskId, subtask) {
+    return /*html*/ `
+    <div onmouseover="highlightContainerAndIcons(${i})" onmouseleave="turnhighlightContainerAndIconsOff(${i})" id="subtask-edit-task-overview-container${i}" class="subtask-edit-task-overview-container">
+            <li onblur="turnTheOriginalInputValueOfSubtaskBack(${i})" id="subtask-edit-task-overview${i}" contenteditable="false" class="subtask-edit-task-overview">
+                   ${subtask.title}
+                </li>
+                <div class="icon-edit-subtask-container">
+                    <img onclick="editSubtaskEditOverview(${i})" id="pencil-icon-edit${i}" src="./assets/img/pencil.png" alt="">
+                    <img onclick="updateTitleTaskRelatedSubtask(${i}, ${taskId})" id="check-icon-edit${i}" class="d-none" src="./assets/img/check-small.png" alt="">
+                    <span id="icon-separator-edit-subtask${i}" class="icon-separator-edit-subtask"></span>
+                    <img onclick="deleteSubtaskEditTask(${i}, ${taskId})" id="delete-icon-edit${i}" src="./assets/img/delete.png" alt="">
+                </div>
+    </div>
+ `
+}
+

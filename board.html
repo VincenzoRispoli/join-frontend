@@ -32,7 +32,7 @@
                     <h1>Board</h1>
                     <div class="search-input-and-add-task-btn-container">
                         <div class="search-tasks-input-container">
-                            <input id="search-tasks-input" type="text">
+                            <input id="search-tasks-input" placeholder="Search a task..." type="text">
                             <img onclick="loadTasks()" src="./assets/img/search.png" alt="">
                         </div>
                         <button onclick="showCreateTaskOverview()" id="add-tasks-btn" class="add-tasks-btn">Add Tasks
@@ -48,7 +48,9 @@
                             <img src="./assets/img/plus-add-task.png" alt="">
                         </div>
 
-                        <div ondrop="mooveTo('todo')" ondragover="allowDrop(event)" id="todo" class="cards-container">
+                        <div ondrop="mooveTo('todo');removeBorderOnDrop('todo', event)" ondragover="allowDrop(event)"
+                            ondragenter="highlightContainer('todo', event)"
+                            ondragleave="removeBorderOnLeave('todo', event)" id="todo" class="cards-container">
 
                         </div>
 
@@ -60,7 +62,9 @@
                             <img src="./assets/img/plus-add-task.png" alt="">
                         </div>
 
-                        <div ondrop="mooveTo('in-progress')" ondragover="allowDrop(event)" id="in-progress"
+                        <div ondrop="mooveTo('in-progress'); removeBorderOnDrop('in-progress', event)"
+                            ondragover="allowDrop(event)" ondragenter="highlightContainer('in-progress', event)"
+                            ondragleave="removeBorderOnLeave('in-progress', event)" id="in-progress"
                             class="cards-container">
 
                         </div>
@@ -72,7 +76,9 @@
                             <img src="./assets/img/plus-add-task.png" alt="">
                         </div>
 
-                        <div ondrop="mooveTo('await-feedback')" ondragover="allowDrop(event)" id="await-feedback"
+                        <div ondrop="mooveTo('await-feedback'); removeBorderOnDrop('await-feedback', event)"
+                            ondragover="allowDrop(event)" ondragenter="highlightContainer('await-feedback', event)"
+                            ondragleave="removeBorderOnLeave('await-feedback', event)" id="await-feedback"
                             class="cards-container">
 
                         </div>
@@ -83,7 +89,9 @@
                             <img src="./assets/img/plus-add-task.png" alt="">
                         </div>
 
-                        <div ondrop="mooveTo('done')" ondragover="allowDrop(event)" id="done" class="cards-container">
+                        <div ondrop="mooveTo('done'); removeBorderOnDrop('done', event)" ondragover="allowDrop(event)"
+                            ondragenter="highlightContainer('done', event)"
+                            ondragleave="removeBorderOnLeave('done', event)" id="done" class="cards-container">
 
                         </div>
                     </div>
@@ -100,6 +108,8 @@
 <script src="./JS/login.js"></script>
 <script src="./JS/contacts.js"></script>
 <script src="./JS/addTasks.js"></script>
+<script src="./JS/highlights-functions-board.js"></script>
+<script src="./JS/server-comunications-functions-board.js"></script>
 <script src="./JS/board.js"></script>
 
 </html>

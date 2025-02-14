@@ -14,6 +14,7 @@ async function initSummary() {
         window.location.href = 'login.html'
     }
 }
+
 document.addEventListener('DOMContentLoaded', () => {
     includeHTML(() => {
         setInitialsCurrentUserInTheHeader(); // Esegui la funzione dopo che tutto è stato caricato

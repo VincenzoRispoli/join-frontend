@@ -8,9 +8,9 @@ let contactsUrl = 'http://127.0.0.1:8000/kanban/contacts/';
 let firstName;
 let lastName;
 
-async function initContacts(){
+async function initContacts() {
     authenticated = JSON.parse(localStorage.getItem('authenticated'))
-    if(authenticated){
+    if (authenticated) {
         includeHTML();
         await getLoggedUser();
         await loadContactBook();
@@ -34,9 +34,8 @@ async function loadContactBook() {
 }
 
 async function loadCurrentUser() {
-    loggedUser = JSON.parse(localStorage.getItem('currentUser'));
+    let loggedUser = JSON.parse(localStorage.getItem('currentUser'));
     setInitialsCurrentUserInTheHeader(loggedUser);
-    console.log(loggedUser);
 }
 
 function contactBookLoops(contactList, matchingLetters) {
@@ -77,47 +76,71 @@ function showContactInTheDetails(contactId) {
     let contactDetailsContainer = document.getElementById('contact-details');
     let selectedContact = contacts[contactId];
     let initials = selectedContact.first_name.charAt(0) + selectedContact.last_name.charAt(0)
-    contactDetailsContainer.innerHTML = showContactDetailsHTML(selectedContact, initials)
+    contactDetailsContainer.innerHTML = showContactDetailsHTML(contactId, selectedContact, initials);
+    contactDetailsContainer.classList.remove('hide-contact-details')
+    for (let i = 0; i < contacts.length; i++) {
+        document.getElementById(`contact${i}`).classList.remove('contact-on-focus');
+        if (i == contactId) {
+            document.getElementById(`contact${i}`).classList.add('contact-on-focus');
+        }
+    }
 }
 
 async function createContact(event) {
+    let loggedUser = JSON.parse(localStorage.getItem('currentUser'))
     event.preventDefault();
     let name = document.getElementById('input-name');
     let email = document.getElementById('input-email');
-    let phoneNumber = document.getElementById('input-phone');
+    let phone = document.getElementById('input-phone');
     let randomColor = Math.floor(Math.random() * (badgeColors.length - 1));
     let badgeColor = badgeColors[randomColor];
     splitName(name.value)
+    let newContact = new Contact(loggedUser.user_id, firstName, lastName, email.value, phone.value, badgeColor)
     try {
-        let response = await fetch(contactsUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `${loggedUser.token}`
-            },
-            body: JSON.stringify({
-                'user': loggedUser.user_id,
-                'first_name': firstName,
-                'last_name': lastName,
-                'email': email.value,
-                'phone': phoneNumber.value,
-                'badgeColor': badgeColor
-            })
-        })
-        let result = await response.json();
+        await postNewContact(newContact, loggedUser, name, email, phone);
     } catch (e) {
         console.log(e);
     }
-    name.value = "";
-    email.value = "";
-    phoneNumber.value = "";
-    await loadContactBook();
 }
 
-function splitName(name){
-   let splittedName = name.split(" ");
-   firstName = splittedName[0];
-   lastName = splittedName[1];
+async function postNewContact(newContact, loggedUser, name, email, phone) {
+    let response = await fetch(contactsUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `${loggedUser.token}`
+        },
+        body: JSON.stringify(newContact)
+    })
+    let createdContactData = await response.json();
+    await clearFormContactValueAndLoadContacts(name, email, phone);
+    findeIndexOfCreatedConatct(createdContactData)
+}
+
+function findeIndexOfCreatedConatct(createdContactData) {
+    let index = contacts.findIndex(c => c.id == createdContactData.id);
+    showContactInTheDetails(index);
+    setTimeout(() => {
+        document.getElementById('created-contact-advice').classList.remove('hide-contact-created-advice')
+    }, 500)
+
+    setTimeout(() => {
+        document.getElementById('created-contact-advice').classList.add('hide-contact-created-advice')
+    }, 3000)
+}
+
+async function clearFormContactValueAndLoadContacts(name, email, phone) {
+    name.value = "";
+    email.value = "";
+    phone.value = "";
+    await loadContactBook();
+    document.getElementById('add-contact-overlay-container').classList.add('d-none')
+}
+
+function splitName(name) {
+    let splittedName = name.split(" ");
+    firstName = splittedName[0];
+    lastName = splittedName[1];
 }
 
 function showAddContactOverlay() {
@@ -130,4 +153,73 @@ function closeAddContactOverlay() {
 
 function stopPropagation(event) {
     event.stopPropagation();
+}
+
+function showEditContactOverview(contactId) {
+    let contact = contacts[contactId];
+    let opacityContainer = document.getElementById('opacity-edit-contact-overlay');
+    opacityContainer.classList.remove('d-none');
+    opacityContainer.innerHTML = editContactOverviewHTML(contactId, contact);
+    document.getElementById(`input-name-${contactId}`).value = `${contact.first_name} ${contact.last_name}`;
+    document.getElementById(`input-email-${contactId}`).value = contact.email;
+    document.getElementById(`input-phone-${contactId}`).value = contact.phone;
+}
+
+async function editContact(contactId) {
+    let selectedContact = contacts[contactId];
+    let id = selectedContact.id
+    let user = selectedContact.user;
+    let name = document.getElementById(`input-name-${contactId}`);
+    let email = document.getElementById(`input-email-${contactId}`);
+    let phone = document.getElementById(`input-phone-${contactId}`);
+    splitName(name.value);
+    let editedContact = new Contact(user, firstName, lastName, email.value, phone.value, contact.badge_color);
+    try {
+        await updateContact(id, editedContact);
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+async function updateContact(id, editedContact) {
+    let loggedUser = JSON.parse(localStorage.getItem('currentUser'))
+    let response = await fetch(contactsUrl + `${id}/`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Token ${loggedUser.token}`
+        },
+        body: JSON.stringify(editedContact)
+    });
+    let responseData = await response.json();
+    await loadContactBook();
+    closeEditContactOverview(contactId);
+}
+
+function closeEditContactOverview(contactId) {
+    document.getElementById('opacity-edit-contact-overlay').classList.add('d-none')
+    showContactInTheDetails(contactId);
+}
+
+async function deleteContact(contactId) {
+    let loggedUser = JSON.parse(localStorage.getItem('currentUser'))
+    let selectedContact = contacts[contactId];
+    let id = selectedContact.id;
+    let response = await fetch(contactsUrl + `${id}/`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Token ${loggedUser.token}`
+        }
+    })
+    await loadContactBook().then(() => showRamdomContactAfterDelete())
+}
+
+function showRamdomContactAfterDelete() {
+    if (contacts.length > 0) {
+        let randomContactToDisplay = Math.floor(Math.random() * contacts.length);
+        document.getElementById('contact-details').innerHTML = "";
+        showContactInTheDetails(randomContactToDisplay)
+    }
+    document.getElementById('opacity-edit-contact-overlay').classList.add('d-none')
 }

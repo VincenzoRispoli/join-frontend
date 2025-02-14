@@ -1,23 +1,37 @@
 let urlLogin = 'http://127.0.0.1:8000/api/auth/login/';
-window.loggedUser;
+let loggedUser;
 let authenticated;
 
 async function login() {
     let username = document.getElementById('input-login-username')
     let email = document.getElementById('input-login-email')
     let password = document.getElementById('input-login-password')
-    let response = await fetch(urlLogin, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            // 'Authorization': `${loggedUser.token}`
-        },
-        body: JSON.stringify({
-            'username': username.value,
-            'email': email.value,
-            'password': password.value
+    await postLoginData(username, email, password);
+    username.value = "";
+    email.value = "";
+    password.value = "";
+}
+
+async function postLoginData(username, email, password) {
+    try {
+        let response = await fetch(urlLogin, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                'username': username.value,
+                'email': email.value,
+                'password': password.value
+            })
         })
-    })
+        getPostedLoginData(response)
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+async function getPostedLoginData(response) {
     let loginData = await response.json()
     if (loginData.ok == true) {
         try {
@@ -33,15 +47,10 @@ async function login() {
         authenticated = false
         document.getElementById('false-credential-advice').classList.remove('d-none')
     }
-    console.log(loginData);
-
-    username.value = "";
-    email.value = "";
-    password.value = "";
 }
 
 async function guestUserLogin() {
-    try{
+    try {
         let response = await fetch(urlLogin, {
             method: 'POST',
             headers: {
@@ -53,16 +62,22 @@ async function guestUserLogin() {
                 'password': 'guestLogin123'
             })
         })
-        let guestLoginData = await response.json();
-        loggedUser = guestLoginData.data;
-        authenticated = true;
-        localStorage.setItem('currentUser',JSON.stringify(loggedUser));
-        localStorage.setItem('authenticated',JSON.stringify(authenticated));
-        window.location.href = 'summary.html';
-    } catch(e){
+        getPostedGuestLoginData(response);
+    } catch (e) {
         console.log(e);
         document.getElementById('false-credential-advice').classList.remove('d-none')
     }
 }
 
-// guestLogin123 password
+async function getPostedGuestLoginData(response) {
+    try {
+        let guestLoginData = await response.json();
+        loggedUser = guestLoginData.data;
+        authenticated = true;
+        localStorage.setItem('currentUser', JSON.stringify(loggedUser));
+        localStorage.setItem('authenticated', JSON.stringify(authenticated));
+        window.location.href = 'summary.html';
+    } catch (e) {
+        console.log(e);
+    }
+}

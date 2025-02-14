@@ -1,4 +1,4 @@
-*{
+* {
     box-sizing: border-box;
 }
 
@@ -8,7 +8,7 @@ body {
     user-select: none;
 }
 
-p{
+p {
     margin-block-start: 0;
     margin-block-end: 0;
 }
@@ -41,14 +41,17 @@ aside {
     display: flex;
     flex-direction: column;
     flex: 1;
+    overflow-y: scroll;
 }
 
 .content-container {
-    height: 100%;
+    flex-direction: column;
+    display: flex;
+    height: 80%;
     padding: 16px 48px;
     background: #F6F7F8;
 }
 
-.d-none{
+.d-none {
     display: none;
 }

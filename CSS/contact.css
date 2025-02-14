@@ -91,12 +91,50 @@ h3 {
     font-weight: 400;
 }
 
+.contact-details-container {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border: 1px solid red;
+    position: relative;
+}
+
 .contact-details {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
     width: 100%;
     display: flex;
     flex-direction: column;
     gap: 64px;
     flex: 1;
+    transition: all 0.125s cubic-bezier(.215, .61, .355, 1);
+}
+
+.created-contact-advice {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+    background: #2A3647;
+    height: 50px;
+    color: #fff;
+    font-size: 20px;
+    font-weight: 400;
+    padding: 24px;
+    position: absolute;
+    bottom: 24px;
+    left: 0;
+    transition: all 0.125s cubic-bezier(.215, .61, .355, 1);
+}
+
+.hide-contact-details {
+    right: -100%;
+}
+
+.hide-contact-created-advice {
+    left: 100%;
 }
 
 .contact-details-badge {
@@ -309,6 +347,8 @@ input[type=number]::-webkit-inner-spin-button {
     font-size: 21px;
     font-weight: 700;
     cursor: pointer;
+    outline: none;
+    border: none;
 }
 
 .cancel-btn {
@@ -319,6 +359,8 @@ input[type=number]::-webkit-inner-spin-button {
     padding: 16px;
     border-radius: 10px;
     cursor: pointer;
+    outline: none;
+    border: 1px solid #2A3647;
 }
 
 .letter-container {
@@ -353,6 +395,12 @@ input[type=number]::-webkit-inner-spin-button {
     cursor: pointer;
 }
 
+.contact-on-focus {
+    background: #2A3647;
+    color: #fff;
+    cursor: pointer;
+}
+
 .contact-badge {
     display: flex;
     justify-content: center;
@@ -371,4 +419,23 @@ input[type=number]::-webkit-inner-spin-button {
     flex-direction: column;
     justify-content: space-between;
     gap: 8px
+}
+
+.opacity-edit-contact-overlay {
+    background: rgba(0, 0, 0, 0.2);
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.vector {
+    background: #29ABE2;
+    height: 3px;
+    width: 30%;
+    display: block;
 }

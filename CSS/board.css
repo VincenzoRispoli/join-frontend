@@ -260,6 +260,7 @@ h1 {
     display: flex;
     justify-content: space-between;
     gap: 24px;
+    flex: 1;
 }
 
 .category-task-title-and-icon {
@@ -271,15 +272,17 @@ h1 {
 .task-column {
     width: 25%;
     padding: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
 }
 
 .cards-container {
     display: flex;
     flex-direction: column;
     gap: 16px;
-    min-height: 400px;
-    max-height: 500px;
-    overflow-y: auto;
+    overflow-y: scroll;
+    height: 400px;
 }
 
 .cards-container::-webkit-scrollbar {
@@ -513,6 +516,10 @@ h1 {
     justify-content: space-between;
     align-items: center;
     gap: 8px;
+}
+
+.dashed-border {
+    border: 2px dashed #D1D1D1;
 }
 
 /* end of edit task styles */

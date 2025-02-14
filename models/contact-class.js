@@ -1,14 +1,17 @@
 class Contact {
     user
-    name
+    first_name
+    last_name
+    email
     phone
-    badgeColor
+    badge_color
 
-    constructor(user, name, email, phone, badgeColor) {
+    constructor(user, first_name, last_name, email, phone, badge_color) {
         this.user = user
-        this.name = name
+        this.first_name = first_name
+        this.last_name = last_name
         this.email = email
         this.phone = phone
-        this.badgeColor = badgeColor
+        this.badge_color = badge_color
     }
 }

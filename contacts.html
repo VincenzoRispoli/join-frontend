@@ -17,6 +17,11 @@
         <div class="header-and-content-container">
             <header id="header" w3-include-html="./assets/templates/header.html"></header>
             <div id="content-container-contacts" class="content-container-contacts">
+                <!-- Edit Contact overlay -->
+                <div id="opacity-edit-contact-overlay" class="opacity-edit-contact-overlay d-none">
+
+                </div>
+                <!-- End Edit Contact overlay -->
                 <div class="contact-list-container">
                     <span onclick="showAddContactOverlay()" class="add-contact-btn">Add new contact
                         <img src="./assets/img/addnewperson-icon.png" alt="">
@@ -32,8 +37,13 @@
                         <h2>Better with a Team</h2>
                     </div>
 
-                    <div id="contact-details" class="contact-details">
+                    <div id="contact-details-container" class="contact-details-container">
+                        <div id="contact-details" class="contact-details hide-contact-details">
 
+                        </div>
+                        <span id="created-contact-advice" class="created-contact-advice hide-contact-created-advice">
+                            Contact successfully created
+                        </span>
                     </div>
                 </div>
             </div>
@@ -102,11 +112,13 @@
     </main>
 </body>
 <script src="./models/user-class.js"></script>
+<script src="./models/contact-class.js"></script>
 <script src="./JS/login.js"></script>
 <script src="./JS/summary.js"></script>
 <script src="./JS/w3include.js"></script>
 <script src="./JS/header.js"></script>
 <script src="./JS/addTasks.js"></script>
+<script src="./JS/server-comunications-functions-board.js"></script>
 <script src="./JS/board.js"></script>
 <script src="./templateFunctions/template-functions-contact.js"></script>
 <script src="./JS/contacts.js"></script>

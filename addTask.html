@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./CSS/font-styles.css">
     <link rel="stylesheet" href="./CSS/templates.css">
+    <link rel="stylesheet" href="./CSS/board.css">
     <link rel="stylesheet" href="./CSS/add-task.css">
     <link rel="stylesheet" href="./CSS/style.css">
     <title>Add Tasks</title>
@@ -35,11 +36,12 @@
                                 <label for="">Assigned To</label>
                                 <div onclick="showAssigneesInTheDropDownMenu()" class="input-search-assignee-container">
                                     <span class="input-search-assignee">Select contact to assign</span>
-                                    <img id="arrow-drop-down" class="arrow-drop-down" src="./assets/img/arrow_drop_down.png" alt="">
+                                    <img id="arrow-drop-down" class="arrow-drop-down"
+                                        src="./assets/img/arrow_drop_down.png" alt="">
                                 </div>
                                 <div class="drop-down-menu-assignees-container">
                                     <div id="drop-down-menu-assignees" class="drop-down-menu-assignees">
-    
+
                                     </div>
                                 </div>
                             </div>
@@ -54,11 +56,11 @@
                                 <span>Prio</span>
                                 <div class="prio-buttons-container">
                                     <span onclick="fillButton('urgent')" id="urgent-btn"
-                                        class="urgent-btn prio-btn">Urgent <img src="" alt=""></span>
+                                        class="urgent-btn prio-btn">Urgent <img id="urgent-icon" src="./assets/img/urgent.png" alt=""></span>
                                     <span onclick="fillButton('medium')" id="medium-btn"
-                                        class="medium-btn prio-btn">Medium <img src="" alt=""></span>
-                                    <span onclick="fillButton('low')" id="low-btn" class="low-btn prio-btn">Low <img
-                                            src="" alt=""></span>
+                                        class="medium-btn prio-btn">Medium <img id="medium-icon" src="./assets/img/medium.png" alt=""></span>
+                                    <span onclick="fillButton('low')" id="low-btn" class="low-btn prio-btn">Low <img id="low-icon"
+                                            src="./assets/img/low.png" alt=""></span>
                                 </div>
                             </div>
                             <div class="category-container">
@@ -101,6 +103,7 @@
 </body>
 <script src="./models/subtask-class.js"></script>
 <script src="./models/task-class.js"></script>
+<script src="./templateFunctions/template-functions-addTask.js"></script>
 <script src="./JS/login.js"></script>
 <script src="./JS/w3include.js"></script>
 <script src="./JS/header.js"></script>
