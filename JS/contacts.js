@@ -34,8 +34,12 @@ async function loadContactBook() {
 }
 
 async function loadCurrentUser() {
-    let loggedUser = JSON.parse(localStorage.getItem('currentUser'));
-    setInitialsCurrentUserInTheHeader(loggedUser);
+    try {
+        let loggedUser = JSON.parse(localStorage.getItem('currentUser'));
+        setInitialsCurrentUserInTheHeader(loggedUser);
+    } catch (e) {
+        console.log(e);
+    }
 }
 
 function contactBookLoops(contactList, matchingLetters) {
@@ -143,12 +147,12 @@ function splitName(name) {
     lastName = splittedName[1];
 }
 
-function showAddContactOverlay() {
-    document.getElementById('add-contact-overlay-container').classList.remove('d-none')
+function showContactOverlay(containerId) {
+    document.getElementById(`${containerId}`).classList.remove('d-none')
 }
 
-function closeAddContactOverlay() {
-    document.getElementById('add-contact-overlay-container').classList.add('d-none');
+function closeContactOverlay(containerId) {
+    document.getElementById(`${containerId}`).classList.add('d-none')
 }
 
 function stopPropagation(event) {

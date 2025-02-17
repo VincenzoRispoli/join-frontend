@@ -191,6 +191,14 @@ function clearAddTaskValues(title, description, due_date, priority, category) {
   })
 }
 
+function checkValidityOfFormInputs() {
+  let form = document.getElementById('add-task-form');
+  if (form.checkValidity()) {
+    let submitButton = document.getElementById('submit-btn');
+    submitButton.disabled = false;
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   includeHTML(() => {
     setInitialsCurrentUserInTheHeader(loggedUser); // Esegui la funzione dopo che tutto è stato caricato

@@ -157,8 +157,27 @@ button {
     font-weight: 700;
 }
 
-.false-credentials-advice{
+.false-credentials-advice {
     color: red;
     text-align: center;
     font-size: 21px;
+}
+
+.privacy-policy-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.privacy-policy-banner {
+    font-size: 16px;
+    color: #A8A8A8;
+    font-weight: 400;
+}
+
+.privacy-policy-title {
+    font-size: 16px;
+    color: #29ABE2;
+    font-weight: 400;
 }

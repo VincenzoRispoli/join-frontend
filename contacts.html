@@ -18,12 +18,12 @@
             <header id="header" w3-include-html="./assets/templates/header.html"></header>
             <div id="content-container-contacts" class="content-container-contacts">
                 <!-- Edit Contact overlay -->
-                <div id="opacity-edit-contact-overlay" class="opacity-edit-contact-overlay d-none">
+                <div onclick="closeContactOverlay('opacity-edit-contact-overlay')" id="opacity-edit-contact-overlay" class="opacity-edit-contact-overlay d-none">
 
                 </div>
                 <!-- End Edit Contact overlay -->
                 <div class="contact-list-container">
-                    <span onclick="showAddContactOverlay()" class="add-contact-btn">Add new contact
+                    <span onclick="showContactOverlay('opacity-edit-contact-overlay')" class="add-contact-btn">Add new contact
                         <img src="./assets/img/addnewperson-icon.png" alt="">
                     </span>
                     <div class="contact-list" id="contact-list">
@@ -51,7 +51,7 @@
 
         <!-- Add Contact Overlay -->
         <div id="add-contact-overlay-container" class="add-contact-overlay-container d-none"
-            onclick="closeAddContactOverlay()">
+            onclick="closeContactOverlay('add-contact-overlay-container')">
             <div class="add-contact-overlay" onclick="stopPropagation(event)">
                 <div class="add-contact-overlay-left-side">
                     <div class="left-side-content-container">
@@ -66,7 +66,7 @@
                 <div class="add-contact-overlay-rigth-side">
                     <div class="right-side-content-container">
                         <span class="cross-icon-container">
-                            <img onclick="closeAddContactOverlay()" class="cross-icon" src="./assets/img/cross.png"
+                            <img onclick="closeContactOverlay('add-contact-overlay-container')" class="cross-icon" src="./assets/img/cross.png"
                                 alt="">
                         </span>
                         <div class="badge-and-add-form-container">

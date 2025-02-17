@@ -19,17 +19,17 @@
             <header id="header" w3-include-html="./assets/templates/header.html"></header>
             <div id="content-container" class="content-container">
                 <h2 class="add-tasks-title">Add Tasks</h2>
-                <form onsubmit="createTasks(event); return false">
+                <form id="add-task-form" onsubmit="createTasks(event); return false">
                     <div class="form-container">
                         <div class="left-block">
                             <div class="label-and-writeField-container">
                                 <label for="title">Title</label>
-                                <input id="title" class="input-title" type="text" placeholder="Enter a title..."
-                                    name="title">
+                                <input oninput="checkValidityOfFormInputs()" required id="title" minlength="3" class="input-title validation-element" type="text"
+                                    placeholder="Enter a title..." name="title">
                             </div>
                             <div class="label-and-writeField-container">
                                 <label for="description">Description</label>
-                                <textarea id="description" class="textarea" name="description"
+                                <textarea oninput="checkValidityOfFormInputs()" required minlength="3" id="description" class="textarea validation-element" name="description"
                                     placeholder="Enter a description..." id=""></textarea>
                             </div>
                             <div class="assigned-to-container">
@@ -50,17 +50,19 @@
                         <div class="rigth-block">
                             <div class="due-date-container">
                                 <label for="due-date">Date</label>
-                                <input id="date" class="input-date" type="date" name="due-date">
+                                <input oninput="checkValidityOfFormInputs()" required id="date" class="input-date validation-element" type="date" name="due-date">
                             </div>
                             <div class="prio-container">
                                 <span>Prio</span>
                                 <div class="prio-buttons-container">
                                     <span onclick="fillButton('urgent')" id="urgent-btn"
-                                        class="urgent-btn prio-btn">Urgent <img id="urgent-icon" src="./assets/img/urgent.png" alt=""></span>
+                                        class="urgent-btn prio-btn">Urgent <img id="urgent-icon"
+                                            src="./assets/img/urgent.png" alt=""></span>
                                     <span onclick="fillButton('medium')" id="medium-btn"
-                                        class="medium-btn prio-btn">Medium <img id="medium-icon" src="./assets/img/medium.png" alt=""></span>
-                                    <span onclick="fillButton('low')" id="low-btn" class="low-btn prio-btn">Low <img id="low-icon"
-                                            src="./assets/img/low.png" alt=""></span>
+                                        class="medium-btn prio-btn">Medium <img id="medium-icon"
+                                            src="./assets/img/medium.png" alt=""></span>
+                                    <span onclick="fillButton('low')" id="low-btn" class="low-btn prio-btn">Low <img
+                                            id="low-icon" src="./assets/img/low.png" alt=""></span>
                                 </div>
                             </div>
                             <div class="category-container">
@@ -73,8 +75,8 @@
                             <div class="subtasks-container">
                                 <label for="input-subtask">Subtask</label>
                                 <div onclick="writeSubtask()" class="subtask-input-container">
-                                    <input id="input-subtask" class="input-subtask" placeholder="Add new subtask"
-                                        type="text">
+                                    <input id="input-subtask" minlength="3" class="input-subtask"
+                                        placeholder="Add new subtask" type="text">
                                     <div class="icons-subtask-container">
                                         <img id="add-icon" class="subtask-icon" src="./assets/img/add.png" alt="">
                                         <div id="cross-and-check-icon-container"
@@ -93,7 +95,7 @@
                     </div>
                     <div class="buttons-container">
                         <button>Clear</button>
-                        <button id="submit-btn" type="submit">Create Task</button>
+                        <button id="submit-btn" type="submit" disabled="true">Create Task</button>
                     </div>
                 </form>
             </div>

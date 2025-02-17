@@ -61,7 +61,7 @@ function editContactOverviewHTML(contactId) {
                 <div class="add-contact-overlay-rigth-side">
                     <div class="right-side-content-container">
                         <span class="cross-icon-container">
-                            <img onclick="closeAddContactOverlay()" class="cross-icon" src="./assets/img/cross.png"
+                            <img onclick="closeContactOverlay('opacity-edit-contact-overlay')" class="cross-icon" src="./assets/img/cross.png"
                                 alt="">
                         </span>
                         <div class="badge-and-add-form-container">

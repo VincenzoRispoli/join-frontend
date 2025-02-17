@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registration</title>
+    <link rel="stylesheet" href="./CSS/font-styles.css">
     <link rel="stylesheet" href="./CSS/style.css">
     <link rel="stylesheet" href="./CSS/login.css">
 </head>
@@ -12,10 +13,6 @@
 <body>
     <div class="login-page-header">
         <img id="join-logo-login" src="./assets/img/logo-big.png" alt="join-logo-login">
-        <div class="sign-up-banner">
-            <p>Not a Join user?</p>
-            <button class="go-to-sign-up-btn">Sign up</button>
-        </div>
     </div>
     <div class="form-container">
         <div class="form-content">
@@ -56,6 +53,12 @@
                         </div>
                     </div>
                 </div>
+                <span class="privacy-policy-container">
+                    <input onclick="acceptPrivacyPolicy(this)" id="checkbox" type="checkbox">
+                    <span class="privacy-policy-banner">I accept the <span class="privacy-policy-title">Privacy
+                            Policy</span></span>
+                </span>
+                <span id="privacy-policy-advice" class="d-none" style="color:red">Please accept the privacy policy</span>
                 <div class="form-btn-container">
                     <button class="form-btn" style="background:#2A3647; color: #fff">Sign up</button>
                 </div>

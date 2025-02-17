@@ -31,6 +31,8 @@ async function putTheNewEditedTask(newEditedTask) {
 }
 
 async function updateTaskState(movedTask, singleTaskUrl) {
+    let contactsIds = movedTask.contacts.map(contact => contact.id)
+    movedTask.contacts_ids = contactsIds;
     let response = await fetch(singleTaskUrl, {
         method: 'PUT',
         headers: {
@@ -40,6 +42,7 @@ async function updateTaskState(movedTask, singleTaskUrl) {
         body: JSON.stringify(movedTask)
     })
     let result = await response.json();
+    console.log(result);
     loadTasks();
 }
 
