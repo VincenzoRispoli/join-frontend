@@ -14,7 +14,7 @@ async function getTaskData() {
     }
 }
 
-async function putTheNewEditedTask(newEditedTask) {
+async function updateTheNewEditedTask(id, newEditedTask) {
     try {
         let response = await fetch(tasksUrl + `${id}/`, {
             method: 'PUT',
@@ -24,7 +24,13 @@ async function putTheNewEditedTask(newEditedTask) {
             },
             body: JSON.stringify(newEditedTask)
         })
-        document.getElementById('opacity-single-task-container').classList.add('d-none')
+        if (!response.ok) {
+            let updateData = await response.json();
+            showTaskActionFailedAdvice(updateData.detail);
+        } else {
+            await loadTasks()
+            document.getElementById('opacity-single-task-container').classList.add('d-none')
+        }
     } catch (e) {
         console.log(e);
     }
@@ -41,9 +47,12 @@ async function updateTaskState(movedTask, singleTaskUrl) {
         },
         body: JSON.stringify(movedTask)
     })
-    let result = await response.json();
-    console.log(result);
-    loadTasks();
+    if (!response.ok) {
+        let updateTaskData = await response.json()
+        showTaskDragUpdateFailedAdvice(updateTaskData.detail)
+    } else {
+        loadTasks();
+    }
 }
 
 async function getSubtasksData(taskId) {
@@ -128,11 +137,26 @@ async function updateCompletedStatusOfSubtask(id, selectedSubtask) {
 }
 
 async function deleteTaskData(singleTaskUrl) {
-    await fetch(singleTaskUrl, {
+    let response = await fetch(singleTaskUrl, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Token ${loggedUser.token}`
         }
     })
+    if (!response.ok) {
+        let deleteData = await response.json();
+        showDeleteTaskFailedAdvice(deleteData.detail);
+    } else {
+        await loadTasks();
+        document.getElementById('opacity-single-task-container').classList.add('d-none')
+    }
+}
+
+function showDeleteTaskFailedAdvice(data) {
+    let deleteTaskAdvice = document.getElementById('delete-task-advice');
+    deleteTaskAdvice.innerHTML = `${data}`
+    setTimeout(() => {
+        deleteTaskAdvice.innerHTML = "";
+    }, 2000)
 }

@@ -26,30 +26,44 @@
             <form onsubmit="register(); return false" action="" id="login-form" class="form">
                 <div class="form-inputs-wrapper">
                     <div class="login-input-cont">
-                        <input placeholder="Name" type="text" id="input-regist-name" class="login-form-input">
+                        <input required placeholder="Username" type="text" minlength="3" id="input-regist-username" class="login-form-input">
                         <div class="icon-login-cont">
                             <img class="login-input-icon" src="./assets/img/person-icon.png" alt="">
                         </div>
                     </div>
                     <div class="login-input-cont">
-                        <input type="text" placeholder="Email" type="email" id="input-regist-email"
+                        <input required placeholder="Name" type="text" minlength="3" id="input-regist-name" class="login-form-input">
+                        <div class="icon-login-cont">
+                            <img class="login-input-icon" src="./assets/img/person-icon.png" alt="">
+                        </div>
+                    </div>
+                    <div class="login-input-cont">
+                        <input required placeholder="Email" type="email"  id="input-regist-email"
                             class="login-form-input">
                         <div class="icon-login-cont">
                             <img class="login-input-icon" src="./assets/img/mail-icon.png" alt="">
                         </div>
                     </div>
                     <div class="login-input-cont">
-                        <input type="text" placeholder="Password" type="password" id="input-regist-password"
+                        <input required placeholder="Password" type="password" minlength="8" id="input-regist-password"
                             class="login-form-input">
                         <div class="icon-login-cont">
                             <img class="login-input-icon" src="./assets/img/lock.png" alt="">
                         </div>
                     </div>
                     <div class="login-input-cont">
-                        <input type="text" placeholder="Confirm Password" type="password"
+                        <input required placeholder="Confirm Password" minlength="8" type="password"
                             id="input-regist-repeated-password" class="login-form-input">
                         <div class="icon-login-cont">
                             <img class="login-input-icon" src="./assets/img/lock.png" alt="">
+                        </div>
+                    </div>
+                    <div class="level-choice-container">
+                        <span class="level-title">What is your level?</span>
+                        <div class="level-choices">
+                            <span class="level-choice"><input onclick="selectLevel(this, 'superuser')" type="checkbox">Admin</span>
+                            <span class="level-choice"><input onclick="selectLevel(this, 'staff')" type="checkbox">Staff member</span>
+                            <span class="level-choice"><input onclick="selectLevel(this,'external')" type="checkbox">External worker</span>
                         </div>
                     </div>
                 </div>
@@ -58,7 +72,8 @@
                     <span class="privacy-policy-banner">I accept the <span class="privacy-policy-title">Privacy
                             Policy</span></span>
                 </span>
-                <span id="privacy-policy-advice" class="d-none" style="color:red">Please accept the privacy policy</span>
+                <span id="privacy-policy-advice" class="d-none" style="color:red">Please accept the privacy
+                    policy</span>
                 <div class="form-btn-container">
                     <button class="form-btn" style="background:#2A3647; color: #fff">Sign up</button>
                 </div>

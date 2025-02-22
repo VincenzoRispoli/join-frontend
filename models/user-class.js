@@ -6,4 +6,5 @@ class User{
     password;
     repeated_password;
     is_staff;
+    is_superuser;
 }

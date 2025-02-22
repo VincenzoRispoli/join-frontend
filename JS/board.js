@@ -157,15 +157,15 @@ function showDropDownAssigneesEditTask(id) {
 }
 
 async function sendEditedTask(id, state, category) {
-    let newEditedTask = editAndCreateNewTask(state, category);
+    let newEditedTask = editAndCreateNewTask(id, state, category);
     try {
-        await putTheNewEditedTask(newEditedTask);
+        await updateTheNewEditedTask(id, newEditedTask);
     } catch (e) {
         console.log(e);
     }
 }
 
-function editAndCreateNewTask(state, category) {
+function editAndCreateNewTask(id, state, category) {
     loggedUser = JSON.parse(localStorage.getItem('currentUser'));
     let editedTitle = document.getElementById(`task-title-edit${id}`).innerText;
     let editedDescription = document.getElementById(`task-description-edit${id}`).innerText;
@@ -233,7 +233,6 @@ async function showTask(id) {
 }
 
 async function editTask(id) {
-    console.log(id);
     let findIndexOfSelectedTask = tasks.findIndex(task => task.id == id);
     let selectedTask = tasks[findIndexOfSelectedTask];
     let opacitySingleTaskContainer = document.getElementById('opacity-single-task-container');
@@ -447,11 +446,31 @@ async function deleteTask(id) {
     let singleTaskUrl = tasksUrl + `${id}/`;
     try {
         await deleteTaskData(singleTaskUrl);
-        await loadTasks();
-        document.getElementById('opacity-single-task-container').classList.add('d-none')
     } catch (e) {
-        console.log(e);
+        console.error(e);
     }
+}
+
+function showTaskActionFailedAdvice(data) {
+    let adviceContainer = document.getElementById('advice-container');
+    adviceContainer.innerHTML = /*html*/ `
+    <span id="update-task-failed" style="color:white">${data}</span>
+   `
+    setTimeout(() => {
+        adviceContainer.innerHTML = "";
+    }, 3000)
+}
+
+function showTaskDragUpdateFailedAdvice(data) {
+    let popUpContainer = document.getElementById('opacity-single-task-container');
+    popUpContainer.classList.remove('d-none');
+    popUpContainer.innerHTML = /*html*/  `
+    <div class="pop-up-task-drag-failed-advice">${data}</div>
+    `
+    setTimeout(() => {
+        popUpContainer.classList.add('d-none');
+        popUpContainer.innerHTML = "";
+    }, 3000)
 }
 
 function closeTaskOverview(event) {

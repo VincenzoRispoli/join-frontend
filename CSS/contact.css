@@ -25,7 +25,6 @@ h3 {
     display: flex;
     flex-direction: column;
     gap: 16px;
-    padding: 16px;
 }
 
 .contact-list {
@@ -33,11 +32,19 @@ h3 {
     flex-direction: column;
     gap: 16px;
     height: 50%;
-    overflow-y: scroll
+    overflow-y: scroll;
+}
+
+.contact-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.contact-list::-webkit-scrollbar-thumb {
+    background: #2A3647;
+    border-radius: 100px;
 }
 
 .add-contact-btn {
-    width: 100%;
     border-radius: 10px;
     padding: 12px 0;
     background: #2A3647;
@@ -48,6 +55,7 @@ h3 {
     color: #fff;
     cursor: pointer;
     transition: all 0.125s cubic-bezier(.215, .61, .355, 1);
+    margin: 24px;
 }
 
 .add-contact-btn:hover {
@@ -111,6 +119,29 @@ h3 {
     transition: all 0.125s cubic-bezier(.215, .61, .355, 1);
 }
 
+.btn-contacts-details-container {
+    width: 150px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.btn-contact-detail {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 4px;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.btn-contact-detail img {
+    width: 24px;
+    height: 24px;
+    object-fit: cover;
+}
+
 .created-contact-advice {
     display: flex;
     justify-content: center;
@@ -168,6 +199,19 @@ h3 {
     display: flex;
     flex-direction: column;
     gap: 16px;
+}
+
+.email-text {
+    color: #007CEE;
+    font-weight: 400;
+    font-size: 16px;
+}
+
+.phone-text {
+    text-decoration: none;
+    color: #000;
+    font-weight: 400;
+    font-size: 16px;
 }
 
 .add-contact-overlay-container {
@@ -301,6 +345,12 @@ h3 {
     width: 32px;
     object-fit: contain;
     cursor: pointer;
+    border-radius: 100%;
+    padding: 2px;
+}
+
+.cross-icon:hover {
+    background: #D1D1D1;
 }
 
 .add-contact-input {
@@ -386,6 +436,7 @@ input[type=number]::-webkit-inner-spin-button {
     padding: 12px 16px;
     border-radius: 10px;
     transition: all 0.125s cubic-bezier(.215, .61, .355, 1);
+    overflow-x: hidden;
 }
 
 .contact:hover {

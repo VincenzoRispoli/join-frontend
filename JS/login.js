@@ -3,9 +3,9 @@ let loggedUser;
 let authenticated;
 
 async function login() {
-    let username = document.getElementById('input-login-username')
-    let email = document.getElementById('input-login-email')
-    let password = document.getElementById('input-login-password')
+    let email = document.getElementById('input-login-email');
+    let password = document.getElementById('input-login-password');
+    let username = document.getElementById('input-login-username');
     await postLoginData(username, email, password);
     username.value = "";
     email.value = "";
@@ -21,28 +21,23 @@ async function postLoginData(username, email, password) {
             },
             body: JSON.stringify({
                 'username': username.value,
-                'email': email.value,
                 'password': password.value
             })
         })
-        getPostedLoginData(response)
+        let loginData = await response.json();
+        await getPostedLoginData(loginData);
     } catch (e) {
         console.log(e);
     }
 }
 
-async function getPostedLoginData(response) {
-    let loginData = await response.json()
-    if (loginData.ok == true) {
-        try {
-            loggedUser = loginData.data
-            authenticated = true
-            localStorage.setItem('currentUser', JSON.stringify(loggedUser))
-            localStorage.setItem('authenticated', JSON.stringify(authenticated))
-            window.location.href = 'summary.html'
-        } catch (e) {
-            console.log(e);
-        }
+async function getPostedLoginData(loginData) {
+    if (loginData.ok) {
+        loggedUser = loginData.data
+        authenticated = true
+        localStorage.setItem('currentUser', JSON.stringify(loggedUser))
+        localStorage.setItem('authenticated', JSON.stringify(authenticated))
+        window.location.href = 'summary.html'
     } else {
         authenticated = false
         document.getElementById('false-credential-advice').classList.remove('d-none')

@@ -30,17 +30,17 @@ function showContactDetailsHTML(contactId, selectedContact, initials) {
                 <div class="name-and-buttons-contact-details-container">
                     <h2 id="contact-details-name" class="contact-details-name">${selectedContact.first_name} ${selectedContact.last_name}</h2>
                     <div class="btn-contacts-details-container">
-                        <span onclick="showEditContactOverview(${contactId})">Edit <img src="" alt=""></span>
-                        <span onclick="deleteContact(${contactId})">Delete <img src="" alt=""></span>
+                        <span onclick="showEditContactOverview(${contactId})" class="btn-contact-detail"><img src="./assets/img/pencil.png" alt=""> Edit</span>
+                        <span onclick="deleteContact(${contactId})" class="btn-contact-detail"><img src="./assets/img/delete.png" alt="">Delete </span>
                     </div>
                 </div>
         </div>
         <span class="contact-info-title">Contact Information</span>
         <div class="email-and-phone-container">
             <h3>Email</h3>
-            <a href="mailto:${selectedContact.email}">${selectedContact.email}</a>
+            <a class="email-text" href="mailto:${selectedContact.email}">${selectedContact.email}</a>
             <h3>Phone</h3>
-            <a href="tel:${selectedContact.phone}">${selectedContact.phone}</a>
+            <a class="phone-text" href="tel:+49${selectedContact.phone}">+49 ${selectedContact.phone}</a>
         </div>
         `
     )
@@ -81,7 +81,7 @@ function editContactOverviewHTML(contactId) {
                                     </svg>
                                 </div>
                             </div>
-                            <form onsubmit="createContact(event); return false">
+                            <form onsubmit="editContact(${contactId}); return false">
                                 <span class="add-contact-input-container">
                                     <input id="input-name-${contactId}" class="add-contact-input" placeholder="Name" type="text">
                                     <img class="input-icon" src="./assets/img/person-icon.png" alt="">
@@ -96,7 +96,7 @@ function editContactOverviewHTML(contactId) {
                                 </span>
                                 <span class="add-contact-overlay-btn-container">
                                     <button onclick="deleteContact(${contactId})" class="cancel-btn">Delete</button>
-                                    <button onclick="editContact(${contactId})" class="create-contact-btn">Save</button>
+                                    <button type="submit" class="create-contact-btn">Save</button>
                                 </span>
                             </form>
                         </div>

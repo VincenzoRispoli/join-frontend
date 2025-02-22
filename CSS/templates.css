@@ -46,6 +46,7 @@
     background: #2A3647;
     gap: 16px;
     transition: all 0.125s cubic-bezier(.215, .61, .355, 1);
+    z-index: 5;
 }
 
 .submenu span {

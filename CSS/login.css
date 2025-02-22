@@ -60,7 +60,7 @@ button {
     flex-direction: column;
     justify-content: space-between;
     gap: 32px;
-    padding: 48px 88px;
+    padding: 8px 16px;
     position: relative;
 }
 
@@ -105,14 +105,14 @@ button {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    gap: 32px;
+    gap: 16px;
 }
 
 .form-inputs-wrapper {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    gap: 20px;
+    gap: 8px;
 }
 
 .login-input-cont {
@@ -120,6 +120,7 @@ button {
     justify-content: space-between;
     border: 1px solid #D1D1D1;
     border-radius: 10px;
+    padding-right: 16px;
 }
 
 .login-form-input {
@@ -129,6 +130,8 @@ button {
     font-weight: 400;
     border: none;
     outline: none;
+    flex: 1;
+    background: transparent;
 }
 
 .icon-login-cont {
@@ -180,4 +183,22 @@ button {
     font-size: 16px;
     color: #29ABE2;
     font-weight: 400;
+}
+
+#privacy-policy-advice {
+    color: red;
+    text-align: center;
+}
+
+.level-choice-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+.level-title {
+    font-size: 20px;
+    font-weight: 700;
 }

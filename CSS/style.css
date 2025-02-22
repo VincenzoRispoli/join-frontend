@@ -37,11 +37,25 @@ aside {
     min-width: 230px;
 }
 
+input:focus {
+    background-color: transparent !important;
+    box-shadow: none !important;
+}
+
 .header-and-content-container {
     display: flex;
     flex-direction: column;
     flex: 1;
     overflow-y: scroll;
+}
+
+.header-and-content-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.header-and-content-container::-webkit-scrollbar-thumb {
+    background: #017afa;
+    border-radius: 100px;
 }
 
 .content-container {

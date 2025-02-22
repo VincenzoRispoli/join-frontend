@@ -51,7 +51,7 @@ function taskCardOverviewHTML(id, selectedTask, categoryTitleColor, priorityIcon
                 </div>
                 </div>
                 <div class="edit-or-delete-buttons-container">
-            <button onclick="deleteTask(${id})" class="task-overview-btn">
+            <button onclick="deleteTask(${id}); return false" class="task-overview-btn">
                 <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <mask id="mask0_75601_14777" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0"
                         width="25" height="24">
@@ -82,6 +82,7 @@ function taskCardOverviewHTML(id, selectedTask, categoryTitleColor, priorityIcon
         </div>
         </div>
         </div>
+        <span id="delete-task-advice" class="advice-container"></span>
         `
     )
 }
@@ -151,6 +152,7 @@ function editTaskHTML(id, selectedTask) {
         </div>
     </div>
     </div>
+    <span id="advice-container" class="advice-container"></span>
   `)
 }
 

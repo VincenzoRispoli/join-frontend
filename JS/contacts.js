@@ -112,24 +112,25 @@ async function postNewContact(newContact, loggedUser, name, email, phone) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `${loggedUser.token}`
+            'Authorization': `Token ${loggedUser.token}`
         },
         body: JSON.stringify(newContact)
     })
     let createdContactData = await response.json();
+    await loadContactBook();
     await clearFormContactValueAndLoadContacts(name, email, phone);
-    findeIndexOfCreatedConatct(createdContactData)
+    findeIndexOfCreatedContact(createdContactData)
 }
 
-function findeIndexOfCreatedConatct(createdContactData) {
+function findeIndexOfCreatedContact(createdContactData) {
     let index = contacts.findIndex(c => c.id == createdContactData.id);
     showContactInTheDetails(index);
     setTimeout(() => {
-        document.getElementById('created-contact-advice').classList.remove('hide-contact-created-advice')
+        document.getElementById('created-or-deleted-contact-advice').classList.remove('hide-contact-created-advice')
     }, 500)
 
     setTimeout(() => {
-        document.getElementById('created-contact-advice').classList.add('hide-contact-created-advice')
+        document.getElementById('created-or-deleted-contact-advice').classList.add('hide-contact-created-advice')
     }, 3000)
 }
 
@@ -176,8 +177,9 @@ async function editContact(contactId) {
     let name = document.getElementById(`input-name-${contactId}`);
     let email = document.getElementById(`input-email-${contactId}`);
     let phone = document.getElementById(`input-phone-${contactId}`);
+    let badgeColor = selectedContact.badge_color;
     splitName(name.value);
-    let editedContact = new Contact(user, firstName, lastName, email.value, phone.value, contact.badge_color);
+    let editedContact = new Contact(user, firstName, lastName, email.value, phone.value, badgeColor);
     try {
         await updateContact(id, editedContact);
     } catch (e) {
@@ -187,6 +189,16 @@ async function editContact(contactId) {
 
 async function updateContact(id, editedContact) {
     let loggedUser = JSON.parse(localStorage.getItem('currentUser'))
+    try {
+        await updateContactAndShowAdvices(loggedUser, id, editedContact)
+    }
+    catch (e) {
+        alert(e)
+        console.error(e);
+    }
+}
+
+async function updateContactAndShowAdvices(loggedUser, id, editedContact) {
     let response = await fetch(contactsUrl + `${id}/`, {
         method: 'PUT',
         headers: {
@@ -196,19 +208,39 @@ async function updateContact(id, editedContact) {
         body: JSON.stringify(editedContact)
     });
     let responseData = await response.json();
+    checkIfResponseOfUpdateContactIsOk(response, responseData);
     await loadContactBook();
-    closeEditContactOverview(contactId);
+    let indexOfContact = contacts.findIndex(contact => contact.id == id);
+    if (indexOfContact != -1) {
+        closeEditContactOverview(indexOfContact);
+    }
 }
 
-function closeEditContactOverview(contactId) {
+function checkIfResponseOfUpdateContactIsOk(response, responseData) {
+    if (!response.ok) {
+        getDataAndShowAdvice(responseData.detail) // error message
+    } else {
+        getDataAndShowAdvice(responseData.message) // success message
+    }
+}
+
+function closeEditContactOverview(id) {
     document.getElementById('opacity-edit-contact-overlay').classList.add('d-none')
-    showContactInTheDetails(contactId);
+    showContactInTheDetails(id);
 }
 
 async function deleteContact(contactId) {
     let loggedUser = JSON.parse(localStorage.getItem('currentUser'))
     let selectedContact = contacts[contactId];
     let id = selectedContact.id;
+    try {
+        deleteContactAndShowAdvices(id, loggedUser);
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+async function deleteContactAndShowAdvices(id, loggedUser) {
     let response = await fetch(contactsUrl + `${id}/`, {
         method: 'DELETE',
         headers: {
@@ -216,7 +248,26 @@ async function deleteContact(contactId) {
             'Authorization': `Token ${loggedUser.token}`
         }
     })
-    await loadContactBook().then(() => showRamdomContactAfterDelete())
+    let data = await response.json();
+    if (!response.ok) {
+        getDataAndShowAdvice(data.detail) // error message
+    } else {
+        document.getElementById('contact-details').innerHTML = "";
+        await getDataAndShowAdvice(data.message); // success message
+        await loadContactBook().then(() => showRamdomContactAfterDelete())
+    }
+}
+
+async function getDataAndShowAdvice(data) {
+    let createdOrDeletedContactAdvice = document.getElementById('created-or-deleted-contact-advice');
+    createdOrDeletedContactAdvice.innerHTML = data
+    setTimeout(() => {
+        createdOrDeletedContactAdvice.classList.remove('hide-contact-created-advice')
+    }, 500)
+
+    setTimeout(() => {
+        createdOrDeletedContactAdvice.classList.add('hide-contact-created-advice')
+    }, 3000)
 }
 
 function showRamdomContactAfterDelete() {
