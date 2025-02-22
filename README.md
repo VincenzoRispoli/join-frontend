@@ -16,17 +16,9 @@ Subtasks: Ability to create subtasks for more detailed task management.
 
 Technologies Used
 
-Frontend: React.js / Vue.js (specify as needed)
+Frontend: HTML / CSS / Javascript
 
-UI Libraries: Tailwind CSS / Material UI / Bootstrap (specify as needed)
-
-State Management: Redux / Vuex / Zustand (specify as needed)
-
-Authentication: Firebase Auth / JWT / Other (specify as needed)
-
-Backend: (specify if the app connects to a backend API)
-
-Installation
+Backend: (Django Rest Framework)
 
 Clone the repository:
 
