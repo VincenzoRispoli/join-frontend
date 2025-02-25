@@ -6,13 +6,14 @@ async function login() {
     let email = document.getElementById('input-login-email');
     let password = document.getElementById('input-login-password');
     let username = document.getElementById('input-login-username');
-    await postLoginData(username, email, password);
+    let slugifiedUseraname = username.value.replace(/\s+/g, '-');
+    await postLoginData(slugifiedUseraname, password);
     username.value = "";
     email.value = "";
     password.value = "";
 }
 
-async function postLoginData(username, email, password) {
+async function postLoginData(slugifiedUseraname, password) {
     try {
         let response = await fetch(urlLogin, {
             method: 'POST',
@@ -20,7 +21,7 @@ async function postLoginData(username, email, password) {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                'username': username.value,
+                'username': slugifiedUseraname,
                 'password': password.value
             })
         })
@@ -34,6 +35,9 @@ async function postLoginData(username, email, password) {
 async function getPostedLoginData(loginData) {
     if (loginData.ok) {
         loggedUser = loginData.data
+        let username = loggedUser.username.toString();
+        let modifiedUsername = username.replace(/-/g, ' ');
+        loggedUser.username = modifiedUsername;
         authenticated = true
         localStorage.setItem('currentUser', JSON.stringify(loggedUser))
         localStorage.setItem('authenticated', JSON.stringify(authenticated))

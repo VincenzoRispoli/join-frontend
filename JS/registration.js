@@ -12,14 +12,15 @@ async function register() {
         let email = document.getElementById('input-regist-email');
         let password = document.getElementById('input-regist-password');
         let repeated_password = document.getElementById('input-regist-repeated-password');
+        let slugifiedUseraname = username.value.replace(/\s+/g, '-');
         splitName(name.value);
-        await postRegistrationData(username, first_name, last_name, email, password, repeated_password);
+        await postRegistrationData(slugifiedUseraname, first_name, last_name, email, password, repeated_password);
     } else {
         document.getElementById('privacy-policy-advice').classList.remove('d-none');
     }
 }
 
-async function postRegistrationData(username, first_name, last_name, email, password, repeated_password) {
+async function postRegistrationData(slugifiedUseraname, first_name, last_name, email, password, repeated_password) {
     try {
         let response = await fetch(urlRegistration, {
             method: 'POST',
@@ -27,7 +28,7 @@ async function postRegistrationData(username, first_name, last_name, email, pass
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                'username': username.value,
+                'username': slugifiedUseraname,
                 'first_name': first_name,
                 'last_name': last_name,
                 'email': email.value,
@@ -37,23 +38,29 @@ async function postRegistrationData(username, first_name, last_name, email, pass
                 'is_superuser': isSuperuser || 0
             })
         })
-        await getPostedRegistData(response);
+        await getPostedRegistData(response)
     } catch (e) {
         console.log(e);
     }
 }
 
 async function getPostedRegistData(response) {
-    try {
-        let userData = await response.json();
-        console.log(userData);
-        if (response) {
-            console.log(response);
-            window.location.href = 'login.html'
+    let userData = await response.json();
+    if (response.ok) {
+        window.location.href = 'login.html'
+    } else {
+        for (let field in userData) {
+            if (userData.hasOwnProperty(field)) {
+                document.getElementById('pop-up-validation-advice').classList.remove('d-none');
+                let valMessage = document.getElementById('advice-text')
+                valMessage.innerHTML = `${userData[field]}`;
+            }
         }
-    } catch (e) {
-        console.log(e);
     }
+}
+
+function removeValidationAdvice() {
+    document.getElementById('pop-up-validation-advice').classList.add('d-none');
 }
 
 function splitName(name) {
