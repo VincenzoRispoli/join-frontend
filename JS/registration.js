@@ -12,15 +12,19 @@ async function register() {
         let email = document.getElementById('input-regist-email');
         let password = document.getElementById('input-regist-password');
         let repeated_password = document.getElementById('input-regist-repeated-password');
-        let slugifiedUseraname = username.value.replace(/\s+/g, '-');
         splitName(name.value);
-        await postRegistrationData(slugifiedUseraname, first_name, last_name, email, password, repeated_password);
+        await postRegistrationData(username.value, first_name, last_name, email, password, repeated_password);
     } else {
         document.getElementById('privacy-policy-advice').classList.remove('d-none');
     }
 }
 
-async function postRegistrationData(slugifiedUseraname, first_name, last_name, email, password, repeated_password) {
+document.getElementById('input-regist-username').addEventListener('input', (event) => {
+    let value = event.target.value;
+    event.target.value = value.replace(/\s/g, "_");
+})
+
+async function postRegistrationData(username, first_name, last_name, email, password, repeated_password) {
     try {
         let response = await fetch(urlRegistration, {
             method: 'POST',
@@ -28,7 +32,7 @@ async function postRegistrationData(slugifiedUseraname, first_name, last_name, e
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                'username': slugifiedUseraname,
+                'username': username,
                 'first_name': first_name,
                 'last_name': last_name,
                 'email': email.value,

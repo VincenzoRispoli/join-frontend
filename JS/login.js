@@ -6,14 +6,13 @@ async function login() {
     let email = document.getElementById('input-login-email');
     let password = document.getElementById('input-login-password');
     let username = document.getElementById('input-login-username');
-    let slugifiedUseraname = username.value.replace(/\s+/g, '-');
-    await postLoginData(slugifiedUseraname, password);
+    await postLoginData(username.value, email.value, password);
     username.value = "";
     email.value = "";
     password.value = "";
 }
 
-async function postLoginData(slugifiedUseraname, password) {
+async function postLoginData(username, email, password) {
     try {
         let response = await fetch(urlLogin, {
             method: 'POST',
@@ -21,31 +20,34 @@ async function postLoginData(slugifiedUseraname, password) {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                'username': slugifiedUseraname,
+                'username': username,
+                'email': email,
                 'password': password.value
             })
         })
         let loginData = await response.json();
-        await getPostedLoginData(loginData);
+        if (loginData.ok) {
+            await getPostedLoginData(loginData);
+        } else {
+            authenticated = false
+            document.getElementById('false-credential-advice').classList.remove('d-none')
+            document.getElementById('false-credential-advice').innerHTML = loginData.error
+        }
     } catch (e) {
         console.log(e);
     }
 }
 
 async function getPostedLoginData(loginData) {
-    if (loginData.ok) {
-        loggedUser = loginData.data
-        let username = loggedUser.username.toString();
-        let modifiedUsername = username.replace(/-/g, ' ');
-        loggedUser.username = modifiedUsername;
-        authenticated = true
-        localStorage.setItem('currentUser', JSON.stringify(loggedUser))
-        localStorage.setItem('authenticated', JSON.stringify(authenticated))
-        window.location.href = 'summary.html'
-    } else {
-        authenticated = false
-        document.getElementById('false-credential-advice').classList.remove('d-none')
-    }
+
+    loggedUser = loginData.data
+    let username = loggedUser.username.toString();
+    let modifiedUsername = username.replace(/-/g, ' ');
+    loggedUser.username = modifiedUsername;
+    authenticated = true
+    localStorage.setItem('currentUser', JSON.stringify(loggedUser))
+    localStorage.setItem('authenticated', JSON.stringify(authenticated))
+    window.location.href = 'summary.html'
 }
 
 async function guestUserLogin() {
