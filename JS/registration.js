@@ -1,6 +1,4 @@
 let urlRegistration = 'http://127.0.0.1:8000/api/auth/registration/'
-let first_name;
-let last_name;
 let privacyPolicyAccepted = false;
 let isSuperuser;
 let isStaff;
@@ -8,12 +6,12 @@ let isStaff;
 async function register() {
     if (privacyPolicyAccepted) {
         let username = document.getElementById('input-regist-username')
-        let name = document.getElementById('input-regist-name');
+        let firstName = document.getElementById('input-regist-first-name');
+        let lastName = document.getElementById('input-regist-last-name');
         let email = document.getElementById('input-regist-email');
         let password = document.getElementById('input-regist-password');
         let repeated_password = document.getElementById('input-regist-repeated-password');
-        splitName(name.value);
-        await postRegistrationData(username.value, first_name, last_name, email, password, repeated_password);
+        await postRegistrationData(username.value, firstName, lastName, email, password, repeated_password);
     } else {
         document.getElementById('privacy-policy-advice').classList.remove('d-none');
     }
@@ -24,7 +22,7 @@ document.getElementById('input-regist-username').addEventListener('input', (even
     event.target.value = value.replace(/\s/g, "_");
 })
 
-async function postRegistrationData(username, first_name, last_name, email, password, repeated_password) {
+async function postRegistrationData(username, firstName, lastName, email, password, repeated_password) {
     try {
         let response = await fetch(urlRegistration, {
             method: 'POST',
@@ -33,8 +31,8 @@ async function postRegistrationData(username, first_name, last_name, email, pass
             },
             body: JSON.stringify({
                 'username': username,
-                'first_name': first_name,
-                'last_name': last_name,
+                'first_name': firstName.value,
+                'last_name': lastName.value,
                 'email': email.value,
                 'password': password.value,
                 'repeated_password': repeated_password.value,
@@ -65,12 +63,6 @@ async function getPostedRegistData(response) {
 
 function removeValidationAdvice() {
     document.getElementById('pop-up-validation-advice').classList.add('d-none');
-}
-
-function splitName(name) {
-    let splittedName = name.split(" ")
-    first_name = splittedName[0];
-    last_name = splittedName[1]
 }
 
 function acceptPrivacyPolicy(checkbox) {

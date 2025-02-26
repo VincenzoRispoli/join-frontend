@@ -25,18 +25,21 @@
                 <div class="summary-tasks-show-and-greating-container">
                     <div class="summary-tasks-show">
                         <div class="todo-and-done-block">
-                            <div class="todo-container">
-                                <div class="summary-icon-container">
-                                    <img class="summary-icon" src="./assets/img/pencil-white.png" alt="">
+                            <div onmouseover="iconWhite('todo')" onmouseleave="originalIcon('todo')"
+                                class="todo-container">
+                                <div id="summary-icon-container-todo" class="summary-icon-container">
+                                    <img id="summary-icon-todo" class="summary-icon" src="./assets/img/pencil-white.png"
+                                        alt="">
                                 </div>
                                 <div class="number-and-category-container">
                                     <span id="number-of-todos" class="number"></span>
                                     <span class="task-category">To-Do</span>
                                 </div>
                             </div>
-                            <div class="done-container">
-                                <div class="summary-icon-container">
-                                    <img class="summary-icon" src="./assets/img/check-white.png" alt="">
+                            <div onmouseover="iconWhite('done')" onmouseleave="originalIcon('done')" class="done-container">
+                                <div id="summary-icon-container-done" class="summary-icon-container">
+                                    <img id="summary-icon-done" class="summary-icon" src="./assets/img/check-white.png"
+                                        alt="">
                                 </div>
                                 <div class="number-and-category-container">
                                     <span id="number-of-done" class="number"></span>
@@ -47,11 +50,11 @@
 
                         <div class="urgent-and-date-block">
                             <div class="urgent-container">
-                                <div class="summary-icon-container">
-                                    <img src="" alt="">
+                                <div class="urgent-icon-container">
+                                    <img src="./assets/img/urgent-white.png" alt="">
                                 </div>
                                 <div class="number-and-category-container">
-                                    <span id="number-of-urgent-tasks" class="number">2</span>
+                                    <span id="number-of-urgent-tasks" class="number"></span>
                                     <span class="task-category">Urgent</span>
                                 </div>
                             </div>

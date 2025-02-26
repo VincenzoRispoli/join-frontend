@@ -6,7 +6,7 @@ async function login() {
     let email = document.getElementById('input-login-email');
     let password = document.getElementById('input-login-password');
     let username = document.getElementById('input-login-username');
-    await postLoginData(username.value, email.value, password);
+    await postLoginData(username.value, email, password);
     username.value = "";
     email.value = "";
     password.value = "";
@@ -21,7 +21,7 @@ async function postLoginData(username, email, password) {
             },
             body: JSON.stringify({
                 'username': username,
-                'email': email,
+                'email': email.value,
                 'password': password.value
             })
         })

@@ -1,6 +1,9 @@
 let date;
 let hour;
 let greating;
+let urgents = [];
+let mediums = [];
+let lows = [];
 
 async function initSummary() {
     authenticated = JSON.parse(localStorage.getItem('authenticated'));
@@ -22,10 +25,9 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function loadTasksOverview() {
-    let urgents = [];
     document.getElementById('number-of-todos').innerHTML = todos.length;
     document.getElementById('number-of-done').innerHTML = dones.length;
-    urgents = tasks.filter(t => t['priority'] == 'urgent')
+    urgents = tasks.filter(t => t['priority'] == 'urgent');
     document.getElementById('number-of-urgent-tasks').innerHTML = urgents.length;
     document.getElementById('number-of-tasks-in-board').innerHTML = tasks.length;
     document.getElementById('number-of-inProgress').innerHTML = inProgress.length;
@@ -51,5 +53,23 @@ function checkTheDaytime() {
         greating = 'Good Afternoon'
     } else {
         greating = 'Good Evening'
+    }
+}
+
+function iconWhite(value) {
+    document.getElementById(`summary-icon-container-${value}`).style.backgroundColor = '#fff'
+    if (value == 'todo') {
+        document.getElementById(`summary-icon-${value}`).src = './assets/img/pencil-blue.png'
+    } else {
+        document.getElementById(`summary-icon-${value}`).src = './assets/img/check-blue.png'
+    }
+}
+
+function originalIcon(value) {
+    document.getElementById(`summary-icon-container-${value}`).style.backgroundColor = '#2A3647'
+    if (value == 'todo') {
+        document.getElementById(`summary-icon-${value}`).src = './assets/img/pencil-white.png'
+    } else {
+        document.getElementById(`summary-icon-${value}`).src = './assets/img/check-white.png'
     }
 }
