@@ -2,6 +2,12 @@ let urlLogin = 'http://127.0.0.1:8000/api/auth/login/';
 let loggedUser;
 let authenticated;
 
+function joinLogoAnimation() {
+    setTimeout(() => {
+        document.getElementById('login-animation-container').classList.add('d-none')
+    }, 2000)
+}
+
 async function login() {
     let email = document.getElementById('input-login-email');
     let password = document.getElementById('input-login-password');

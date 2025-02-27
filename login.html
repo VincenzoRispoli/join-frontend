@@ -10,53 +10,57 @@
     <title>Login</title>
 </head>
 
-<body>
-    <div class="login-page-header">
-        <img id="join-logo-login" src="./assets/img/logo-big.png" alt="join-logo-login">
-        <div class="sign-up-banner">
-            <p>Not a Join user?</p>
-            <a href="registration.html" class="go-to-sign-up-btn">Sign up</a>
-        </div>
-    </div>
-    <div class="form-container">
-        <div class="form-content">
-            <div class="log-in-title">
-                <h1>Log in</h1>
-                <span class="separator-bar"></span>
+<body class="login-body" onload="joinLogoAnimation()">
+    <img id="big-logo-animation-login" class="big-logo-animation-login" src="./assets/img/logo-big.png" alt="join-logo-login">
+    <div id="login-animation-container" class="login-animation-container"></div>
+    <div class="login-header-and-form-wrapper">
+        <div class="login-page-header">
+            <div class="sign-up-banner">
+                <p>Not a Join user?</p>
+                <a href="registration.html" class="go-to-sign-up-btn">Sign up</a>
             </div>
-            <form onsubmit="login(); return false" id="login-form" class="form">
-                <div class="form-inputs-wrapper">
-                    <div class="login-input-cont">
-                        <input required type="text" placeholder="Username" type="text" id="input-login-username"
-                            class="login-form-input">
-                        <div class="icon-login-cont">
-                            <img class="login-input-icon" src="./assets/img/person-icon.png" alt="">
-                        </div>
-                    </div>
-                    <div class="login-input-cont">
-                        <input required type="text" placeholder="Email" type="email" id="input-login-email"
-                            class="login-form-input">
-                        <div class="icon-login-cont">
-                            <img class="login-input-icon" src="./assets/img/mail-icon.png" alt="">
-                        </div>
-                    </div>
-                    <div class="login-input-cont">
-                        <input required placeholder="Password" type="password" id="input-login-password"
-                            class="login-form-input">
-                        <div class="icon-login-cont">
-                            <img class="login-input-icon" src="./assets/img/lock.png" alt="">
-                        </div>
-                    </div>
+        </div>
+        <div class="form-container">
+            <div class="form-content">
+                <div class="log-in-title">
+                    <h1>Log in</h1>
+                    <span class="separator-bar"></span>
                 </div>
-                <div class="form-btn-container">
-                    <button type="submit" class="form-btn" style="background:#2A3647; color: #fff">Log in</button>
-                    <button onclick="guestUserLogin(); return false" class="form-btn" style="color:#2A3647; background: #fff">Guest Log in</button>
-                </div>
-            </form>
-            <span id="false-credential-advice" style="color:red" class="false-credentials-advice d-none">Username, Email or Password are not correct</span>
+                <form onsubmit="login(); return false" id="login-form" class="form">
+                    <div class="form-inputs-wrapper">
+                        <div class="login-input-cont">
+                            <input required type="text" placeholder="Username" type="text" id="input-login-username"
+                                class="login-form-input">
+                            <div class="icon-login-cont">
+                                <img class="login-input-icon" src="./assets/img/person-icon.png" alt="">
+                            </div>
+                        </div>
+                        <div class="login-input-cont">
+                            <input required type="text" placeholder="Email" type="email" id="input-login-email"
+                                class="login-form-input">
+                            <div class="icon-login-cont">
+                                <img class="login-input-icon" src="./assets/img/mail-icon.png" alt="">
+                            </div>
+                        </div>
+                        <div class="login-input-cont">
+                            <input required placeholder="Password" type="password" id="input-login-password"
+                                class="login-form-input">
+                            <div class="icon-login-cont">
+                                <img class="login-input-icon" src="./assets/img/lock.png" alt="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-btn-container">
+                        <button type="submit" class="form-btn" style="background:#2A3647; color: #fff">Log in</button>
+                        <button onclick="guestUserLogin(); return false" class="form-btn"
+                            style="color:#2A3647; background: #fff">Guest Log in</button>
+                    </div>
+                </form>
+                <span id="false-credential-advice" style="color:red" class="false-credentials-advice d-none">Username,
+                    Email or Password are not correct</span>
+            </div>
         </div>
     </div>
-
 </body>
 
 <script src="./JS/header.js"></script>
