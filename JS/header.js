@@ -24,22 +24,30 @@ async function logOut() {
 function showOrHideSubmenu() {
     let submenu = document.getElementById('submenu');
     if (!submenuStatus) {
-        let submenuOptionsHTMLCollection = document.getElementsByClassName('submenuOption');
-        let submenuOptions = [...submenuOptionsHTMLCollection];
-        submenuOptions.forEach((option) => {
-            option.classList.add('d-none');
-        })
-        submenu.style.height = '0px';
-        submenu.style.padding = '0px';
+        hideSubmenu(submenu);
     } else {
-        submenu.style.padding = '10px';
-        submenu.style.height = 'auto';
-        let submenuOptionsHTMLCollection = document.getElementsByClassName('submenuOption');
-        let submenuOptions = [...submenuOptionsHTMLCollection];
-        submenuOptions.forEach((option) => {
-            option.classList.remove('d-none');
-        })
+        showSubmenu(submenu);
     }
+}
+
+function hideSubmenu(submenu) {
+    let submenuOptionsHTMLCollection = document.getElementsByClassName('submenuOption');
+    let submenuOptions = [...submenuOptionsHTMLCollection];
+    submenuOptions.forEach((option) => {
+        option.classList.add('d-none');
+    })
+    submenu.style.height = '0px';
+    submenu.style.padding = '0px';
+}
+
+function showSubmenu(submenu) {
+    submenu.style.padding = '10px';
+    submenu.style.height = 'auto';
+    let submenuOptionsHTMLCollection = document.getElementsByClassName('submenuOption');
+    let submenuOptions = [...submenuOptionsHTMLCollection];
+    submenuOptions.forEach((option) => {
+        option.classList.remove('d-none');
+    })
 }
 
 function submenuTrigger() {

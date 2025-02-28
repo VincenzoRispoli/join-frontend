@@ -133,13 +133,13 @@ function editTaskHTML(id, selectedTask) {
         </div>
         <div class="subtask-container-edit-task-overview">
             <span>Subtasks</span>
-            <div onclick="writeSubtask()" class="subtask-input-container">
+            <div onclick="writeSubtaskEditTask(${id})" class="subtask-input-container">
                 <input id="input-subtask-edit-task${id}" class="input-subtask" placeholder="Add new subtask" type="text">
                 <div class="icons-subtask-container">
-                    <img id="add-icon" class="subtask-icon" src="./assets/img/add.png" alt="">
-                    <div id="cross-and-check-icon-container" class="cross-and-check-icons-container d-none">
-                        <img onclick="clearInputAddSubtask(${id})" class="subtask-icon" src="./assets/img/cross.png" alt="">
-                        <img onclick="addSubtaskEditTask(${id})" class="subtask-icon" src="./assets/img/check-small.png" alt="">
+                    <img onclick="writeSubtaskEditTask(${id})" id="add-icon" class="subtask-icon" src="./assets/img/add-blue.png" alt="">
+                    <div id="cross-and-check-icons-container" class="cross-and-check-icons-container d-none">
+                        <img onclick="clearAddSubtaskInputEdit(${id}, event)" class="subtask-icon" src="./assets/img/cross.png" alt="">
+                        <img onclick="addSubtaskEditTask(${id}, event)" class="subtask-icon" src="./assets/img/check-small.png" alt="">
                     </div>
                 </div>
             </div>

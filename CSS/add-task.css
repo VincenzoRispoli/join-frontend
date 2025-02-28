@@ -20,6 +20,7 @@ form {
     display: flex;
     flex-direction: column;
     height: 120px;
+    gap: 8px;
 }
 
 .input-title {
@@ -69,6 +70,7 @@ form {
 .due-date-container {
     display: flex;
     flex-direction: column;
+    gap: 8px;
 }
 
 .input-date {
@@ -84,6 +86,12 @@ form {
     width: 4px;
     height: 100%;
     background: #D1D1D1;
+}
+
+.prio-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
 .prio-buttons-container {
@@ -120,6 +128,11 @@ form {
 .category-container {
     display: flex;
     flex-direction: column;
+    gap: 8px;
+}
+
+.label-for-assigned-to {
+    margin-bottom: 8px;
 }
 
 .assigned-to-container {
@@ -228,11 +241,12 @@ option {
     font-weight: 400;
 }
 
-.subtask-container {
+.subtasks-container {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     gap: 16px;
+    cursor: pointer;
 }
 
 .subtask-input-container {
@@ -250,6 +264,7 @@ option {
     outline: none;
     width: 90%;
     border-radius: 10px;
+    cursor: pointer;
 }
 
 .icons-subtask-container {

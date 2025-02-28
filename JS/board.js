@@ -368,14 +368,19 @@ function turnhighlightContainerAndIconsOff(i) {
     }
 }
 
-async function addSubtaskEditTask(id) {
+async function addSubtaskEditTask(id, event) {
     let subtaskTitle = document.getElementById(`input-subtask-edit-task${id}`);
-    let newSubtask = new Subtask(subtaskTitle.value, false);
-    newSubtask.task_id = id
-    try {
-        await postAndTheGetNewSubtaskEditTask(newSubtask);
-    } catch (e) {
-        console.log(e);
+    if (subtaskTitle.value.length > 0) {
+        let newSubtask = new Subtask(subtaskTitle.value);
+        newSubtask.task_id = id
+        try {
+            await postAndTheGetNewSubtaskEditTask(newSubtask);
+            clearAddSubtaskInputEdit(id, event);
+        } catch (e) {
+            console.log(e);
+        }
+    } else {
+        clearAddSubtaskInputEdit(id, event);
     }
 }
 

@@ -1,9 +1,10 @@
 let subtasksList = [];
 let choosedPriority;
-let choosedCategory;
+let choosedCategory = 'technical-task';
 let assignees = [];
 let selectedAssignees = [];
 let subtasksUrl = 'http://127.0.0.1:8000/kanban/subtasks/';
+let prioBtnActive;
 
 async function initAddTasks() {
   authenticated = JSON.parse(localStorage.getItem('authenticated'));
@@ -53,44 +54,101 @@ function selectAssignees(i, checkbox) {
   }
 }
 
-
 function writeSubtask() {
-  document.getElementById('cross-and-check-icon-container').classList.remove('d-none');
-  document.getElementById('add-icon').classList.add('d-none')
+  document.getElementById('cross-and-check-icons-container').classList.remove('d-none');
+  document.getElementById('add-icon').classList.add('d-none');
+  document.getElementById('input-subtask').focus();
 }
 
-function addSubtasks() {
+function clearAddSubtaskInput(event) {
+  event.stopPropagation();
+  document.getElementById('input-subtask').value = "";
+  document.getElementById('add-icon').classList.remove('d-none')
+  document.getElementById('cross-and-check-icons-container').classList.add('d-none')
+}
+
+function writeSubtaskEditTask(id) {
+  document.getElementById(`input-subtask-edit-task${id}`).focus();
+  document.getElementById('add-icon').classList.add('d-none');
+  document.getElementById('cross-and-check-icons-container').classList.remove('d-none');
+}
+
+function clearAddSubtaskInputEdit(id, event) {
+  event.stopPropagation();
+  document.getElementById(`input-subtask-edit-task${id}`).value = "";
+  document.getElementById('add-icon').classList.remove('d-none')
+  document.getElementById('cross-and-check-icons-container').classList.add('d-none')
+}
+
+function addSubtasks(event) {
+  event.stopPropagation();
   let subtaskTitle = document.getElementById('input-subtask');
   if (subtaskTitle.value.length > 0) {
     let subtaskListContainer = document.getElementById('subtask-list');
     let newSubtask = new Subtask(subtaskTitle.value, false)
     subtasksList.push(newSubtask);
-    console.log(subtasksList);
     subtaskListContainer.innerHTML = '';
-    for (let i = 0; i < subtasksList.length; i++) {
-      let subtask = subtasksList[i]
-      subtaskListContainer.innerHTML += subtaskHTML(i, subtask);
-    }
-    subtaskTitle.value = "";
+    loadCreatedSubtasksInTheListContainer(subtasksList, subtaskListContainer);
+    clearAddSubtaskInput(event);
+  }
+}
+
+function loadCreatedSubtasksInTheListContainer(subtasksList, subtaskListContainer) {
+  for (let i = 0; i < subtasksList.length; i++) {
+    let subtask = subtasksList[i]
+    subtaskListContainer.innerHTML += subtaskHTML(i, subtask);
   }
 }
 
 function fillButton(priority) {
-  choosedPriority = priority
-  document.getElementById('urgent-btn').classList.remove('highlithedBtnEditTask');
-  document.getElementById('urgent-btn').classList.remove(`urgent-btn-edit-task`);
-  document.getElementById('urgent-icon').src = './assets/img/urgent.png'
-  document.getElementById('medium-btn').classList.remove('highlithedBtnEditTask');
-  document.getElementById('medium-btn').classList.remove(`medium-btn-edit-task`);
-  document.getElementById('medium-icon').src = './assets/img/medium.png';
-  document.getElementById('low-btn').classList.remove('highlithedBtnEditTask');
-  document.getElementById('low-btn').classList.remove(`low-btn-edit-task`);
-  document.getElementById('low-icon').src = './assets/img/low.png'
+  choosedPriority = priority;
+  let prioButtons = document.getElementsByClassName('prio-btn');
+  let prioButtonsToArray = [...prioButtons];
+  prioButtonsToArray.forEach((button) => {
+    let prio = button.innerText.toLowerCase();
+    button.classList.remove('highlithedBtnEditTask');
+    button.classList.remove(`${prio}-btn-edit-task`);
+    document.getElementById(`${prio}-icon`).src = `./assets/img/${prio}.png`
+  });
   document.getElementById(`${priority}-btn`).classList.add(`${priority}-btn-edit-task`);
   document.getElementById(`${priority}-btn`).classList.add('highlithedBtnEditTask');
   document.getElementById(`${priority}-icon`).src = `./assets/img/${priority}-white.png`
 }
 
+function fillBtnOnOver(priority) {
+  document.getElementById(`${priority}-btn`).classList.add(`${priority}-btn-edit-task`);
+  document.getElementById(`${priority}-btn`).classList.add('highlithedBtnEditTask');
+  document.getElementById(`${priority}-icon`).src = `./assets/img/${priority}-white.png`;
+}
+
+function blurPrioButton(priority) {
+  if (choosedPriority !== priority) {
+    document.getElementById(`${priority}-btn`).classList.remove(`${priority}-btn-edit-task`);
+    document.getElementById(`${priority}-btn`).classList.remove('highlithedBtnEditTask');
+    document.getElementById(`${priority}-icon`).src = `./assets/img/${priority}.png`
+  }
+}
+
+function clearAddTaskForm() {
+  document.getElementById('title').value = "";
+  document.getElementById('description').value = "";
+  let checkboxses = document.getElementsByClassName('input-checkbox-assignees');
+  let checkboxsesToArray = [...checkboxses]
+  checkboxsesToArray.forEach((checkbox) => {
+    checkbox.checked = false;
+  })
+  let prioButtons = document.getElementsByClassName('prio-btn');
+  let prioButtonsToArray = [...prioButtons];
+  prioButtonsToArray.forEach((button) => {
+    let prio = button.innerText.toLowerCase();
+    button.classList.remove('highlithedBtnEditTask');
+    button.classList.remove(`${prio}-btn-edit-task`);
+    document.getElementById(`${prio}-icon`).src = `./assets/img/${prio}.png`
+  })
+  document.getElementById('date').value = "";
+  subtasksList = [];
+  document.getElementById('subtask-list').innerHTML = "";
+}
 
 function selectCategory() {
   choosedCategory = document.getElementById('categories').value;
@@ -139,7 +197,6 @@ async function postTheNewCreatedTask(newTask) {
 async function getTaskDataAndPostSubtask(taskResponse) {
   try {
     let taskData = await taskResponse.json();
-    console.log("Task Data", taskData);
     if (taskData) {
       await sendSubtasks(taskData)
     }

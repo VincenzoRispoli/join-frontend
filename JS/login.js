@@ -12,7 +12,9 @@ async function login() {
     let email = document.getElementById('input-login-email');
     let password = document.getElementById('input-login-password');
     let username = document.getElementById('input-login-username');
+    document.getElementById('loading-curtain').classList.remove('d-none');
     await postLoginData(username.value, email, password);
+    document.getElementById('loading-curtain').classList.add('d-none');
     username.value = "";
     email.value = "";
     password.value = "";
@@ -31,21 +33,24 @@ async function postLoginData(username, email, password) {
                 'password': password.value
             })
         })
-        let loginData = await response.json();
-        if (loginData.ok) {
-            await getPostedLoginData(loginData);
-        } else {
-            authenticated = false
-            document.getElementById('false-credential-advice').classList.remove('d-none')
-            document.getElementById('false-credential-advice').innerHTML = loginData.error
-        }
+        await getResponseAndPostData(response);
     } catch (e) {
         console.log(e);
     }
 }
 
-async function getPostedLoginData(loginData) {
+async function getResponseAndPostData(response) {
+    let loginData = await response.json();
+    if (loginData.ok) {
+        await getPostedLoginData(loginData);
+    } else {
+        authenticated = false
+        document.getElementById('false-credential-advice').classList.remove('d-none')
+        document.getElementById('false-credential-advice').innerHTML = loginData.error
+    }
+}
 
+async function getPostedLoginData(loginData) {
     loggedUser = loginData.data
     let username = loggedUser.username.toString();
     let modifiedUsername = username.replace(/-/g, ' ');
@@ -57,6 +62,7 @@ async function getPostedLoginData(loginData) {
 }
 
 async function guestUserLogin() {
+    document.getElementById('loading-curtain').classList.remove('d-none')
     try {
         let response = await fetch(urlLogin, {
             method: 'POST',
@@ -69,7 +75,8 @@ async function guestUserLogin() {
                 'password': 'guestLogin123'
             })
         })
-        getPostedGuestLoginData(response);
+        await getPostedGuestLoginData(response);
+        document.getElementById('loading-curtain').classList.add('d-none')
     } catch (e) {
         console.log(e);
         document.getElementById('false-credential-advice').classList.remove('d-none')
@@ -77,14 +84,12 @@ async function guestUserLogin() {
 }
 
 async function getPostedGuestLoginData(response) {
-    try {
-        let guestLoginData = await response.json();
+    let guestLoginData = await response.json();
+    if (response.ok) {
         loggedUser = guestLoginData.data;
         authenticated = true;
         localStorage.setItem('currentUser', JSON.stringify(loggedUser));
         localStorage.setItem('authenticated', JSON.stringify(authenticated));
         window.location.href = 'summary.html';
-    } catch (e) {
-        console.log(e);
     }
 }

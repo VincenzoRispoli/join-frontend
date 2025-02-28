@@ -103,7 +103,7 @@ async function deleteSubtaskEditTask(i, taskId) {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `oken ${loggedUser.token}`
+                'Authorization': `Token ${loggedUser.token}`
             }
         })
         getSubtaskForEditTask(taskId)

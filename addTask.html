@@ -24,16 +24,18 @@
                         <div class="left-block">
                             <div class="label-and-writeField-container">
                                 <label for="title">Title</label>
-                                <input oninput="checkValidityOfFormInputs()" required id="title" minlength="3" class="input-title validation-element" type="text"
-                                    placeholder="Enter a title..." name="title">
+                                <input oninput="checkValidityOfFormInputs()" required id="title" minlength="3"
+                                    class="input-title validation-element" type="text" placeholder="Enter a title..."
+                                    name="title">
                             </div>
                             <div class="label-and-writeField-container">
                                 <label for="description">Description</label>
-                                <textarea oninput="checkValidityOfFormInputs()" required minlength="3" id="description" class="textarea validation-element" name="description"
+                                <textarea oninput="checkValidityOfFormInputs()" required minlength="3" id="description"
+                                    class="textarea validation-element" name="description"
                                     placeholder="Enter a description..." id=""></textarea>
                             </div>
                             <div class="assigned-to-container">
-                                <label for="">Assigned To</label>
+                                <label class="label-for-assigned-to" for="">Assigned To</label>
                                 <div onclick="showAssigneesInTheDropDownMenu()" class="input-search-assignee-container">
                                     <span class="input-search-assignee">Select contact to assign</span>
                                     <img id="arrow-drop-down" class="arrow-drop-down"
@@ -50,19 +52,23 @@
                         <div class="rigth-block">
                             <div class="due-date-container">
                                 <label for="due-date">Date</label>
-                                <input oninput="checkValidityOfFormInputs()" required id="date" class="input-date validation-element" type="date" name="due-date">
+                                <input oninput="checkValidityOfFormInputs()" required id="date"
+                                    class="input-date validation-element" type="date" name="due-date">
                             </div>
                             <div class="prio-container">
                                 <span>Prio</span>
                                 <div class="prio-buttons-container">
-                                    <span onclick="fillButton('urgent')" id="urgent-btn"
+                                    <span onclick="fillButton('urgent')" onmouseover="fillBtnOnOver('urgent')"
+                                        onmouseleave="blurPrioButton('urgent')" id="urgent-btn"
                                         class="urgent-btn prio-btn">Urgent <img id="urgent-icon"
                                             src="./assets/img/urgent.png" alt=""></span>
-                                    <span onclick="fillButton('medium')" id="medium-btn"
+                                    <span onclick="fillButton('medium')" onmouseover="fillBtnOnOver('medium')"
+                                        onmouseleave="blurPrioButton('medium')" id="medium-btn"
                                         class="medium-btn prio-btn">Medium <img id="medium-icon"
                                             src="./assets/img/medium.png" alt=""></span>
-                                    <span onclick="fillButton('low')" id="low-btn" class="low-btn prio-btn">Low <img
-                                            id="low-icon" src="./assets/img/low.png" alt=""></span>
+                                    <span onclick="fillButton('low')" onmouseover="fillBtnOnOver('low')"
+                                        onmouseleave="blurPrioButton('low')" id="low-btn" class="low-btn prio-btn">Low
+                                        <img id="low-icon" src="./assets/img/low.png" alt=""></span>
                                 </div>
                             </div>
                             <div class="category-container">
@@ -78,11 +84,12 @@
                                     <input id="input-subtask" minlength="3" class="input-subtask"
                                         placeholder="Add new subtask" type="text">
                                     <div class="icons-subtask-container">
-                                        <img id="add-icon" class="subtask-icon" src="./assets/img/add.png" alt="">
-                                        <div id="cross-and-check-icon-container"
+                                        <img id="add-icon" class="subtask-icon" src="./assets/img/add-blue.png" alt="">
+                                        <div id="cross-and-check-icons-container"
                                             class="cross-and-check-icons-container d-none">
-                                            <img class="subtask-icon" src="" alt="">
-                                            <img onclick="addSubtasks()" class="subtask-icon"
+                                            <img onclick="clearAddSubtaskInput(event)" class="subtask-icon"
+                                                src="./assets/img/cross.png" alt="">
+                                            <img onclick="addSubtasks(event)" class="subtask-icon"
                                                 src="./assets/img/check-small.png" alt="">
                                         </div>
                                     </div>
@@ -94,7 +101,7 @@
                         </div>
                     </div>
                     <div class="buttons-container">
-                        <button>Clear</button>
+                        <button onclick="clearAddTaskForm()">Clear</button>
                         <button id="submit-btn" type="submit" disabled="true">Create Task</button>
                     </div>
                 </form>

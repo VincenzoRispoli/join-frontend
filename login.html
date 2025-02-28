@@ -13,11 +13,15 @@
 <body class="login-body" onload="joinLogoAnimation()">
     <img id="big-logo-animation-login" class="big-logo-animation-login" src="./assets/img/logo-big.png" alt="join-logo-login">
     <div id="login-animation-container" class="login-animation-container"></div>
+    <div id="loading-curtain" class="loading-curtain d-none">
+        <span class="loading-text">Just a second...</span>
+        <img class="curtain-logo" src="./assets/img/logo-small-blue.png" alt="">
+    </div>
     <div class="login-header-and-form-wrapper">
         <div class="login-page-header">
             <div class="sign-up-banner">
                 <p>Not a Join user?</p>
-                <a href="registration.html" class="go-to-sign-up-btn">Sign up</a>
+                <a href="registration.html" class="form-btn">Sign up</a>
             </div>
         </div>
         <div class="form-container">
@@ -51,9 +55,8 @@
                         </div>
                     </div>
                     <div class="form-btn-container">
-                        <button type="submit" class="form-btn" style="background:#2A3647; color: #fff">Log in</button>
-                        <button onclick="guestUserLogin(); return false" class="form-btn"
-                            style="color:#2A3647; background: #fff">Guest Log in</button>
+                        <button type="submit" class="form-btn">Log in</button>
+                        <button onclick="guestUserLogin(); return false" class="form-btn-guest-login">Guest Log in</button>
                     </div>
                 </form>
                 <span id="false-credential-advice" style="color:red" class="false-credentials-advice d-none">Username,
