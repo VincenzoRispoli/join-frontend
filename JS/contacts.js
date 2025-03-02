@@ -12,7 +12,7 @@ async function initContacts() {
     authenticated = JSON.parse(localStorage.getItem('authenticated'))
     if (authenticated) {
         includeHTML();
-        await getLoggedUser();
+        loggedUser = JSON.parse(localStorage.getItem('currentUser'));
         await loadContactBook();
     } else {
         window.location.href = 'login.html'

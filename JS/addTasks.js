@@ -9,7 +9,7 @@ let prioBtnActive;
 async function initAddTasks() {
   authenticated = JSON.parse(localStorage.getItem('authenticated'));
   if (authenticated) {
-    await getLoggedUser();
+    loggedUser = JSON.parse(localStorage.getItem('currentUser'));
     await loadAssignees();
   } else {
     window.location.href = 'login.html'

@@ -8,7 +8,7 @@ let lows = [];
 async function initSummary() {
     authenticated = JSON.parse(localStorage.getItem('authenticated'));
     if (authenticated) {
-        await getLoggedUser();
+        loggedUser = JSON.parse(localStorage.getItem('currentUser'));
         await loadTasks();
         date = getDate();
         checkTheDaytime();

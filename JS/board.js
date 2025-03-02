@@ -20,7 +20,7 @@ let actualValueInputEditSubtask;
 async function initBoard() {
     authenticated = JSON.parse(localStorage.getItem('authenticated'))
     if (authenticated) {
-        await getLoggedUser();
+        loggedUser = JSON.parse(localStorage.getItem('currentUser'));
         await loadTasks()
     } else {
         window.location.href = 'login.html'
@@ -68,10 +68,6 @@ function setTasksInRelatedContainer() {
     loadinProgressContainer(inProgressContainer, inProgress);
     loadAwaitFeedbackContainer(awaitFeedbackContainer, awaitFeedBack);
     loadDoneContainer(doneContainer, dones);
-}
-
-async function getLoggedUser() {
-    loggedUser = JSON.parse(localStorage.getItem('currentUser'));
 }
 
 function showCreateTaskOverview() {
@@ -349,25 +345,6 @@ function turnTheOriginalInputValueOfSubtaskBack(i) {
     disableContentEditingSubtask(i)
 }
 
-function highlightContainerAndIcons(i) {
-    if (subtaskIsClicked == false) {
-        document.getElementById(`subtask-edit-task-overview-container${i}`).style.background = '#eee';
-        document.getElementById(`pencil-icon-edit${i}`).classList.remove('d-none');
-        document.getElementById(`delete-icon-edit${i}`).classList.remove('d-none');
-        document.getElementById(`icon-separator-edit-subtask${i}`).classList.remove('d-none');
-    }
-}
-
-function turnhighlightContainerAndIconsOff(i) {
-    if (subtaskIsClicked == false) {
-        document.getElementById(`subtask-edit-task-overview-container${i}`).style.background = 'none';
-        document.getElementById(`pencil-icon-edit${i}`).classList.add('d-none');
-        document.getElementById(`delete-icon-edit${i}`).classList.add('d-none');
-        document.getElementById(`check-icon-edit${i}`).classList.add('d-none');
-        document.getElementById(`icon-separator-edit-subtask${i}`).classList.add('d-none');
-    }
-}
-
 async function addSubtaskEditTask(id, event) {
     let subtaskTitle = document.getElementById(`input-subtask-edit-task${id}`);
     if (subtaskTitle.value.length > 0) {
@@ -486,35 +463,4 @@ function closeTaskOverview(event) {
 function closeAddTaskOverview(event) {
     event.stopPropagation();
     document.getElementById('opacity-add-task-container').classList.add('d-none');
-}
-
-function dontClose(event) {
-    event.stopPropagation()
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    includeHTML(() => {
-        setInitialsCurrentUserInTheHeader(); // Esegui la funzione dopo che tutto è stato caricato
-    });
-});
-
-function allowDrop(ev, state) {
-    ev.preventDefault();
-}
-
-function highlightContainer(state, event) {
-    event.preventDefault();
-    document.getElementById(state).classList.add('dashed-border');
-}
-
-function removeBorderOnLeave(state, event) {
-    event.preventDefault();
-    setTimeout(() => {
-        document.getElementById(state).classList.remove('dashed-border')
-    })
-}
-
-function removeBorderOnDrop(state, event) {
-    event.preventDefault();
-    document.getElementById(state).classList.remove('dashed-border');
 }

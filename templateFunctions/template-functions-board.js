@@ -259,8 +259,8 @@ function assigneeCheckedHTML(j, assignee) {
 function assigneeNoCheckedHTML(j, assignee) {
     return /*html*/ `
         <div id="assignee-edit-task${j}" class="assignee">
-            <span>${assignee.first_name.charAt(0)}${assignee.last_name.charAt(0)}</span>
-            <span>${assignee.first_name}${assignee.last_name}</span>
+            <span class="contact-badge-task-overview" style="background:${assignee.badge_color}">${assignee.first_name.charAt(0)}${assignee.last_name.charAt(0)}</span>
+            <span>${assignee.first_name} ${assignee.last_name}</span>
             <input onclick="selectAssigneeEditTask(${j}, this)" id="input-checkbox-${j}" type="checkbox">
         </div>
     `
