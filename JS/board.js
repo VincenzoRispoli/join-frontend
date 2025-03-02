@@ -38,8 +38,32 @@ async function loadTasks() {
 
     if (window.location.href === 'http://127.0.0.1:5500/board.html') {
         setTasksInRelatedContainer();
+        await assignRelatedSubtaskToTask();
     }
     setInitialsCurrentUserInTheHeader(loggedUser);
+}
+
+async function assignRelatedSubtaskToTask() {
+    let response = await fetch(subtasksUrl, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Token ${loggedUser.token}`
+        }
+    })
+    let subtasksData = await response.json();
+    showProgressBarAndCountInfos(subtasksData)
+}
+
+function showProgressBarAndCountInfos(subtasksData) {
+    tasks.forEach(task => {
+        let relatedSubtasks = subtasksData.filter(subtask => subtask.task == task.id);
+        let completedSubtask = relatedSubtasks.filter(subtask => subtask['is_completed'] == true);
+        let percentual = (completedSubtask.length / relatedSubtasks.length) * 100;
+        document.getElementById(`progress-bar-${task.id}`).style.width = `${percentual}%`
+        document.getElementById(`completed-subtasks-${task.id}`).innerHTML = completedSubtask.length + ' /'
+        document.getElementById(`subtasks-count-${task.id}`).innerHTML = relatedSubtasks.length + ' subtasks';
+    })
 }
 
 function searchTasks() {
@@ -88,7 +112,7 @@ function loadTodoContainer(todoContainer, todos) {
     todoContainer.innerHTML = "";
     for (let i = 0; i < todos.length; i++) {
         let todo = todos[i];
-        todoContainer.innerHTML += taskCardHTML(todo, i)
+        todoContainer.innerHTML += taskCardHTML(todo, i);
         loadAssigneesInTheCard(i, todo);
         modifyCardCategory(i, todo.state);
     }
@@ -130,8 +154,8 @@ function loadAssigneesInTheCard(i, task) {
     for (let j = 0; j < task.contacts.length; j++) {
         let assignee = task.contacts[j]
         let capitalizedAssignee = assignee.first_name.charAt(0) + assignee.last_name.charAt(0);
-        assigneesContainer.innerHTML += `
-        <span class="assignee-badge" id="${task.state}-assignee${j}-of-task-card${i}">${capitalizedAssignee}</span>
+        assigneesContainer.innerHTML += /*html*/ `
+        <span style="background: ${assignee.badge_color}" class="assignee-badge" id="${task.state}-assignee${j}-of-task-card${i}">${capitalizedAssignee}</span>
         `
     }
 }
@@ -224,7 +248,7 @@ async function showTask(id) {
     let opacityContainer = document.getElementById('opacity-single-task-container');
     opacityContainer.innerHTML = taskCardOverviewHTML(id, selectedTask, categoryTitleColor, priorityIcon);
     loadAssigneeList(id, selectedTask);
-    await getSubtasks(id)
+    await getSubtasks(id);
     document.getElementById('opacity-single-task-container').classList.remove('d-none');
 }
 
@@ -306,7 +330,11 @@ function loadSubtasksInTheCardOverview(id, taskRelatedSubtaskList) {
     subtaskList.innerHTML = ""
     for (let i = 0; i < taskRelatedSubtaskList.length; i++) {
         let subtask = taskRelatedSubtaskList[i]
-        subtaskList.innerHTML += subtaskForTaskOverviewHTML(i, id, subtask);
+        if (subtask.is_completed == true) {
+            subtaskList.innerHTML += subtaskForTaskOverviewHTMLChecked(i, id, subtask);
+        } else {
+            subtaskList.innerHTML += subtaskForTaskOverviewHTMLNoChecked(i, id, subtask);
+        }
     }
 }
 
@@ -392,18 +420,6 @@ async function updateTaskRelatedSubtask(i, taskId, checkbox) {
     } catch (e) {
         console.log(e);
     }
-}
-
-async function updateCompletedStatusOfSubtask(id, selectedSubtask) {
-    let response = await fetch(subtasksUrl + `${id}/`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `${loggedUser.token}`
-        },
-        body: JSON.stringify(selectedSubtask)
-    })
-    let subtaskData = await response.json();
 }
 
 function setTheColorOfCategoryTitle(selectedTask) {

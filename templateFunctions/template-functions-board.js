@@ -7,8 +7,13 @@ function taskCardHTML(task, i) {
             <h3 id="task-title">${task.title}</h3>
             <div id="task-description">${task.description}</div>
             <div class="progress-bar-and-subtask-count-container">
-                <span class="progress-bar"></span>
-                <span class="subtask-count"> 0/${2} subtasks</span>
+                <div class="progress-bar-container">
+                    <span id="progress-bar-${task.id}" class="progress-bar"></span>
+                </div>
+                <div class="subtasks-count-info-container">
+                    <span id="completed-subtasks-${task.id}"></span>
+                    <span id="subtasks-count-${task.id}" class="subtask-count"></span>
+                </div>
             </div>
             <div class="assignees-and-icon-prio-container">
                 <div id="assignees-container-${task.state}-of-task-card${i}" class="assignees-container">
@@ -91,7 +96,7 @@ function loadAssigneeList(id, selectedTask) {
     let assigneesList = document.getElementById(`task-assignedTo-list-${id}`);
     assigneesList.innerHTML = "";
     selectedTask.contacts.forEach(contact => {
-        assigneesList.innerHTML += `
+        assigneesList.innerHTML += /*html*/ `
     <div class="badge-and-name-assignees-container-task-overview">
         <span style="background: ${contact.badge_color}" class="contact-badge-task-overview">${contact.first_name.charAt(0)}${contact.last_name.charAt(0)}</span>
         <span>${contact.first_name} ${contact.last_name}</span>
@@ -266,7 +271,16 @@ function assigneeNoCheckedHTML(j, assignee) {
     `
 }
 
-function subtaskForTaskOverviewHTML(i, id, subtask) {
+function subtaskForTaskOverviewHTMLChecked(i, id, subtask) {
+    return /*html*/`
+    <div class="checkbox-and-subtaskTitle-container-task-overview">
+       <input onclick="updateTaskRelatedSubtask(${i}, ${id}, this)" type="checkbox" checked="true">
+       <span>${subtask.title}</span>
+    </div>
+      `
+}
+
+function subtaskForTaskOverviewHTMLNoChecked(i, id, subtask) {
     return /*html*/`
     <div class="checkbox-and-subtaskTitle-container-task-overview">
        <input onclick="updateTaskRelatedSubtask(${i}, ${id}, this)" type="checkbox">

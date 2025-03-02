@@ -15,7 +15,7 @@ h3 {
 .content-container-contacts {
     display: flex;
     justify-content: space-between;
-    flex: 1;
+    height: 80%;
 }
 
 .contact-list-container {
@@ -31,7 +31,6 @@ h3 {
     display: flex;
     flex-direction: column;
     gap: 16px;
-    height: 50%;
     overflow-y: scroll;
 }
 
@@ -427,6 +426,9 @@ input[type=number]::-webkit-inner-spin-button {
 .contacts-for-specific-letter-container {
     border-top: 1px solid #D1D1D1;
     padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
 .contact {

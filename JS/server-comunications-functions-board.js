@@ -134,6 +134,7 @@ async function updateCompletedStatusOfSubtask(id, selectedSubtask) {
         body: JSON.stringify(selectedSubtask)
     })
     let subtaskData = await response.json();
+    await loadTasks();
 }
 
 async function deleteTaskData(singleTaskUrl) {
