@@ -34,6 +34,7 @@
         flex-direction: column;
         min-width: auto;
         position: relative;
+        height: auto;
     }
 
     .add-contact-overlay-left-side {
