@@ -6,6 +6,7 @@ body {
     margin: 0 auto;
     font-family: "Inter", sans-serif;
     user-select: none;
+    max-width: 1440px;
 }
 
 p {
@@ -25,7 +26,6 @@ header {
     justify-content: space-between;
     padding: 24px;
     position: relative;
-    height: 20%;
 }
 
 aside {
@@ -46,7 +46,9 @@ input:focus {
 .header-and-content-container {
     display: flex;
     flex-direction: column;
+    height: 100vh;
     flex: 1;
+    justify-content: flex-start;
     overflow-y: scroll;
 }
 
@@ -62,9 +64,41 @@ input:focus {
 .content-container {
     flex-direction: column;
     display: flex;
-    height: 80%;
+    justify-content: space-between;
     padding: 16px 48px;
     background: #F6F7F8;
+    flex: 1;
+}
+
+@media (max-width: 1050px) {
+    .content-container {
+        padding: 16px 24px;
+        justify-content: center;
+    }
+
+    .summary-title-container h2 {
+        font-size: 47px;
+    }
+
+    .summary-title-container h3 {
+        font-size: 21px
+    }
+
+    .d-none-mobile {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .content-container {
+        padding: 16px
+    }
+}
+
+@media (max-width: 430px) {
+    .content-container {
+        padding: 16px 8px;
+    }
 }
 
 .d-none {

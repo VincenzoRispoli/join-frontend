@@ -1,0 +1,159 @@
+@media (max-width: 768px) {
+    .join-logo-registration {
+        width: 64px;
+    }
+}
+
+@media (max-width: 720px) {
+
+    .big-logo-animation-login {
+        width: 64px;
+    }
+
+    .form-content-login {
+        width: 90%;
+        height: auto;
+        max-width: auto;
+        min-width: auto;
+    }
+
+    .form-content-regist {
+        width: 90%;
+        height: auto;
+        max-width: auto;
+        min-width: auto;
+    }
+
+    .log-in-title h1 {
+        font-size: 47px;
+    }
+
+    .separator-bar {
+        width: 100px;
+    }
+
+    .arrow-blue-regist {
+        left: 24px;
+        width: 24px;
+        height: 24px;
+    }
+
+    .login-header-and-form-wrapper {
+        flex-direction: column-reverse;
+        justify-content: center;
+        height: 100%;
+    }
+
+    .form-btn-container {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+        gap: 21px;
+    }
+
+    .form {
+        gap: 32px;
+    }
+
+    .form-btn {
+        width: 180px;
+    }
+
+    .form-btn-guest-login {
+        width: 180px;
+    }
+
+    .login-page-header {
+        justify-content: center;
+    }
+
+    @keyframes bigLogoAnimation {
+        0% {
+            top: 30%;
+            left: 35%;
+            width: 200px;
+        }
+
+        25% {
+            top: 30%;
+            left: 35%;
+            width: 200px;
+        }
+
+        100% {
+            top: 16px;
+            left: 16px;
+        }
+    }
+
+    @keyframes backgroundOpacity {
+        0% {
+            background: #2A3647;
+        }
+
+        25% {
+            background: #2A3647;
+        }
+
+        50% {
+            background: #2A3647;
+        }
+
+        100% {
+            background: transparent;
+        }
+    }
+
+    .loading-curtain {
+        background: #2A3647;
+    }
+}
+
+@media (max-width: 520px) {
+
+    .form-content {
+        width: 100%;
+    }
+
+    .login-form-input {
+        width: 80%;
+    }
+
+    .sign-up-btn {
+        padding: 8px 16px;
+        font-size: 16px;
+    }
+
+    .log-in-title h1 {
+        font-size: 32px;
+    }
+
+    .separator-bar {
+        width: 50px;
+    }
+
+    .curtain-logo {
+        height: 150px;
+    }
+
+    @keyframes bigLogoAnimation {
+        0% {
+            top: 30%;
+            left: 28%;
+            width: 200px;
+            width: 180px;
+        }
+
+        25% {
+            top: 30%;
+            left: 28%;
+            width: 180px;
+        }
+
+        100% {
+            top: 16px;
+            left: 16px;
+        }
+    }
+}

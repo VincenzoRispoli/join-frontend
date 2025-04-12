@@ -15,7 +15,7 @@ h3 {
 .content-container-contacts {
     display: flex;
     justify-content: space-between;
-    height: 80%;
+    height: 100vh;
 }
 
 .contact-list-container {
@@ -25,6 +25,7 @@ h3 {
     display: flex;
     flex-direction: column;
     gap: 16px;
+    height: 80vh;
 }
 
 .contact-list {
@@ -32,6 +33,8 @@ h3 {
     flex-direction: column;
     gap: 16px;
     overflow-y: scroll;
+    flex: 1;
+    max-height: 70vh;
 }
 
 .contact-list::-webkit-scrollbar {
@@ -63,12 +66,12 @@ h3 {
 
 .contacts-header-and-details-container {
     width: 70%;
-    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     padding: 24px;
     gap: 32px;
+    flex: 1;
 }
 
 .contacts-header {
@@ -83,6 +86,13 @@ h3 {
     font-weight: 700;
     margin-block-start: 0;
     margin-block-end: 0
+}
+
+.separator-bar-better-with-a-team-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 30px;
 }
 
 .separator-bar {
@@ -113,10 +123,21 @@ h3 {
     width: 100%;
     display: flex;
     flex-direction: column;
+    overflow-y: scroll;
     gap: 64px;
     flex: 1;
     transition: all 0.125s cubic-bezier(.215, .61, .355, 1);
 }
+
+.contact-details::-webkit-scrollbar {
+    width: 8px;
+}
+
+.contact-details::-webkit-scrollbar-thumb {
+    background: #007CEE;
+    border-radius: 100px;
+}
+
 
 .btn-contacts-details-container {
     width: 150px;
@@ -226,6 +247,7 @@ h3 {
 .add-contact-overlay {
     height: 80%;
     width: 80%;
+    min-width: 1000px;
     background: #fff;
     border-radius: 30px;
     display: flex;
@@ -340,8 +362,8 @@ h3 {
 }
 
 .cross-icon {
-    height: 32px;
-    width: 32px;
+    height: 46px;
+    width: 46px;
     object-fit: contain;
     cursor: pointer;
     border-radius: 100%;

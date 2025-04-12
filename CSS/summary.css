@@ -1,8 +1,7 @@
 .summary-title-container {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    width: 625px;
+    gap: 32px;
 }
 
 .summary-title-container h2 {
@@ -63,7 +62,7 @@
     display: flex;
     justify-content: space-between;
     flex-direction: column;
-    gap: 16px
+    gap: 8px
 }
 
 .todo-and-done-block {
@@ -188,6 +187,7 @@
     box-shadow: 0px 0px 4px 0 #666;
     border-radius: 30px;
     padding: 25px;
+    min-width: 30%;
 }
 
 .square-button:hover {
@@ -205,12 +205,233 @@
 
 .greating-container {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     width: 50%;
 }
 
 .greating {
-    font-size: 47px;
+    font-size: 32px;
     font-weight: 500;
+}
+
+.blue-username {
+    color: #29ABE2;
+    font-size: 47px;
+    font-weight: 700;
+}
+
+@media (max-width: 1050px) {
+
+    .header-title {
+        margin-left: 0;
+    }
+
+    .summary-tasks-show {
+        width: 100%;
+    }
+
+    .greating-container {
+        display: none;
+    }
+
+    .done-container,
+    .todo-container {
+        gap: 16px;
+        padding: 19px 10px;
+    }
+
+    .urgent-and-date-block {
+        padding: 16px 24px;
+    }
+
+    .task-category {
+        font-size: 16px;
+        font-weight: 400;
+    }
+
+    .square-button {
+        min-width: 116px;
+    }
+
+    .content-container {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 16px 48px;
+        background: #F6F7F8;
+    }
+
+    .greating-mobile {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: #fff;
+        z-index: 9;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+}
+
+@media (max-width: 850px) {
+
+    .square-button {
+        padding: 16px;
+    }
+
+    .greating-container {
+        display: none;
+    }
+
+    .summary-title-container {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .summary-title-separator {
+        width: 59px;
+        height: 3px;
+    }
+
+    .greating {
+        font-size: 32px;
+        font-weight: 500;
+    }
+
+    .blue-username {
+        animation-name: opacityBlueUsername;
+        animation-duration: 1s;
+    }
+
+    @keyframes opacityBlueUsername {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+}
+
+@media (min-width: 768px) {
+    .logo-small-header {
+        display: none;
+    }
+}
+
+@media (max-width: 720px) {
+    .blue-username {
+        font-size: 47px;
+    }
+
+    .summary-tasks-show-and-greating-container {
+        justify-content: center;
+        width: 100%;
+    }
+
+    .header-title {
+        display: none;
+    }
+
+    .logo-small-header {
+        height: 54px;
+        object-fit: cover;
+    }
+
+    .navbar-logo-container {
+        display: none;
+    }
+
+    .navbar-link-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        width: 100%;
+        height: 100%;
+    }
+
+    .navbar-link {
+        padding: 0px;
+    }
+
+    .icon-and-text-link-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
+    .legal-policy-container {
+        display: none;
+    }
+}
+
+@media (max-width: 450px) {
+
+    .greating {
+        font-size: 16px;
+    }
+
+    .blue-username {
+        font-size: 21px;
+    }
+
+    .summary-tasks-show {
+        height: 50vh;
+        width: 100%;
+        margin-bottom: 100px;
+        overflow-y: scroll;
+        padding: 8px;
+    }
+
+    .summary-tasks-show::-webkit-scrollbar {
+        display: none;
+    }
+
+    .todo-and-done-block {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .urgent-and-date-block {
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .urgent-block-separator {
+        height: 2px;
+        width: 100px;
+    }
+
+    .inBoard-inProgress-and-AwaitFeedback-block {
+        flex-direction: column;
+    }
+
+    .done-container,
+    .todo-container {
+        width: 90%;
+    }
+
+    .urgent-container,
+    .date-container {
+        width: 100%;
+    }
+
+    .square-button {
+        width: 100%;
+    }
+
+    .navbar-link-container {
+        gap: 0px;
+    }
 }

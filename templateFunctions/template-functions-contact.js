@@ -1,3 +1,9 @@
+/**
+ * Generates HTML structure for displaying a contact list section, grouped by the specified letter.
+ * 
+ * @param {string} letter - The letter used to categorize the contact list (e.g., "A", "B", "C").
+ * @returns {string} The HTML string representing the contact list section for the given letter.
+ */
 function generateContactListHTML(letter) {
     return (
         /*html*/ `
@@ -10,6 +16,18 @@ function generateContactListHTML(letter) {
     )
 }
 
+/**
+ * Generates HTML structure for a single contact item.
+ * 
+ * @param {number} j - The index of the contact in the contact list.
+ * @param {Object} contact - The contact object containing contact details.
+ * @param {string} contact.first_name - The first name of the contact.
+ * @param {string} contact.last_name - The last name of the contact.
+ * @param {string} contact.email - The email address of the contact.
+ * @param {string} contact.badge_color - The color code for the contact badge.
+ * @param {string} contactInitials - The initials derived from the contact's first and last names.
+ * @returns {string} The HTML string representing the individual contact item.
+ */
 function generateContactHTML(j, contact, contactInitials) {
     return (/*html*/ `
         <div onclick="showContactInTheDetails(${j})" id="contact${j}" class="contact">
@@ -22,6 +40,14 @@ function generateContactHTML(j, contact, contactInitials) {
         `)
 }
 
+/**
+ * Generates the HTML structure to display the detailed contact information.
+ * 
+ * @param {number} contactId - The ID of the selected contact.
+ * @param {Object} selectedContact - The contact object containing full details of the selected contact.
+ * @param {string} initials - The initials derived from the contact's first and last names.
+ * @returns {string} The HTML string representing the contact details view.
+ */
 function showContactDetailsHTML(contactId, selectedContact, initials) {
     return (
         /*html*/ `
@@ -29,7 +55,7 @@ function showContactDetailsHTML(contactId, selectedContact, initials) {
                 <span class="contact-details-badge" style="background: ${selectedContact.badge_color}">${initials}</span>
                 <div class="name-and-buttons-contact-details-container">
                     <h2 id="contact-details-name" class="contact-details-name">${selectedContact.first_name} ${selectedContact.last_name}</h2>
-                    <div class="btn-contacts-details-container">
+                    <div id="btn-contacts-details-container" class="btn-contacts-details-container right-200">
                         <span onclick="showEditContactOverview(${contactId})" class="btn-contact-detail"><img src="./assets/img/pencil.png" alt=""> Edit</span>
                         <span onclick="deleteContact(${contactId})" class="btn-contact-detail"><img src="./assets/img/delete.png" alt="">Delete </span>
                     </div>
@@ -42,10 +68,17 @@ function showContactDetailsHTML(contactId, selectedContact, initials) {
             <h3>Phone</h3>
             <a class="phone-text" href="tel:+49${selectedContact.phone}">+49 ${selectedContact.phone}</a>
         </div>
+        <div onclick="showEditOrDeleteContactBtnMobile(event)" class="edit-contact-mobile-button"><img class="ellipse-icon" src="./assets/img/more_vert.png" alt=""></div>
         `
     )
 }
 
+/**
+ * Generates the HTML structure for editing a contact's details.
+ * 
+ * @param {number} contactId - The ID of the contact being edited.
+ * @returns {string} The HTML string representing the contact edit view.
+ */
 function editContactOverviewHTML(contactId) {
     return /*html*/ `
             <div id="edit-contact-overlay" class="add-contact-overlay" onclick="stopPropagation(event)">
@@ -61,7 +94,7 @@ function editContactOverviewHTML(contactId) {
                 <div class="add-contact-overlay-rigth-side">
                     <div class="right-side-content-container">
                         <span class="cross-icon-container">
-                            <img onclick="closeContactOverlay('opacity-edit-contact-overlay')" class="cross-icon" src="./assets/img/cross.png"
+                            <img onclick="closeContactOverlay('opacity-edit-contact-overlay')" id="cross-icon-edit-contact-overlay" class="cross-icon" src="./assets/img/cross.png"
                                 alt="">
                         </span>
                         <div class="badge-and-add-form-container">

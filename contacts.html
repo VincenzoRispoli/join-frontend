@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="./CSS/font-styles.css">
     <link rel="stylesheet" href="./CSS/templates.css">
     <link rel="stylesheet" href="./CSS/contact.css">
+    <link rel="stylesheet" href="./CSS/contacts-media-queries.css">
     <link rel="stylesheet" href="./CSS/style.css">
     <title>Contacts</title>
 </head>
@@ -18,30 +19,38 @@
             <header id="header" w3-include-html="./assets/templates/header.html"></header>
             <div id="content-container-contacts" class="content-container-contacts">
                 <!-- Edit Contact overlay -->
-                <div onclick="closeContactOverlay('opacity-edit-contact-overlay')" id="opacity-edit-contact-overlay" class="opacity-edit-contact-overlay d-none">
+                <div onclick="closeContactOverlay('opacity-edit-contact-overlay')" id="opacity-edit-contact-overlay"
+                    class="opacity-edit-contact-overlay d-none">
 
                 </div>
                 <!-- End Edit Contact overlay -->
-                <div class="contact-list-container">
-                    <span onclick="showContactOverlay('add-contact-overlay-container')" class="add-contact-btn">Add new contact
+                <div id="contact-list-container" class="contact-list-container">
+                    <span onclick="showContactOverlay('add-contact-overlay-container')" class="add-contact-btn">Add new
+                        contact
                         <img src="./assets/img/addnewperson-icon.png" alt="">
                     </span>
                     <div class="contact-list" id="contact-list">
 
                     </div>
                 </div>
-                <div class="contacts-header-and-details-container">
+                <div id="contacts-header-and-details-container"
+                    class="contacts-header-and-details-container d-none-mobile">
+                    <img onclick="backToContactsListMobile()" class="arrow-left-mobile"
+                        src="./assets/img/arrow-left-blue.png" alt="">
                     <div class="contacts-header">
                         <h1>Contact</h1>
-                        <span class="separator-bar"></span>
-                        <h2>Better with a Team</h2>
+                        <div class="separator-bar-better-with-a-team-container">
+                            <span class="separator-bar"></span>
+                            <h2>Better with a Team</h2>
+                        </div>
                     </div>
 
-                    <div id="contact-details-container" class="contact-details-container">
+                    <div onclick="closeEditOrDeleteContactBtnMobile()" id="contact-details-container" class="contact-details-container">
                         <div id="contact-details" class="contact-details hide-contact-details">
 
                         </div>
-                        <span id="created-or-deleted-contact-advice" class="created-contact-advice hide-contact-created-advice">
+                        <span id="created-or-deleted-contact-advice"
+                            class="created-contact-advice hide-contact-created-advice">
                             Contact successfully created
                         </span>
                     </div>
@@ -66,8 +75,8 @@
                 <div class="add-contact-overlay-rigth-side">
                     <div class="right-side-content-container">
                         <span class="cross-icon-container">
-                            <img onclick="closeContactOverlay('add-contact-overlay-container')" class="cross-icon" src="./assets/img/cross.png"
-                                alt="">
+                            <img onclick="closeContactOverlay('add-contact-overlay-container')" id="cross-icon-contact-overlay" class="cross-icon"
+                                src="./assets/img/cross.png" alt="">
                         </span>
                         <div class="badge-and-add-form-container">
                             <div class="badge-main-container">

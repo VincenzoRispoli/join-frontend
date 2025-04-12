@@ -8,21 +8,37 @@ let contactsUrl = 'http://127.0.0.1:8000/kanban/contacts/';
 let firstName;
 let lastName;
 
+/**
+ * Initializes the contact book by checking authentication status and loading the required data.
+ * @async
+ */
 async function initContacts() {
-    authenticated = JSON.parse(localStorage.getItem('authenticated'))
+    authenticated = JSON.parse(localStorage.getItem('authenticated'));
     if (authenticated) {
-        includeHTML();
-        loggedUser = JSON.parse(localStorage.getItem('currentUser'));
+        await includeHTML();
+        highlightNavLink();
+        loggedUser = await getLoggedUser();
+        await setInitialsCurrentUserInTheHeader(loggedUser);
         await loadContactBook();
     } else {
-        window.location.href = 'login.html'
+        window.location.href = 'login.html';
     }
 }
 
+/**
+ * Retrieves the logged-in user from local storage.
+ * @async
+ * @returns {Object} The logged-in user's data.
+ */
 async function getLoggedUser() {
-    loggedUser = JSON.parse(localStorage.getItem('currentUser'));
+    let user = JSON.parse(localStorage.getItem('currentUser'));
+    return user;
 }
 
+/**
+ * Loads the contact book and displays contacts sorted by their initials.
+ * @async
+ */
 async function loadContactBook() {
     await loadCurrentUser();
     await loadContacts();
@@ -33,6 +49,10 @@ async function loadContactBook() {
     contactBookLoops(contactList, matchingLetters);
 }
 
+/**
+ * Loads the current user's details and displays them.
+ * @async
+ */
 async function loadCurrentUser() {
     try {
         let loggedUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -42,6 +62,11 @@ async function loadCurrentUser() {
     }
 }
 
+/**
+ * Loops through the matching letters and generates contact lists based on initials.
+ * @param {HTMLElement} contactList - The DOM element to display the contacts.
+ * @param {Array<string>} matchingLetters - The list of letters to filter contacts by.
+ */
 function contactBookLoops(contactList, matchingLetters) {
     for (let i = 0; i < matchingLetters.length; i++) {
         let letter = matchingLetters[i];
@@ -49,7 +74,7 @@ function contactBookLoops(contactList, matchingLetters) {
         let letterContainer = document.getElementById(`contacts-for-specific-letter-container${letter}`);
         letterContainer.innerHTML = "";
         for (let j = 0; j < contacts.length; j++) {
-            let contact = contacts[j]
+            let contact = contacts[j];
             let contactInitials = contact.first_name.charAt(0) + contact.last_name.charAt(0);
             if (letterContainer.id.slice(-1) == contactInitials.charAt(0)) {
                 letterContainer.innerHTML += generateContactHTML(j, contact, contactInitials);
@@ -58,6 +83,10 @@ function contactBookLoops(contactList, matchingLetters) {
     }
 }
 
+/**
+ * Fetches all contacts from the server and updates the contact list.
+ * @async
+ */
 async function loadContacts() {
     let response = await fetch(contactsUrl, {
         method: 'GET',
@@ -66,40 +95,58 @@ async function loadContacts() {
             'Authorization': `${loggedUser.token}`
         }
     });
-    let fetchedContacts = await response.json()
+    let fetchedContacts = await response.json();
     contacts = fetchedContacts;
 }
 
+/**
+ * Capitalizes the initials of a contact's full name.
+ * @param {string} contactName - The full name of the contact.
+ * @returns {string} The initials of the contact.
+ */
 function capitalizeContact(contactName) {
     let parts = contactName.split(" ");
-    let initials = parts.map(part => part.charAt(0).toUpperCase()).join("")
-    return initials
+    let initials = parts.map(part => part.charAt(0).toUpperCase()).join("");
+    return initials;
 }
 
+/**
+ * Displays the details of a contact.
+ * @param {number} contactId - The ID of the contact to display.
+ */
 function showContactInTheDetails(contactId) {
     let contactDetailsContainer = document.getElementById('contact-details');
     let selectedContact = contacts[contactId];
-    let initials = selectedContact.first_name.charAt(0) + selectedContact.last_name.charAt(0)
+    let initials = selectedContact.first_name.charAt(0) + selectedContact.last_name.charAt(0);
     contactDetailsContainer.innerHTML = showContactDetailsHTML(contactId, selectedContact, initials);
-    contactDetailsContainer.classList.remove('hide-contact-details')
+    contactDetailsContainer.classList.remove('hide-contact-details');
     for (let i = 0; i < contacts.length; i++) {
         document.getElementById(`contact${i}`).classList.remove('contact-on-focus');
         if (i == contactId) {
             document.getElementById(`contact${i}`).classList.add('contact-on-focus');
         }
     }
+    if (windowWidth <= 1050) {
+        document.getElementById('contact-list-container').classList.add('d-none-mobile');
+        document.getElementById('contacts-header-and-details-container').classList.remove('d-none-mobile');
+    }
 }
 
+/**
+ * Creates a new contact based on form inputs and posts it to the server.
+ * @async
+ * @param {Event} event - The event triggered by the form submission.
+ */
 async function createContact(event) {
-    let loggedUser = JSON.parse(localStorage.getItem('currentUser'))
+    let loggedUser = JSON.parse(localStorage.getItem('currentUser'));
     event.preventDefault();
     let name = document.getElementById('input-name');
     let email = document.getElementById('input-email');
     let phone = document.getElementById('input-phone');
     let randomColor = Math.floor(Math.random() * (badgeColors.length - 1));
     let badgeColor = badgeColors[randomColor];
-    splitName(name.value)
-    let newContact = new Contact(loggedUser.user_id, firstName, lastName, email.value, phone.value, badgeColor)
+    splitName(name.value);
+    let newContact = new Contact(loggedUser.user_id, firstName, lastName, email.value, phone.value, badgeColor);
     try {
         await postNewContact(newContact, loggedUser, name, email, phone);
     } catch (e) {
@@ -107,6 +154,15 @@ async function createContact(event) {
     }
 }
 
+/**
+ * Posts a new contact to the server.
+ * @async
+ * @param {Object} newContact - The contact data to be posted.
+ * @param {Object} loggedUser - The logged-in user's data.
+ * @param {HTMLElement} name - The name input field.
+ * @param {HTMLElement} email - The email input field.
+ * @param {HTMLElement} phone - The phone input field.
+ */
 async function postNewContact(newContact, loggedUser, name, email, phone) {
     let response = await fetch(contactsUrl, {
         method: 'POST',
@@ -115,51 +171,85 @@ async function postNewContact(newContact, loggedUser, name, email, phone) {
             'Authorization': `Token ${loggedUser.token}`
         },
         body: JSON.stringify(newContact)
-    })
+    });
     let createdContactData = await response.json();
     await loadContactBook();
     await clearFormContactValueAndLoadContacts(name, email, phone);
-    findeIndexOfCreatedContact(createdContactData)
+    findIndexOfCreatedContact(createdContactData);
 }
 
-function findeIndexOfCreatedContact(createdContactData) {
+/**
+ * Finds the index of the newly created contact and displays its details.
+ * @param {Object} createdContactData - The data of the created contact.
+ */
+function findIndexOfCreatedContact(createdContactData) {
     let index = contacts.findIndex(c => c.id == createdContactData.id);
     showContactInTheDetails(index);
     setTimeout(() => {
-        document.getElementById('created-or-deleted-contact-advice').classList.remove('hide-contact-created-advice')
-    }, 500)
+        document.getElementById('created-or-deleted-contact-advice').classList.remove('hide-contact-created-advice');
+    }, 500);
 
     setTimeout(() => {
-        document.getElementById('created-or-deleted-contact-advice').classList.add('hide-contact-created-advice')
-    }, 3000)
+        document.getElementById('created-or-deleted-contact-advice').classList.add('hide-contact-created-advice');
+    }, 3000);
 }
 
+/**
+ * Clears the contact form and reloads the contact list.
+ * @async
+ * @param {HTMLElement} name - The name input field.
+ * @param {HTMLElement} email - The email input field.
+ * @param {HTMLElement} phone - The phone input field.
+ */
 async function clearFormContactValueAndLoadContacts(name, email, phone) {
     name.value = "";
     email.value = "";
     phone.value = "";
     await loadContactBook();
-    document.getElementById('add-contact-overlay-container').classList.add('d-none')
+    document.getElementById('add-contact-overlay-container').classList.add('d-none');
 }
 
+/**
+ * Splits a contact's full name into first and last names.
+ * @param {string} name - The full name of the contact.
+ */
 function splitName(name) {
     let splittedName = name.split(" ");
     firstName = splittedName[0];
     lastName = splittedName[1];
 }
 
+/**
+ * Displays the contact overlay modal for adding or editing contacts.
+ * @param {string} containerId - The ID of the container element for the overlay.
+ */
 function showContactOverlay(containerId) {
-    document.getElementById(`${containerId}`).classList.remove('d-none')
+    document.getElementById(`${containerId}`).classList.remove('d-none');
+    if (windowWidth <= 1050) {
+        document.getElementById('cross-icon-contact-overlay').src = './assets/img/cross-icon-white.png';
+    }
 }
 
+/**
+ * Closes the contact overlay modal.
+ * @param {string} containerId - The ID of the container element for the overlay.
+ */
 function closeContactOverlay(containerId) {
-    document.getElementById(`${containerId}`).classList.add('d-none')
+    document.getElementById(`${containerId}`).classList.add('d-none');
 }
 
+/**
+ * Stops the event propagation.
+ * @param {Event} event - The event to stop propagation for.
+ */
 function stopPropagation(event) {
     event.stopPropagation();
 }
 
+/**
+ * Displays the edit contact overlay modal.
+ * @param {number} contactId - The ID of the contact to edit.
+ */
 function showEditContactOverview(contactId) {
     let contact = contacts[contactId];
     let opacityContainer = document.getElementById('opacity-edit-contact-overlay');
@@ -168,8 +258,56 @@ function showEditContactOverview(contactId) {
     document.getElementById(`input-name-${contactId}`).value = `${contact.first_name} ${contact.last_name}`;
     document.getElementById(`input-email-${contactId}`).value = contact.email;
     document.getElementById(`input-phone-${contactId}`).value = contact.phone;
+    if (windowWidth <= 1050) {
+        document.getElementById('cross-icon-edit-contact-overlay').src = './assets/img/cross-icon-white.png';
+    }
 }
 
+/**
+ * Event listener for window resize to change the cross icon color for the edit contact overlay on mobile.
+ */
+window.addEventListener('resize', changeColorOnCrossIconEditMobile);
+/**
+ * Event listener for window resize to change the cross icon color for the add contact overlay on mobile.
+ */
+window.addEventListener('resize', changeColorOnCrossIconAddContactMobile);
+
+/**
+ * Changes the color of the cross icon in the edit contact overlay based on window width.
+ * If the width is less than or equal to 1050px, it changes to a white cross icon.
+ */
+function changeColorOnCrossIconEditMobile() {
+    let crossIconEdit = document.getElementById('cross-icon-edit-contact-overlay');
+    if (crossIconEdit) {
+        if (windowWidth <= 1050) {
+            crossIconEdit.src = './assets/img/cross-icon-white.png';
+        } else {
+            crossIconEdit.src = './assets/img/cross.png'
+        }
+    }
+}
+
+/**
+ * Changes the color of the cross icon in the add contact overlay based on window width.
+ * If the width is less than or equal to 1050px, it changes to a white cross icon.
+ */
+function changeColorOnCrossIconAddContactMobile() {
+    let crossIconAddContact = document.getElementById('cross-icon-contact-overlay');
+    if (crossIconAddContact) {
+        if (windowWidth <= 1050) {
+            crossIconAddContact.src = './assets/img/cross-icon-white.png';
+        } else {
+            crossIconAddContact.src = './assets/img/cross.png'
+        }
+    }
+}
+
+/**
+ * Edits a contact based on the provided contactId.
+ * It updates the contact's information and sends the changes to the server.
+ * 
+ * @param {number} contactId - The unique identifier of the contact to be edited.
+ */
 async function editContact(contactId) {
     let selectedContact = contacts[contactId];
     let id = selectedContact.id
@@ -187,6 +325,12 @@ async function editContact(contactId) {
     }
 }
 
+/**
+ * Updates the contact information on the server using a PUT request.
+ * 
+ * @param {number} id - The unique identifier of the contact to be updated.
+ * @param {Contact} editedContact - The new contact data to be saved.
+ */
 async function updateContact(id, editedContact) {
     let loggedUser = JSON.parse(localStorage.getItem('currentUser'))
     try {
@@ -198,6 +342,13 @@ async function updateContact(id, editedContact) {
     }
 }
 
+/**
+ * Sends the updated contact data to the server and handles success/error messages.
+ * 
+ * @param {Object} loggedUser - The current logged-in user.
+ * @param {number} id - The unique identifier of the contact to be updated.
+ * @param {Contact} editedContact - The new contact data to be saved.
+ */
 async function updateContactAndShowAdvices(loggedUser, id, editedContact) {
     let response = await fetch(contactsUrl + `${id}/`, {
         method: 'PUT',
@@ -216,6 +367,12 @@ async function updateContactAndShowAdvices(loggedUser, id, editedContact) {
     }
 }
 
+/**
+ * Checks if the response of the update request is successful and displays an appropriate message.
+ * 
+ * @param {Response} response - The response object from the server.
+ * @param {Object} responseData - The data returned from the server in response to the update request.
+ */
 function checkIfResponseOfUpdateContactIsOk(response, responseData) {
     if (!response.ok) {
         getDataAndShowAdvice(responseData.detail) // error message
@@ -224,11 +381,21 @@ function checkIfResponseOfUpdateContactIsOk(response, responseData) {
     }
 }
 
+/**
+ * Closes the edit contact overlay and shows the updated contact details.
+ * 
+ * @param {number} id - The unique identifier of the contact to be shown.
+ */
 function closeEditContactOverview(id) {
     document.getElementById('opacity-edit-contact-overlay').classList.add('d-none')
     showContactInTheDetails(id);
 }
 
+/**
+ * Deletes the contact based on the provided contactId and sends the deletion request to the server.
+ * 
+ * @param {number} contactId - The unique identifier of the contact to be deleted.
+ */
 async function deleteContact(contactId) {
     let loggedUser = JSON.parse(localStorage.getItem('currentUser'))
     let selectedContact = contacts[contactId];
@@ -240,6 +407,12 @@ async function deleteContact(contactId) {
     }
 }
 
+/**
+ * Sends a DELETE request to the server to delete the specified contact.
+ * 
+ * @param {number} id - The unique identifier of the contact to be deleted.
+ * @param {Object} loggedUser - The current logged-in user.
+ */
 async function deleteContactAndShowAdvices(id, loggedUser) {
     let response = await fetch(contactsUrl + `${id}/`, {
         method: 'DELETE',
@@ -258,6 +431,12 @@ async function deleteContactAndShowAdvices(id, loggedUser) {
     }
 }
 
+/**
+ * Displays an advisory message after creating or deleting a contact.
+ * The message is shown temporarily before disappearing.
+ * 
+ * @param {string} data - The message to be shown (either success or error message).
+ */
 async function getDataAndShowAdvice(data) {
     let createdOrDeletedContactAdvice = document.getElementById('created-or-deleted-contact-advice');
     createdOrDeletedContactAdvice.innerHTML = data
@@ -270,6 +449,9 @@ async function getDataAndShowAdvice(data) {
     }, 3000)
 }
 
+/**
+ * Displays a random contact's details after a contact has been deleted.
+ */
 function showRamdomContactAfterDelete() {
     if (contacts.length > 0) {
         let randomContactToDisplay = Math.floor(Math.random() * contacts.length);
@@ -277,4 +459,43 @@ function showRamdomContactAfterDelete() {
         showContactInTheDetails(randomContactToDisplay)
     }
     document.getElementById('opacity-edit-contact-overlay').classList.add('d-none')
+}
+
+/**
+ * Highlights the navigation link based on the current URL.
+ */
+function highlightNavLink() {
+    let navLinks = document.getElementsByClassName('navbar-link');
+    let navLinksToArray = [...navLinks];
+    navLinksToArray.forEach((link) => {
+        link.style.backgroundColor = 'none'
+    })
+    if (window.location.href == 'http://127.0.0.1:5500/contacts.html') {
+        document.getElementById('contacts-link').style.backgroundColor = '#091931'
+    }
+}
+
+/**
+ * Switches the display between the contact details and contact list on mobile.
+ */
+function backToContactsListMobile() {
+    document.getElementById('contacts-header-and-details-container').classList.add('d-none-mobile');
+    document.getElementById('contact-list-container').classList.remove('d-none-mobile');
+}
+
+/**
+ * Shows the edit or delete contact button container on mobile devices.
+ * 
+ * @param {Event} event - The event object.
+ */
+function showEditOrDeleteContactBtnMobile(event) {
+    event.stopPropagation();
+    document.getElementById('btn-contacts-details-container').classList.remove('right-200');
+}
+
+/**
+ * Hides the edit or delete contact button container on mobile devices.
+ */
+function closeEditOrDeleteContactBtnMobile() {
+    document.getElementById('btn-contacts-details-container').classList.add('right-200');
 }

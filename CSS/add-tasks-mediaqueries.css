@@ -1,0 +1,78 @@
+@media (max-width: 1050px) {
+    .form-container {
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+    }
+
+    .left-block,
+    .rigth-block {
+        width: 100%;
+        height: auto;
+    }
+
+    form {
+        width: 100%;
+        gap: 32px;
+        overflow-y: scroll;
+        height: 80vh;
+    }
+
+    form::-webkit-scrollbar {
+        display: none;
+    }
+
+    .form-btn {
+        padding: 7px 16px;
+        font-size: 18px;
+    }
+
+    .form-btn-guest-login {
+        padding: 7px 16px;
+        font-size: 18px;
+    }
+
+    .buttons-and-required-fields-advice-container {
+        margin-bottom: 32px;
+    }
+}
+
+@media (max-width: 768px) {
+    .content-container {
+        padding: 10px;
+    }
+
+    .add-tasks-title {
+        font-size: 47px;
+    }
+
+    .buttons-and-required-fields-advice-container {
+        flex-direction: column-reverse;
+        gap: 16px;
+        margin-bottom: 110px;
+        width: 100%;
+    }
+
+    .buttons-and-required-fields-advice-container span {
+        width: 100%;
+        text-align: center;
+    }
+
+    .buttons-container {
+        width: 100%;
+        justify-content: center;
+        gap: 8px;
+    }
+}
+
+@media (max-width: 420px) {
+    .prio-buttons-container {
+        gap: 0;
+    }
+
+    .prio-btn {
+        font-size: 13px;
+        padding: 8px 16px;
+    }
+}

@@ -7,7 +7,7 @@ form {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    gap: 120px;
+    gap: 96px;
 }
 
 .form-container {
@@ -19,7 +19,6 @@ form {
 .label-and-writeField-container {
     display: flex;
     flex-direction: column;
-    height: 120px;
     gap: 8px;
 }
 
@@ -77,7 +76,6 @@ form {
     border: 1px solid #D1D1D1;
     padding: 12px 21px;
     outline: none;
-    width: 90%;
     border-radius: 10px;
 }
 
@@ -169,6 +167,11 @@ form {
     cursor: pointer;
 }
 
+.assignee-name {
+    text-align: center;
+    overflow-x: hidden;
+}
+
 .input-search-assignee-container {
     display: flex;
     justify-content: space-between;
@@ -188,7 +191,7 @@ form {
 }
 
 .drop-down-menu-assignees-container {
-    height: 150px;
+    min-height: 120px;
     position: relative;
     overflow: hidden;
 }
@@ -202,7 +205,7 @@ form {
     border-radius: 10px;
     overflow: auto;
     transition: all 0.3s cubic-bezier(.215, .61, .355, 1);
-    max-height: 150px;
+    max-height: 120px;
     z-index: 1;
 }
 
@@ -287,9 +290,25 @@ option {
     align-items: center;
 }
 
+.buttons-and-required-fields-advice-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
 .buttons-container {
     display: flex;
     justify-content: flex-end;
     align-items: center;
     gap: 16px;
+}
+
+.cross-icon-clear-task {
+    height: 24px;
+    object-fit: cover;
+}
+
+.check-icon-clear-task {
+    height: 16px;
+    object-fit: cover;
 }

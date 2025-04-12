@@ -52,7 +52,6 @@ body {
 
     50% {
         transform: rotate(0deg);
-        /* transform: rotateX(360deg); */
     }
 
     75% {
@@ -81,7 +80,7 @@ body {
     background: #fff;
     z-index: 5;
     animation-name: backgroundOpacity;
-    animation-duration: 3s;
+    animation-duration: 1s;
 }
 
 @keyframes backgroundOpacity {
@@ -100,7 +99,7 @@ body {
     left: 16px;
     width: 100px;
     animation-name: bigLogoAnimation;
-    animation-duration: 2s;
+    animation-duration: 1s;
     z-index: 10;
 }
 
@@ -177,11 +176,28 @@ button {
     position: relative;
 }
 
-.form-content {
+.form-content-login {
     background: #fff;
     border-radius: 30px;
     width: 50%;
     height: 50%;
+    min-width: 650px;
+    max-width: 850px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 32px;
+    padding: 8px 16px;
+    position: relative;
+}
+
+.form-content-regist {
+    background: #fff;
+    border-radius: 30px;
+    width: 50%;
+    height: 50%;
+    min-width: 650px;
+    max-width: 850px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -247,10 +263,6 @@ button {
     gap: 16px;
 }
 
-.input-name {
-    width: 50%;
-}
-
 .login-input-cont {
     display: flex;
     justify-content: space-between;
@@ -306,6 +318,20 @@ button {
     background: #29ABE2;
 }
 
+.sign-up-btn {
+    padding: 15px 24px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    border: 1px solid #2A3647;
+    font-size: 21px;
+    font-weight: 700;
+    background: #2A3647;
+    color: #fff;
+    transition: all 0.125s cubic-bezier(.215, .61, .355, 1);
+    text-decoration: none;
+}
+
 .form-btn-guest-login {
     color: #2A3647;
     background: #fff;
@@ -317,10 +343,15 @@ button {
     font-size: 21px;
     font-weight: 700;
     transition: all 0.125s cubic-bezier(.215, .61, .355, 1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
 }
 
 .form-btn-guest-login:hover {
     border: 1px solid #29ABE2;
+    padding: 15px 24px;
     color: #29ABE2;
 }
 

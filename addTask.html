@@ -5,10 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./CSS/font-styles.css">
-    <link rel="stylesheet" href="./CSS/templates.css">
     <link rel="stylesheet" href="./CSS/login.css">
     <link rel="stylesheet" href="./CSS/board.css">
+    <link rel="stylesheet" href="./CSS/summary.css">
     <link rel="stylesheet" href="./CSS/add-task.css">
+    <link rel="stylesheet" href="./CSS/templates.css">
+    <link rel="stylesheet" href="./CSS/add-tasks-mediaqueries.css">
     <link rel="stylesheet" href="./CSS/style.css">
     <title>Add Tasks</title>
 </head>
@@ -24,7 +26,7 @@
                     <div class="form-container">
                         <div class="left-block">
                             <div class="label-and-writeField-container">
-                                <label for="title">Title</label>
+                                <label for="title">Title<b style="color:red">*</b></label>
                                 <input oninput="checkValidityOfFormInputs()" required id="title" minlength="3"
                                     class="input-title validation-element" type="text" placeholder="Enter a title..."
                                     name="title">
@@ -52,7 +54,7 @@
                         <span class="form-separator"></span>
                         <div class="rigth-block">
                             <div class="due-date-container">
-                                <label for="due-date">Date</label>
+                                <label for="due-date">Date<b style="color:red">*</b></label>
                                 <input oninput="checkValidityOfFormInputs()" required id="date"
                                     class="input-date validation-element" type="date" name="due-date">
                             </div>
@@ -73,7 +75,7 @@
                                 </div>
                             </div>
                             <div class="category-container">
-                                <label for="categories">Category</label>
+                                <label for="categories">Category<b style="color:red">*</b></label>
                                 <select onclick="selectCategory()" name="categories" id="categories" class="categories">
                                     <option id="technical-task" value="technical-task">Technical Task</option>
                                     <option id="user-story" value="user-story">User Story</option>
@@ -101,9 +103,22 @@
                             </div>
                         </div>
                     </div>
-                    <div class="buttons-container">
-                        <button onclick="clearAddTaskForm()" class="form-btn-guest-login">Clear</button>
-                        <button id="submit-btn" type="submit" disabled="true" class="form-btn">Create Task</button>
+                    <div class="buttons-and-required-fields-advice-container">
+                        <span><b style="color:red">*</b>This field is required</span>
+                        <div class="buttons-container">
+                            <button onclick="clearAddTaskForm()" onmouseover="highlightClearButton()"
+                                onmouseleave="turnClearBtnOff()" class="form-btn-guest-login">
+                                Clear
+                                <img id="cross-icon-black" src="./assets/img/cross.png" class="cross-icon-clear-task"
+                                    alt="">
+                                <img id="cross-icon-light-blue" class="cross-icon-clear-task d-none"
+                                    src="./assets/img/cross-light-blue.png" alt="">
+                            </button>
+                            <button id="submit-btn" type="submit" disabled="true" class="form-btn">
+                                Create Task
+                                <img src="./assets/img/check-white.png" class="check-icon-clear-task" alt="">
+                            </button>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -111,9 +126,9 @@
 
     </main>
 </body>
+<script src="./templateFunctions/template-functions-addTask.js"></script>
 <script src="./models/subtask-class.js"></script>
 <script src="./models/task-class.js"></script>
-<script src="./templateFunctions/template-functions-addTask.js"></script>
 <script src="./JS/login.js"></script>
 <script src="./JS/w3include.js"></script>
 <script src="./JS/header.js"></script>

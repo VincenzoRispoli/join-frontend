@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: template-functions-board.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: template-functions-board.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>
+/**
+ * Generates the HTML structure for a task card.
+ * 
+ * @param {Object} task - The task object containing details to display.
+ * @param {number} i - The index of the task in the list.
+ * @returns {string} - The HTML structure for the task card.
+ */
+function taskCardHTML(task, i) {
+    return (/*html*/`
+    &lt;div onclick="showTask(${task.id}, ${i})" id="${task.state}-card${i}" class="task-card" draggable="True" ondragstart="rotateCard(${i}, ${task.id})">
+        &lt;img onclick="showPopUpDragTaskMobile(${task.id},event)" class="drag-icon" src="./assets/img/drag-icon.png" alt="">
+        &lt;span id="task-category-${task.state}${i}" class="task-category">${task.category}&lt;/span>
+            &lt;h3 id="task-title">${task.title}&lt;/h3>
+            &lt;div id="task-description">${task.description}&lt;/div>
+            &lt;div class="progress-bar-and-subtask-count-container">
+                &lt;div class="progress-bar-container">
+                    &lt;span id="progress-bar-${task.id}" class="progress-bar">&lt;/span>
+                &lt;/div>
+                &lt;div class="subtasks-count-info-container">
+                    &lt;span id="completed-subtasks-${task.id}">&lt;/span>
+                    &lt;span id="subtasks-count-${task.id}" class="subtask-count">&lt;/span>
+                &lt;/div>
+            &lt;/div>
+            &lt;div class="assignees-and-icon-prio-container">
+                &lt;div id="assignees-container-${task.state}-of-task-card${i}" class="assignees-container">
+                   &lt;!-- Assignees will be loaded here -->
+                &lt;/div>
+                &lt;img src="./assets/img/${task.priority}.png" alt="">
+            &lt;/div>
+        &lt;/div>
+    `)
+}
+
+/**
+ * Generates the HTML structure for the task overview.
+ * 
+ * @param {number} id - The unique ID of the task.
+ * @param {Object} selectedTask - The selected task object.
+ * @param {string} categoryTitleColor - The background color for the category title.
+ * @param {string} priorityIcon - The icon representing the priority level.
+ * @returns {string} - The HTML structure for the task overview.
+ */
+function taskCardOverviewHTML(id, selectedTask, categoryTitleColor, priorityIcon) {
+    return (/*html*/`
+        &lt;div onclick="dontClose(event)" id="single-task-overview-${id}" class="single-task-overview">
+        &lt;div class="single-task-overview-wrapper">
+                &lt;div class="category-title-and-cross-container">
+                    &lt;span class="category-title" style="background-color: ${categoryTitleColor}">${selectedTask.category}&lt;/span>
+                    &lt;img onclick="closeTaskOverview(event)" class="cross-icon" src="./assets/img/cross.png" alt="">
+                &lt;/div>
+                &lt;h2 id="task-title" class="task-tile">${selectedTask.title}&lt;/h2>
+                &lt;p class="task-decription">${selectedTask.description}&lt;/p>
+                &lt;span class="task-due-date"> Due Date: ${selectedTask.due_date}&lt;/span>
+                &lt;div class="priority-container-task-overview">
+                    Priority:
+                    &lt;div class="priority-title-and-icon-container">
+                        &lt;span class="task-priority">${selectedTask.priority}&lt;/span>
+                        &lt;img src="./assets/img/${priorityIcon}" alt="">
+                    &lt;/div>
+                &lt;/div>
+                &lt;div class="assigned-to-container-task-overview"> 
+                &lt;span>Assigned To:&lt;/span>
+                &lt;div id="task-assignedTo-list-${id}" class="task-assigned-to-list">
+                    &lt;!-- Assigned contacts will be loaded here -->
+                &lt;/div>
+                &lt;/div>
+                &lt;div class="subtask-container-task-overview">
+                &lt;span>Subtasks&lt;/span>
+                &lt;div id="subtask-list-${id}" class="subtasks-list-task-overview">
+                    &lt;!-- Subtasks will be loaded here -->
+                &lt;/div>
+                &lt;/div>
+                &lt;div class="edit-or-delete-buttons-container">
+                    &lt;button onclick="deleteTask(${id}); return false" class="task-overview-btn">
+                        Delete
+                    &lt;/button>
+                    &lt;button onclick="editTask(${id}, '${priorityIcon}')"; class="task-overview-btn">
+                        Edit
+                    &lt;/button>
+                &lt;/div>
+        &lt;/div>
+        &lt;/div>
+        &lt;span id="delete-task-advice" class="advice-container">&lt;/span>
+    `)
+}
+
+/**
+ * Loads and displays the list of assignees for a task.
+ * 
+ * @param {number} id - The unique ID of the task.
+ * @param {Object} selectedTask - The selected task object containing assignees information.
+ */
+function loadAssigneeList(id, selectedTask) {
+    let assigneesList = document.getElementById(`task-assignedTo-list-${id}`);
+    assigneesList.innerHTML = "";
+    selectedTask.contacts.forEach(contact => {
+        assigneesList.innerHTML += /*html*/ `
+        &lt;div class="badge-and-name-assignees-container-task-overview">
+            &lt;span style="background: ${contact.badge_color}" class="contact-badge-task-overview">${contact.first_name.charAt(0)}${contact.last_name.charAt(0)}&lt;/span>
+            &lt;span>${contact.first_name} ${contact.last_name}&lt;/span>
+        &lt;/div>
+        `;
+    })
+}
+
+/**
+ * Generates the HTML structure for editing a task.
+ * 
+ * @param {number} id - The unique ID of the task.
+ * @param {Object} selectedTask - The selected task object containing details to edit.
+ * @returns {string} - The HTML structure for the task edit form.
+ */
+function editTaskHTML(id, selectedTask) {
+    return ( /*html*/`
+    &lt;div onclick="dontClose(event)" id="single-task-overview-${id}" class="single-task-overview">
+    &lt;div class="single-task-overview-wrapper">
+       &lt;div style="justify-content: flex-end" class="category-title-and-cross-container">
+         &lt;img onclick="closeTaskOverview(event)" class="cross-icon" src="./assets/img/cross.png" alt="">
+       &lt;/div>
+       &lt;h2 contenteditable="true" id="task-title-edit${id}" class="task-title">${selectedTask.title}&lt;/h2>
+        &lt;p contenteditable="true" id="task-description-edit${id}" class="task-decription-edit">${selectedTask.description}&lt;/p>
+        &lt;input id="date${id}" class="input-date-edit-task" type="date">
+        &lt;div class="priority-container-edit-task-overview">
+          Priority:
+           &lt;div class="priority-buttons-and-icon-container-edit-task">
+            &lt;button onfocus="editPriority('Urgent', event)" id="edit-task-urgent-btn" class="prio-btn-edit-task">Urgent&lt;/button>
+            &lt;button onfocus="editPriority('Medium', event)" id="edit-task-medium-btn" class="prio-btn-edit-task">Medium&lt;/button>
+            &lt;button onfocus="editPriority('Low', event)" id="edit-task-low-btn" class="prio-btn-edit-task">Low&lt;/button>
+            &lt;/div>
+        &lt;/div>
+        &lt;div class="assigned-to-container-task-overview">
+           &lt;span>Assigned To:&lt;/span>
+           &lt;div class="input-search-assignee-container" onclick="showDropDownAssigneesEditTask(${id})">
+                &lt;span class="input-search-assignee">Select contact to assign&lt;/span>
+                &lt;img id="arrow-drop-down" class="arrow-drop-down" src="./assets/img/arrow_drop_down.png" alt="">
+            &lt;/div>
+            &lt;div id="all-assignee-task-edit-container-${id}" class="all-assignee-task-edit-container">
+                &lt;!-- Assignees will be shown here -->
+            &lt;/div>
+        &lt;div id="task-assignedTo-list-edit-task-${id}" class="task-assigned-to-list-edit-task">
+            &lt;!-- Assigned contacts for edit will be displayed here -->
+        &lt;/div>
+        &lt;/div>
+        &lt;div class="subtask-container-edit-task-overview">
+            &lt;span>Subtasks&lt;/span>
+            &lt;div onclick="writeSubtaskEditTask(${id})" class="subtask-input-container">
+                &lt;input id="input-subtask-edit-task${id}" class="input-subtask" placeholder="Add new subtask" type="text">
+                &lt;div class="icons-subtask-container">
+                    &lt;img onclick="writeSubtaskEditTask(${id})" id="add-icon" class="subtask-icon" src="./assets/img/add-blue.png" alt="">
+                    &lt;div id="cross-and-check-icons-container" class="cross-and-check-icons-container d-none">
+                        &lt;img onclick="clearAddSubtaskInputEdit(${id}, event)" class="subtask-icon" src="./assets/img/cross.png" alt="">
+                        &lt;img onclick="addSubtaskEditTask(${id}, event)" class="subtask-icon" src="./assets/img/check-small.png" alt="">
+                    &lt;/div>
+                &lt;/div>
+            &lt;/div>
+            &lt;ul id="subtask-list-edit-task-${id}" class="subtasks-list-overview">
+                &lt;!-- Subtasks for edit will be listed here -->
+            &lt;/ul>
+        &lt;/div>
+        &lt;div class="confirm-edit-task-btn-container">
+           &lt;button onclick="sendEditedTask(${id}, '${selectedTask.state}', '${selectedTask.category}')" class="confirm-edit-task-btn">Ok&lt;/button>
+        &lt;/div>
+    &lt;/div>
+    &lt;/div>
+    &lt;span id="advice-container" class="advice-container">&lt;/span>
+  `)
+}
+
+/**
+ * Generates HTML markup for adding a task overview.
+ * @returns {string} The HTML markup for the task overview form.
+ */
+function addTaskOverviewHTML() {
+    return /*html*/ `
+    &lt;div onclick="dontClose(event)" class="add-task-overview-wrapper">
+      &lt;div id="add-task-overview" class="add-task-overview">
+        &lt;div class="title-and-cross-icon-container">
+            &lt;h2 class="add-tasks-title">Add Tasks&lt;/h2>
+            &lt;img onclick="closeAddTaskOverview(event)" class="cross-icon" src="./assets/img/cross.png" alt="">
+        &lt;/div>
+        &lt;form id="add-task-form" onsubmit="createTasks(event); return false">
+                    &lt;div class="form-container">
+                        &lt;div class="left-block">
+                            &lt;div class="label-and-writeField-container">
+                                &lt;label for="title">Title&lt;/label>
+                                &lt;input oninput="checkValidityOfFormInputs()" required id="title" minlength="3"
+                                    class="input-title validation-element" type="text" placeholder="Enter a title..."
+                                    name="title">
+                            &lt;/div>
+                            &lt;div class="label-and-writeField-container">
+                                &lt;label for="description">Description&lt;/label>
+                                &lt;textarea oninput="checkValidityOfFormInputs()" required minlength="3" id="description"
+                                    class="textarea validation-element" name="description"
+                                    placeholder="Enter a description..." id="">&lt;/textarea>
+                            &lt;/div>
+                            &lt;div class="assigned-to-container">
+                                &lt;label class="label-for-assigned-to" for="">Assigned To&lt;/label>
+                                &lt;div onclick="showAssigneesInTheDropDownMenu()" class="input-search-assignee-container">
+                                    &lt;span class="input-search-assignee">Select contact to assign&lt;/span>
+                                    &lt;img id="arrow-drop-down" class="arrow-drop-down"
+                                        src="./assets/img/arrow_drop_down.png" alt="">
+                                &lt;/div>
+                                &lt;div class="drop-down-menu-assignees-container">
+                                    &lt;div id="drop-down-menu-assignees" class="drop-down-menu-assignees">
+
+                                    &lt;/div>
+                                &lt;/div>
+                            &lt;/div>
+                        &lt;/div>
+                        &lt;span class="form-separator">&lt;/span>
+                        &lt;div class="rigth-block">
+                            &lt;div class="due-date-container">
+                                &lt;label for="due-date">Date&lt;/label>
+                                &lt;input oninput="checkValidityOfFormInputs()" required id="date"
+                                    class="input-date validation-element" type="date" name="due-date">
+                            &lt;/div>
+                            &lt;div class="prio-container">
+                                &lt;span>Prio&lt;/span>
+                                &lt;div class="prio-buttons-container">
+                                    &lt;span onclick="fillButton('urgent')" onmouseover="fillBtnOnOver('urgent')"
+                                        onmouseleave="blurPrioButton('urgent')" id="urgent-btn"
+                                        class="urgent-btn prio-btn">Urgent &lt;img class="prio-icon" id="urgent-icon"
+                                            src="./assets/img/urgent.png" alt="">&lt;/span>
+                                    &lt;span onclick="fillButton('medium')" onmouseover="fillBtnOnOver('medium')"
+                                        onmouseleave="blurPrioButton('medium')" id="medium-btn"
+                                        class="medium-btn prio-btn">Medium &lt;img class="prio-icon" id="medium-icon"
+                                            src="./assets/img/medium.png" alt="">&lt;/span>
+                                    &lt;span onclick="fillButton('low')" onmouseover="fillBtnOnOver('low')"
+                                        onmouseleave="blurPrioButton('low')" id="low-btn" class="low-btn prio-btn">Low
+                                        &lt;img class="prio-icon" id="low-icon" src="./assets/img/low.png" alt="">&lt;/span>
+                                &lt;/div>
+                            &lt;/div>
+                            &lt;div class="category-container">
+                                &lt;label for="categories">Category&lt;/label>
+                                &lt;select onclick="selectCategory()" name="categories" id="categories" class="categories">
+                                    &lt;option id="technical-task" value="technical-task">Technical Task&lt;/option>
+                                    &lt;option id="user-story" value="user-story">User Story&lt;/option>
+                                &lt;/select>
+                            &lt;/div>
+                            &lt;div class="subtasks-container">
+                                &lt;label for="input-subtask">Subtask&lt;/label>
+                                &lt;div onclick="writeSubtask()" class="subtask-input-container">
+                                    &lt;input id="input-subtask" minlength="3" class="input-subtask"
+                                        placeholder="Add new subtask" type="text">
+                                    &lt;div class="icons-subtask-container">
+                                        &lt;img id="add-icon" class="subtask-icon" src="./assets/img/add-blue.png" alt="">
+                                        &lt;div id="cross-and-check-icons-container"
+                                            class="cross-and-check-icons-container d-none">
+                                            &lt;img onclick="clearAddSubtaskInput(event)" class="subtask-icon"
+                                                src="./assets/img/cross.png" alt="">
+                                            &lt;img onclick="addSubtasks(event)" class="subtask-icon"
+                                                src="./assets/img/check-small.png" alt="">
+                                        &lt;/div>
+                                    &lt;/div>
+                                &lt;/div>
+                                &lt;ul id="subtask-list" class="subtask-list">
+
+                                &lt;/ul>
+                            &lt;/div>
+                        &lt;/div>
+                    &lt;/div>
+                    &lt;div class="buttons-container">
+                    &lt;button onclick="clearAddTaskForm()" onmouseover="highlightClearButton()"
+                            onmouseleave="turnClearBtnOff()" class="form-btn-guest-login">
+                            Clear
+                            &lt;img id="cross-icon-black" src="./assets/img/cross.png" class="cross-icon-clear-task"
+                                alt="">
+                            &lt;img id="cross-icon-light-blue" class="cross-icon-clear-task d-none"
+                                src="./assets/img/cross-light-blue.png" alt="">
+                        &lt;/button>
+                        &lt;button id="submit-btn" type="submit" disabled="true" class="form-btn">
+                            Create Task
+                            &lt;img src="./assets/img/check-white.png" class="check-icon-clear-task" alt="">
+                        &lt;/button>
+                    &lt;/div>
+                &lt;/form>
+        &lt;/div>
+    &lt;/div>
+    `
+}
+
+/**
+ * Generates HTML markup for a checked assignee in task overview.
+ * @param {number} j - The index of the assignee.
+ * @param {Object} assignee - The assignee object containing details like first name, last name, and badge color.
+ * @returns {string} The HTML markup for the checked assignee.
+ */
+function assigneeCheckedHTML(j, assignee) {
+    return /*html*/ `
+        &lt;div id="assignee-edit-task${j}" class="assignee">
+            &lt;span style="background: ${assignee.badge_color}" class="contact-badge-task-overview">${assignee.first_name.charAt(0)}${assignee.last_name.charAt(0)}&lt;/span>
+            &lt;span class="assignee-name">${assignee.first_name} ${assignee.last_name}&lt;/span>
+            &lt;input onclick="selectAssigneeEditTask(${j}, this)" id="input-checkbox-${j}" type="checkbox" checked="true">
+        &lt;/div>
+    `
+}
+
+/**
+ * Generates HTML markup for a non-checked assignee in task overview.
+ * @param {number} j - The index of the assignee.
+ * @param {Object} assignee - The assignee object containing details like first name, last name, and badge color.
+ * @returns {string} The HTML markup for the non-checked assignee.
+ */
+function assigneeNoCheckedHTML(j, assignee) {
+    return /*html*/ `
+        &lt;div id="assignee-edit-task${j}" class="assignee">
+            &lt;span class="contact-badge-task-overview" style="background:${assignee.badge_color}">${assignee.first_name.charAt(0)}${assignee.last_name.charAt(0)}&lt;/span>
+            &lt;span>${assignee.first_name} ${assignee.last_name}&lt;/span>
+            &lt;input onclick="selectAssigneeEditTask(${j}, this)" id="input-checkbox-${j}" type="checkbox">
+        &lt;/div>
+    `
+}
+
+/**
+ * Generates HTML markup for a checked subtask in task overview.
+ * @param {number} i - The index of the subtask.
+ * @param {number} id - The task ID related to the subtask.
+ * @param {Object} subtask - The subtask object containing details like title.
+ * @returns {string} The HTML markup for the checked subtask.
+ */
+function subtaskForTaskOverviewHTMLChecked(i, id, subtask) {
+    return /*html*/`
+    &lt;div class="checkbox-and-subtaskTitle-container-task-overview">
+       &lt;input onclick="updateTaskRelatedSubtask(${i}, ${id}, this)" type="checkbox" checked="true">
+       &lt;span>${subtask.title}&lt;/span>
+    &lt;/div>
+      `
+}
+
+/**
+ * Generates HTML markup for a non-checked subtask in task overview.
+ * @param {number} i - The index of the subtask.
+ * @param {number} id - The task ID related to the subtask.
+ * @param {Object} subtask - The subtask object containing details like title.
+ * @returns {string} The HTML markup for the non-checked subtask.
+ */
+function subtaskForTaskOverviewHTMLNoChecked(i, id, subtask) {
+    return /*html*/`
+    &lt;div class="checkbox-and-subtaskTitle-container-task-overview">
+       &lt;input onclick="updateTaskRelatedSubtask(${i}, ${id}, this)" type="checkbox">
+       &lt;span>${subtask.title}&lt;/span>
+    &lt;/div>
+      `
+}
+
+/**
+ * Generates HTML markup for a subtask in the task overview for editing.
+ * @param {number} i - The index of the subtask.
+ * @param {number} taskId - The task ID related to the subtask.
+ * @param {Object} subtask - The subtask object containing details like title.
+ * @returns {string} The HTML markup for the subtask in the edit task overview.
+ */
+function subtaskForEditTaskOverview(i, taskId, subtask) {
+    return /*html*/ `
+    &lt;div onmouseover="highlightContainerAndIcons(${i})" onmouseleave="turnhighlightContainerAndIconsOff(${i})" id="subtask-edit-task-overview-container${i}" class="subtask-edit-task-overview-container">
+            &lt;li onblur="turnTheOriginalInputValueOfSubtaskBack(${i})" id="subtask-edit-task-overview${i}" contenteditable="false" class="subtask-edit-task-overview">
+                   ${subtask.title}
+                &lt;/li>
+                &lt;div class="icon-edit-subtask-container">
+                    &lt;img onclick="editSubtaskEditOverview(${i})" id="pencil-icon-edit${i}" src="./assets/img/pencil.png" alt="">
+                    &lt;img onclick="updateTitleTaskRelatedSubtask(${i}, ${taskId})" id="check-icon-edit${i}" class="d-none" src="./assets/img/check-small.png" alt="">
+                    &lt;span id="icon-separator-edit-subtask${i}" class="icon-separator-edit-subtask">&lt;/span>
+                    &lt;img onclick="deleteSubtaskEditTask(${i}, ${taskId})" id="delete-icon-edit${i}" src="./assets/img/delete.png" alt="">
+                &lt;/div>
+    &lt;/div>
+ `
+}
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addTaskOverviewHTML">addTaskOverviewHTML</a></li><li><a href="global.html#assigneeCheckedHTML">assigneeCheckedHTML</a></li><li><a href="global.html#assigneeHTML">assigneeHTML</a></li><li><a href="global.html#assigneeNoCheckedHTML">assigneeNoCheckedHTML</a></li><li><a href="global.html#editContactOverviewHTML">editContactOverviewHTML</a></li><li><a href="global.html#editTaskHTML">editTaskHTML</a></li><li><a href="global.html#generateContactHTML">generateContactHTML</a></li><li><a href="global.html#generateContactListHTML">generateContactListHTML</a></li><li><a href="global.html#loadAssigneeList">loadAssigneeList</a></li><li><a href="global.html#showContactDetailsHTML">showContactDetailsHTML</a></li><li><a href="global.html#subtaskForEditTaskOverview">subtaskForEditTaskOverview</a></li><li><a href="global.html#subtaskForTaskOverviewHTMLChecked">subtaskForTaskOverviewHTMLChecked</a></li><li><a href="global.html#subtaskForTaskOverviewHTMLNoChecked">subtaskForTaskOverviewHTMLNoChecked</a></li><li><a href="global.html#subtaskHTML">subtaskHTML</a></li><li><a href="global.html#taskCardHTML">taskCardHTML</a></li><li><a href="global.html#taskCardOverviewHTML">taskCardOverviewHTML</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Tue Mar 11 2025 19:01:06 GMT+0100 (Mitteleuropäische Normalzeit)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

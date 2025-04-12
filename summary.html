@@ -11,12 +11,13 @@
     <title>Join 360</title>
 </head>
 
-<body onload="initSummary()">
+<body onload="initSummary();">
     <main class="main-container">
         <aside id="sidenav" w3-include-html="./assets/templates/sidenav.html"></aside>
         <div class="header-and-content-container">
             <header id="header" w3-include-html="./assets/templates/header.html"></header>
             <div id="content-container" class="content-container">
+                <div id="greating-mobile" class="greating-mobile"></div>
                 <div class="summary-title-container">
                     <h2>Join 360</h2>
                     <span class="summary-title-separator"></span>
@@ -36,7 +37,8 @@
                                     <span class="task-category">To-Do</span>
                                 </div>
                             </div>
-                            <div onmouseover="iconWhite('done')" onmouseleave="originalIcon('done')" class="done-container">
+                            <div onmouseover="iconWhite('done')" onmouseleave="originalIcon('done')"
+                                class="done-container">
                                 <div id="summary-icon-container-done" class="summary-icon-container">
                                     <img id="summary-icon-done" class="summary-icon" src="./assets/img/check-white.png"
                                         alt="">
@@ -81,6 +83,7 @@
                     </div>
                     <div class="greating-container">
                         <span id="greating" class="greating"></span>
+                        <span id="username" class="blue-username"></span>
                     </div>
                 </div>
             </div>
@@ -89,8 +92,8 @@
 </body>
 
 <script src="JS/w3include.js"></script>
-<script src="./JS/header.js"></script>
 <script src="./JS/login.js"></script>
+<script src="./JS/header.js"></script>
 <script src="./JS/addTasks.js"></script>
 <script src="./JS/server-comunications-functions-board.js"></script>
 <script src="./JS/board.js"></script>

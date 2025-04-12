@@ -6,8 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./CSS/font-styles.css">
     <link rel="stylesheet" href="./CSS/templates.css">
+    <link rel="stylesheet" href="./CSS/login.css">
     <link rel="stylesheet" href="./CSS/add-task.css">
+    <link rel="stylesheet" href="./CSS/add-tasks-mediaqueries.css">
     <link rel="stylesheet" href="./CSS/board.css">
+    <link rel="stylesheet" href="./CSS/board-media-queries.css">
     <link rel="stylesheet" href="./CSS/style.css">
     <title>Board</title>
 </head>
@@ -20,32 +23,52 @@
         </div>
         <!-- end Single Task overview -->
         <!-- Add Task overview -->
-        <div id="opacity-add-task-container" class="opacity-add-task-container d-none">
+        <div onclick="closeAddTaskOverview(event)" id="opacity-add-task-container"
+            class="opacity-add-task-container d-none">
 
         </div>
         <!-- End of Add Task overview -->
         <aside id="sidenav" w3-include-html="./assets/templates/sidenav.html"></aside>
         <div class="header-and-content-container">
+            <div onclick="closeDragTasksMobile()" id="drag-tasks-mobile-container"
+                class="drag-tasks-mobile-container d-none">
+                <div class="drag-tasks-mobile-text-and-options-container">
+                    <span class="task-drag-text">Where would you like to drag this Task?</span>
+                    <div onclick="dontClose(event)" id="drag-tasks-mobile-options" class="drag-tasks-mobile-options">
+
+                    </div>
+                </div>
+            </div>
             <header id="header" w3-include-html="./assets/templates/header.html"></header>
             <div id="content-container" class="content-container">
                 <div class="board-header">
                     <h1>Board</h1>
+                    <button onclick="showCreateTaskOverview('')" class="add-tasks-btn add-task-btn-mobile"><img
+                            src="./assets/img/add.png" alt=""></button>
                     <div class="search-input-and-add-task-btn-container">
                         <div class="search-tasks-input-container">
                             <input id="search-tasks-input" placeholder="Search a task..." type="text">
                             <img onclick="loadTasks()" src="./assets/img/search.png" alt="">
                         </div>
-                        <button onclick="showCreateTaskOverview()" id="add-tasks-btn" class="add-tasks-btn">Add Tasks
+                        <button onclick="showCreateTaskOverview('')" id="add-tasks-btn" class="add-tasks-btn">Add Tasks
                             <img src="./assets/img/add.png" alt=""></button>
                         <button onclick="backToAllTask()" id="all-tasks-btn" class="back-to-all-tasks-btn d-none">Back
                             to all Tasks</button>
                     </div>
                 </div>
+                <div id="search-input-mobile-container" class="search-input-mobile-container">
+                    <input id="search-tasks-input-mobile" type="text" placeholder="Find a task">
+                    <div class="search-and-cross-icon-mobile-container">
+                        <img onclick="loadTasks()" class="search-icon" src="./assets/img/search.png" alt="">
+                        <img onclick="backToAllTask()" id="cross-icon-search-input-mobile"
+                            class="cross-icon-search-input-mobile d-none" src="./assets/img/cross.png" alt="">
+                    </div>
+                </div>
                 <div class="board-categories-container">
                     <div class="todo-tasks-container task-column">
-                        <div class="category-task-title-and-icon">
-                            <h3>To Do</h3>
-                            <img src="./assets/img/plus-add-task.png" alt="">
+                        <div onclick="showCreateTaskOverview('todo')" class="category-task-title-and-icon">
+                            <h3 id="todo-title">To Do</h3>
+                            <img id="todo-icon" src="./assets/img/plus-add-task.png" alt="">
                         </div>
 
                         <div ondrop="mooveTo('todo');removeBorderOnDrop('todo', event)" ondragover="allowDrop(event)"
@@ -57,9 +80,9 @@
                     </div>
 
                     <div class="in-progress-tasks-container task-column">
-                        <div class="category-task-title-and-icon">
-                            <h3>In Progress</h3>
-                            <img src="./assets/img/plus-add-task.png" alt="">
+                        <div onclick="showCreateTaskOverview('in-progress')" class="category-task-title-and-icon">
+                            <h3 id="in-progress-title">In Progress</h3>
+                            <img id="in-progress-icon" src="./assets/img/plus-add-task.png" alt="">
                         </div>
 
                         <div ondrop="mooveTo('in-progress'); removeBorderOnDrop('in-progress', event)"
@@ -71,9 +94,9 @@
                     </div>
 
                     <div class="await-feedback-tasks-container task-column">
-                        <div class="category-task-title-and-icon">
-                            <h3>Await Feedback</h3>
-                            <img src="./assets/img/plus-add-task.png" alt="">
+                        <div onclick="showCreateTaskOverview('await-feedback')" class="category-task-title-and-icon">
+                            <h3 id="await-feedback-title">Await Feedback</h3>
+                            <img id="await-feedback-icon" src="./assets/img/plus-add-task.png" alt="">
                         </div>
 
                         <div ondrop="mooveTo('await-feedback'); removeBorderOnDrop('await-feedback', event)"
@@ -84,15 +107,14 @@
                         </div>
                     </div>
                     <div class="done-tasks-container task-column">
-                        <div class="category-task-title-and-icon">
-                            <h3>Done</h3>
-                            <img src="./assets/img/plus-add-task.png" alt="">
+                        <div onclick="showCreateTaskOverview('done')" class="category-task-title-and-icon">
+                            <h3 id="done-title">Done</h3>
+                            <img id="done-icon" src="./assets/img/plus-add-task.png" alt="">
                         </div>
 
                         <div ondrop="mooveTo('done'); removeBorderOnDrop('done', event)" ondragover="allowDrop(event)"
                             ondragenter="highlightTasksContainer('done', event)"
                             ondragleave="removeBorderOnLeave('done', event)" id="done" class="cards-container">
-
                         </div>
                     </div>
                 </div>
@@ -102,6 +124,7 @@
 </body>
 <script src="./JS/w3include.js"></script>
 <script src="./JS/header.js"></script>
+<script src="./templateFunctions/template-functions-addTask.js"></script>
 <script src="./templateFunctions/template-functions-board.js"></script>
 <script src="./models/subtask-class.js"></script>
 <script src="./models/task-class.js"></script>
