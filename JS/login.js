@@ -172,8 +172,8 @@ async function postTheNewRegisteredContact(newContact, loggedUser) {
  * Logs in as a guest user.
  * @async
  */
-async function guestUserLogin() {
-    document.getElementById('loading-curtain').classList.remove('d-none')
+async function guestUserLogin(userData) {
+    document.getElementById('loading-curtain').classList.remove('d-none');
     try {
         let response = await fetch(urlLogin, {
             method: 'POST',

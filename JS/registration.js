@@ -22,20 +22,31 @@ async function register() {
         let email = document.getElementById('input-regist-email');
         let password = document.getElementById('input-regist-password');
         let repeated_password = document.getElementById('input-regist-repeated-password');
-        await postRegistrationData(username.value, firstName, lastName, email, password, repeated_password);
+        await postRegistrationData(username.value, firstName.value, lastName.value, email.value, password.value, repeated_password.value);
     } else {
         document.getElementById('privacy-policy-advice').classList.remove('d-none');
     }
+}
+
+async function guestRegistration() {
+    let username = 'Guest';
+    let firstName = 'Guest';
+    let lastName = 'Uest';
+    let email = 'guestlogin@gmail.com';
+    let password = 'guestLogin123';
+    let repeated_password = 'guestLogin123';
+    await postRegistrationData(username, firstName, lastName, email, password, repeated_password);
 }
 
 /**
  * Event listener for the username input field. Replaces spaces with underscores as the user types.
  * @param {Event} event - The input event triggered by the user.
  */
-document.getElementById('input-regist-username').addEventListener('input', (event) => {
+
+function replaceSpacesWithUnderscores(event) {
     let value = event.target.value;
     event.target.value = value.replace(/\s/g, "_");
-});
+}
 
 /**
  * Sends a POST request with the registration data to the registration API.
@@ -56,11 +67,11 @@ async function postRegistrationData(username, firstName, lastName, email, passwo
             },
             body: JSON.stringify({
                 'username': username,
-                'first_name': firstName.value,
-                'last_name': lastName.value,
-                'email': email.value,
-                'password': password.value,
-                'repeated_password': repeated_password.value,
+                'first_name': firstName,
+                'last_name': lastName,
+                'email': email,
+                'password': password,
+                'repeated_password': repeated_password,
             })
         })
         await getPostedRegistData(response);
@@ -78,9 +89,12 @@ async function postRegistrationData(username, firstName, lastName, email, passwo
  */
 async function getPostedRegistData(response) {
     let userData = await response.json();
-    if (response.ok) {
+    if (response.ok && userData.username != 'Guest') {
         window.location.href = 'login.html';
-    } else {
+    } else if (response.ok && userData.username == 'Guest') {
+        guestUserLogin(userData);
+    }
+    else {
         for (let field in userData) {
             if (userData.hasOwnProperty(field)) {
                 document.getElementById('pop-up-validation-advice').classList.remove('d-none');

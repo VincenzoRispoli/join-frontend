@@ -81,6 +81,7 @@
         right: 32px;
         width: 32px;
         height: 32px;
+        cursor: pointer;
         object-fit: contain;
     }
 
@@ -114,6 +115,7 @@
 
     .contact-list {
         width: 100%;
+        margin-bottom: 40px;
     }
 
     .add-contact-btn {
@@ -200,6 +202,7 @@
         padding: 4px;
         bottom: 20px;
         right: 20px;
+        cursor: pointer;
     }
 
     .ellipse-icon {
@@ -272,6 +275,10 @@
         padding: 8px;
         font-size: 16px;
     }
+
+    .create-contact-advice {
+        margin-bottom: 150px;
+    }
 }
 
 @media (max-width: 430px) {
@@ -300,5 +307,10 @@
 
     .add-contact-input {
         width: 85%;
+    }
+
+    .create-contact-advice {
+        margin-bottom: 170px;
+        font-size: 16px;
     }
 }

@@ -332,6 +332,11 @@ button {
     text-decoration: none;
 }
 
+.sign-up-btn:hover {
+    background: #29ABE2;
+    border: 1px solid #29ABE2;
+}
+
 .form-btn-guest-login {
     color: #2A3647;
     background: #fff;
@@ -351,7 +356,6 @@ button {
 
 .form-btn-guest-login:hover {
     border: 1px solid #29ABE2;
-    padding: 15px 24px;
     color: #29ABE2;
 }
 

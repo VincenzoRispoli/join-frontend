@@ -33,7 +33,7 @@
             <form onsubmit="register(); return false" action="" id="login-form" class="form">
                 <div class="form-inputs-wrapper">
                     <div class="login-input-cont">
-                        <input required placeholder="Username" type="text" minlength="3" id="input-regist-username"
+                        <input oninput="replaceSpacesWithUnderscores(event)" required placeholder="Username" type="text" minlength="3" id="input-regist-username"
                             class="login-form-input">
                         <div class="icon-login-cont">
                             <img class="login-input-icon" src="./assets/img/person-icon.png" alt="">

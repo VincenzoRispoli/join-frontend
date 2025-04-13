@@ -78,6 +78,8 @@ let priorityType;
  */
 let subtaskIsClicked = false;
 
+let subtaskChangesConfirmed = false;
+
 /**
  * Stores the current value of an input field when editing a subtask.
  * @type {string}
@@ -648,7 +650,8 @@ function loadSubtasksInTheEditTaskOverview(subtasks, taskId) {
  * 
  * @param {number} i - The index of the subtask being edited.
  */
-function editSubtaskEditOverview(i) {
+function editSubtaskEditOverview(i, event) {
+    event.stopPropagation();
     actualValueInputEditSubtask = document.getElementById(`subtask-edit-task-overview${i}`).innerText;
     subtaskIsClicked = true;
     let listItem = document.getElementById(`subtask-edit-task-overview${i}`);
@@ -663,7 +666,8 @@ function editSubtaskEditOverview(i) {
  * 
  * @param {number} i - The index of the subtask being edited.
  */
-function disableContentEditingSubtask(i) {
+function confirmContentEditingSubtask(i, event) {
+    event.stopPropagation();
     let listItem = document.getElementById(`subtask-edit-task-overview${i}`);
     listItem.setAttribute("contenteditable", "false");
     document.getElementById(`subtask-edit-task-overview-container${i}`).style.background = 'none';
@@ -674,15 +678,27 @@ function disableContentEditingSubtask(i) {
     subtaskIsClicked = false;
 }
 
-/**
- * Reverts the input value of a subtask to its original value.
- * 
- * @param {number} i - The index of the subtask whose value is being reverted.
- */
-function turnTheOriginalInputValueOfSubtaskBack(i) {
-    document.getElementById(`subtask-edit-task-overview${i}`).innerText = actualValueInputEditSubtask;
-    disableContentEditingSubtask(i)
-}
+// /**
+//  * Reverts the input value of a subtask to its original value.
+//  * 
+//  * @param {number} i - The index of the subtask whose value is being reverted.
+//  */
+// function turnTheOriginalInputValueOfSubtaskBack(i) {
+//     if (subtaskChangesConfirmed == false) {
+//         document.getElementById(`subtask-edit-task-overview${i}`).innerText = actualValueInputEditSubtask;
+//         disableContentEditingSubtask(i)
+//     }
+// }
+
+// function disableContentEditingSubtask(i) {
+//     let listItem = document.getElementById(`subtask-edit-task-overview${i}`);
+//     listItem.setAttribute("contenteditable", "false");
+//     document.getElementById(`subtask-edit-task-overview-container${i}`).style.background = 'none';
+//     document.getElementById(`pencil-icon-edit${i}`).classList.add('d-none');
+//     document.getElementById(`delete-icon-edit${i}`).classList.add('d-none');
+//     document.getElementById(`check-icon-edit${i}`).classList.add('d-none');
+//     document.getElementById(`icon-separator-edit-subtask${i}`).classList.add('d-none');
+// }
 
 /**
  * Adds a new subtask to the edit task.
@@ -712,8 +728,8 @@ async function addSubtaskEditTask(id, event) {
  * @param {number} i - The index of the subtask being edited.
  * @param {number} taskId - The ID of the task to which the subtask belongs.
  */
-async function updateTitleTaskRelatedSubtask(i, taskId) {
-    disableContentEditingSubtask(i)
+async function updateTitleTaskRelatedSubtask(i, taskId, event) {
+    confirmContentEditingSubtask(i, event)
     let editedSubtask = taskRelatedSubtaskList[i];
     let id = editedSubtask.id
     editedSubtask.task_id = taskId

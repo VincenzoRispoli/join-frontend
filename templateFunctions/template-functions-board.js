@@ -124,9 +124,9 @@ function editTaskHTML(id, selectedTask) {
         <div class="priority-container-edit-task-overview">
           Priority:
            <div class="priority-buttons-and-icon-container-edit-task">
-            <button onfocus="editPriority('Urgent', event)" id="edit-task-urgent-btn" class="prio-btn-edit-task">Urgent <img id="urgent-icon" src="./assets/img/urgent.png" alt=""></button>
-            <button onfocus="editPriority('Medium', event)" id="edit-task-medium-btn" class="prio-btn-edit-task">Medium <img id="medium-icon" src="./assets/img/medium.png" alt=""></button>
-            <button onfocus="editPriority('Low', event)" id="edit-task-low-btn" class="prio-btn-edit-task">Low <img id="low-icon" src="./assets/img/low.png" alt=""></button>
+            <button onfocus="editPriority('Urgent', event)" onmouseover="highlightBtnOnHover('urgent')" onmouseleave="turnTheBtnOffOnLeave('urgent')" id="edit-task-urgent-btn" class="prio-btn-edit-task">Urgent <img id="urgent-icon" src="./assets/img/urgent.png" alt=""></button>
+            <button onfocus="editPriority('Medium', event)" onmouseover="highlightBtnOnHover('medium')" onmouseleave="turnTheBtnOffOnLeave('medium')" id="edit-task-medium-btn" class="prio-btn-edit-task">Medium <img id="medium-icon" src="./assets/img/medium.png" alt=""></button>
+            <button onfocus="editPriority('Low', event)" onmouseover="highlightBtnOnHover('low')" onmouseleave="turnTheBtnOffOnLeave('low')" id="edit-task-low-btn" class="prio-btn-edit-task">Low <img id="low-icon" src="./assets/img/low.png" alt=""></button>
             </div>
         </div>
         <div class="assigned-to-container-task-overview">
@@ -354,14 +354,14 @@ function subtaskForTaskOverviewHTMLNoChecked(i, id, subtask) {
 function subtaskForEditTaskOverview(i, taskId, subtask) {
     return /*html*/ `
     <div onmouseover="highlightContainerAndIcons(${i})" onmouseleave="turnhighlightContainerAndIconsOff(${i})" id="subtask-edit-task-overview-container${i}" class="subtask-edit-task-overview-container">
-            <li onblur="turnTheOriginalInputValueOfSubtaskBack(${i})" id="subtask-edit-task-overview${i}" contenteditable="false" class="subtask-edit-task-overview">
+            <li id="subtask-edit-task-overview${i}" contenteditable="false" class="subtask-edit-task-overview">
                    ${subtask.title}
                 </li>
                 <div class="icon-edit-subtask-container">
-                    <img onclick="editSubtaskEditOverview(${i})" id="pencil-icon-edit${i}" src="./assets/img/pencil.png" alt="">
-                    <img onclick="updateTitleTaskRelatedSubtask(${i}, ${taskId})" id="check-icon-edit${i}" class="d-none" src="./assets/img/check-small.png" alt="">
+                    <img onclick="editSubtaskEditOverview(${i}, event)" id="pencil-icon-edit${i}" class="icon-edit-subtask" src="./assets/img/pencil.png" alt="">
+                    <img onclick="updateTitleTaskRelatedSubtask(${i}, ${taskId}, event)" id="check-icon-edit${i}" class="icon-edit-subtask d-none" src="./assets/img/check-small.png" alt="">
                     <span id="icon-separator-edit-subtask${i}" class="icon-separator-edit-subtask"></span>
-                    <img onclick="deleteSubtaskEditTask(${i}, ${taskId})" id="delete-icon-edit${i}" src="./assets/img/delete.png" alt="">
+                    <img onclick="deleteSubtaskEditTask(${i}, ${taskId}, event)" id="delete-icon-edit${i}" class="icon-edit-subtask" src="./assets/img/delete.png" alt="">
                 </div>
     </div>
  `

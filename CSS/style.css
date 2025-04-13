@@ -64,16 +64,39 @@ input:focus {
 .content-container {
     flex-direction: column;
     display: flex;
-    justify-content: space-between;
     padding: 16px 48px;
     background: #F6F7F8;
     flex: 1;
+}
+
+.content-explanation-container {
+    overflow-y: scroll;
+    padding: 16px 48px;
+}
+
+.content-explanation-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.content-explanation-container::-webkit-scrollbar-thumb {
+    background: #2A3647;
+    border-radius: 100px;
+}
+
+@media (max-width: 1200px) {
+    .header-and-content-container {
+        overflow-y: hidden;
+    }
 }
 
 @media (max-width: 1050px) {
     .content-container {
         padding: 16px 24px;
         justify-content: center;
+    }
+
+    .content-explanation-container {
+        padding: 16px 24px;
     }
 
     .summary-title-container h2 {
@@ -91,7 +114,12 @@ input:focus {
 
 @media (max-width: 768px) {
     .content-container {
-        padding: 16px
+        padding: 16px;
+        margin-bottom: 100px;
+    }
+
+    .content-explanation-container {
+        padding: 16px;
     }
 }
 

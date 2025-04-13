@@ -483,7 +483,7 @@ h1 {
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
-    height: 50px;
+    height: 60px;
     padding: 4px;
     border-radius: 10px;
 }
@@ -597,4 +597,8 @@ h1 {
     padding: 5px;
     outline: none;
     border: 1px dashed #D1D1D1;
+}
+
+.icon-edit-subtask {
+    z-index: 20;
 }

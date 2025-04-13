@@ -166,7 +166,21 @@ function turnhighlightContainerAndIconsOff(i) {
         document.getElementById(`delete-icon-edit${i}`).classList.add('d-none');
         document.getElementById(`check-icon-edit${i}`).classList.add('d-none');
         document.getElementById(`icon-separator-edit-subtask${i}`).classList.add('d-none');
+    } else if (subtaskIsClicked == true) {
+        turnTheHighLightContainerAndIconsOffAndResetSubtaskValue(i);
     }
+}
+
+function turnTheHighLightContainerAndIconsOffAndResetSubtaskValue(i) {
+    document.getElementById(`subtask-edit-task-overview-container${i}`).style.background = 'none';
+    document.getElementById(`pencil-icon-edit${i}`).classList.add('d-none');
+    document.getElementById(`delete-icon-edit${i}`).classList.add('d-none');
+    document.getElementById(`check-icon-edit${i}`).classList.add('d-none');
+    document.getElementById(`icon-separator-edit-subtask${i}`).classList.add('d-none');
+    let listItem = document.getElementById(`subtask-edit-task-overview${i}`);
+    listItem.setAttribute("contenteditable", "false");
+    subtaskIsClicked = false;
+    document.getElementById(`subtask-edit-task-overview${i}`).innerText = actualValueInputEditSubtask;
 }
 
 /**

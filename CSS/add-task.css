@@ -8,6 +8,7 @@ form {
     flex-direction: column;
     justify-content: space-between;
     gap: 96px;
+    height: 100%;
 }
 
 .form-container {
