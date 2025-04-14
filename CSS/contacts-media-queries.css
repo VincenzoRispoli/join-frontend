@@ -30,16 +30,23 @@
 }
 
 @media (max-width: 1050px) {
+
     .add-contact-overlay {
         flex-direction: column;
         min-width: auto;
         position: relative;
-        height: auto;
+        height: 90%;
+        max-height: 90%;
+        overflow-y: scroll;
     }
 
     .add-contact-overlay-left-side {
         width: 100%;
         border-radius: 30px 30px 0px 0px;
+    }
+
+    .left-side-content-container {
+        margin-bottom: 24px;
     }
 
     .left-side-content-container h2 {
@@ -157,6 +164,10 @@
     .add-contact-btn {
         font-size: 21px;
         min-width: 250px;
+    }
+
+    .left-side-content-container {
+        margin-bottom: 0px;
     }
 
     .left-side-content-container {
