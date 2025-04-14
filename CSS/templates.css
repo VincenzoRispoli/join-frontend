@@ -49,17 +49,32 @@
     z-index: 5;
 }
 
+.submenu a {
+    color: #CDCDCD;
+    font-weight: 400;
+    font-size: 16px;
+    padding: 8px 16px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.submenu a:hover {
+    background: #364963;
+}
+
 .submenu span {
     color: #CDCDCD;
     font-weight: 400;
     font-size: 16px;
     padding: 8px 16px;
-    cursor: pointer;
+    text-decoration: none;
+    cursor: pointer
 }
 
 .submenu span:hover {
     background: #364963;
 }
+
 
 
 /* Navbar Styles */
@@ -129,8 +144,10 @@
     padding-inline-start: 20px;
 }
 
-.legal-policy-container p {
+.legal-policy-container a {
     cursor: pointer;
+    color: #fff;
+    text-decoration: none;
 }
 
 @media (max-width: 1050px) {

@@ -6,6 +6,6 @@ async function initHelp() {
 }
 
 async function getLoggedUser() {
-    user = JSON.parse(localStorage.getItem('currentUser'));
+    let user = JSON.parse(localStorage.getItem('currentUser'));
     return user;
 }
