@@ -50,6 +50,7 @@ input:focus {
     flex: 1;
     justify-content: flex-start;
     overflow-y: scroll;
+    position: relative;
 }
 
 .header-and-content-container::-webkit-scrollbar {
@@ -67,6 +68,11 @@ input:focus {
     padding: 16px 48px;
     background: #F6F7F8;
     flex: 1;
+    overflow-y: scroll;
+}
+
+.content-container::-webkit-scrollbar {
+    display: none;
 }
 
 .content-explanation-container {

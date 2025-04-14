@@ -196,3 +196,13 @@ function highlightNavLink() {
         document.getElementById('board-link').style.backgroundColor = '#091931';
     }
 }
+
+function highlightEditTaskButton(value){
+   document.getElementById(`${value}-icon`).classList.add('d-none');
+   document.getElementById(`${value}-icon-light-blue`).classList.remove('d-none');
+}
+
+function turnEditTaskButtonOff(value){
+    document.getElementById(`${value}-icon`).classList.remove('d-none');
+    document.getElementById(`${value}-icon-light-blue`).classList.add('d-none');
+ }

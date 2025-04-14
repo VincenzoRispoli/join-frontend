@@ -38,12 +38,26 @@ async function updateTheNewEditedTask(id, newEditedTask) {
             let updateData = await response.json();
             showTaskActionFailedAdvice(updateData.detail);
         } else {
-            await loadTasks();
-            document.getElementById('opacity-single-task-container').classList.add('d-none');
+            showTaskSuccessEditedAdvice();
         }
     } catch (e) {
         console.log(e);
     }
+}
+
+/**
+ * Displays a temporary success message in the UI after a task has been successfully edited.
+ * Reloads the tasks and hides the single task view after 2 seconds.
+ */
+function showTaskSuccessEditedAdvice() {
+    document.getElementById('advice-container-edit-task').classList.remove('d-none');
+    document.getElementById('advice-container-edit-task').innerText = "Task successfully edited";
+    setTimeout(() => {
+        loadTasks();
+        document.getElementById('opacity-single-task-container').classList.add('d-none');
+        document.getElementById('advice-container-edit-task').classList.add('d-none')
+        document.getElementById('advice-container-edit-task').innerText = "";
+    }, 2000)
 }
 
 /**
@@ -203,9 +217,19 @@ async function deleteTaskData(singleTaskUrl) {
         let deleteData = await response.json();
         showDeleteTaskFailedAdvice(deleteData.detail);
     } else {
-        await loadTasks();
-        document.getElementById('opacity-single-task-container').classList.add('d-none');
+        showSuccessTaskDeletedAdvice();
     }
+}
+
+function showSuccessTaskDeletedAdvice() {
+    loadTasks();
+    document.getElementById('opacity-single-task-container').classList.add('d-none');
+    document.getElementById('task-created-advice-container-board').classList.remove('d-none');
+    document.getElementById('task-created-advice-board').innerText = 'Task successfully deleted'
+    setTimeout(() => {
+        document.getElementById('task-created-advice-container-board').classList.add('d-none');
+        document.getElementById('task-created-advice-board').innerText = 'Task successfully deleted'
+    }, 2000)
 }
 
 /**

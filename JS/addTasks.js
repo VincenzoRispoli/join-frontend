@@ -162,6 +162,21 @@ function selectAssignees(i) {
   }
 }
 
+function selectAssigneesForEditTask(i) {
+  let selectedAssignee = assignees[i];
+  let checkbox = document.getElementById(`input-checkbox-assignees-edit-task${i}`);
+  if (checkbox && checkbox.checked == false) {
+    checkbox.checked = true;
+    selectedAssignees.push(assignees[i].id);
+  } else if (checkbox && checkbox.checked == true) {
+    checkbox.checked = false;
+    let index = selectedAssignees.indexOf(selectedAssignee.id);
+    if (index !== -1) {
+      selectedAssignees.splice(index, 1);
+    }
+  }
+}
+
 /**
  * Prepares the UI for adding a subtask by displaying additional input options.
  */
@@ -312,11 +327,7 @@ function selectCategory() {
 async function createTasks(event) {
   let newTask = createNewTaskFromTheForm(event);
   try {
-    await postTheNewCreatedTask(newTask);
-    if (window.location.href == 'http://127.0.0.1:5500/board.html') {
-      await loadTasks();
-      closeAddTaskOverview(event);
-    }
+    await postTheNewCreatedTask(newTask, event);
   } catch (e) {
     console.log(e);
   }
@@ -356,7 +367,7 @@ function checkState() {
  * Send the newly created task to the backend.
  * @param {Task} newTask - The task object to be sent.
  */
-async function postTheNewCreatedTask(newTask) {
+async function postTheNewCreatedTask(newTask, event) {
   try {
     let taskResponse = await fetch(tasksUrl, {
       method: 'POST',
@@ -368,9 +379,51 @@ async function postTheNewCreatedTask(newTask) {
     });
     if (taskResponse.ok) {
       await getTaskDataAndPostSubtask(taskResponse);
+      await showSuccessfullTaskCreationAdvice(event)
     }
   } catch (e) {
-    console.log(e);
+    showFailedTaskCreationAdvice(e);
+  }
+}
+
+/**
+ * Displays a visual confirmation that a task has been successfully created.
+ * If the current page is 'board.html', it reloads the task list and closes the task overview.
+ * Then, it shows a success message for 2 seconds.
+ *
+ * @param {Event} event - The event triggered when the task is created, used to close the task overview.
+ */
+async function showSuccessfullTaskCreationAdvice(event) {
+  if (window.location.href == 'http://127.0.0.1:5500/board.html') {
+    await loadTasks();
+    closeAddTaskOverview(event);
+    document.getElementById('task-created-advice-container-board').classList.remove('d-none');
+    document.getElementById('task-created-advice-board').innerText = 'Task successfully created';
+    setTimeout(() => {
+      document.getElementById('task-created-advice-container-board').classList.add('d-none');
+    }, 2000)
+  } else {
+    document.getElementById('task-created-advice-container').classList.remove('d-none');
+    document.getElementById('task-created-advice').innerText = 'Task successfully created';
+    setTimeout(() => {
+      document.getElementById('task-created-advice-container').classList.add('d-none');
+    }, 2000)
+  }
+}
+
+/**
+ * Displays an error message in the UI when task creation fails.
+ * Logs the error to the console and updates the appropriate advice element
+ * depending on the current page.
+ *
+ * @param {any} e - The error object or message to be logged and used for debugging.
+ */
+function showFailedTaskCreationAdvice(e) {
+  console.log(e);
+  if (window.location.href == 'http://127.0.0.1:5500/board.html') {
+    document.getElementById('task-created-advice-board').innerText = 'Task not created, a problem occurred';
+  } else {
+    document.getElementById('task-created-advice').innerText = 'Task not created, a problem occurred';
   }
 }
 
@@ -421,7 +474,9 @@ async function sendSubtasksToBackend(taskData) {
       },
       body: JSON.stringify(subtask)
     });
-    subtasksResponses.push(response);
+    if (response.ok) {
+      subtasksResponses.push(response);
+    }
   }
 }
 

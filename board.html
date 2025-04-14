@@ -30,6 +30,11 @@
         <!-- End of Add Task overview -->
         <aside id="sidenav" w3-include-html="./assets/templates/sidenav.html"></aside>
         <div class="header-and-content-container">
+            <!-- task created or delered advice -->
+            <div id="task-created-advice-container-board" class="task-created-advice-container d-none">
+                <span id="task-created-advice-board" class="task-created-advice"></span>
+            </div>
+            <!-- end of task created or delered advice -->
             <div onclick="closeDragTasksMobile()" id="drag-tasks-mobile-container"
                 class="drag-tasks-mobile-container d-none">
                 <div class="drag-tasks-mobile-text-and-options-container">

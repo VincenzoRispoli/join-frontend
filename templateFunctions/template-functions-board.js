@@ -72,11 +72,16 @@ function taskCardOverviewHTML(id, selectedTask, categoryTitleColor, priorityIcon
                 </div>
                 </div>
                 <div class="edit-or-delete-buttons-container">
-                    <button onclick="deleteTask(${id}); return false" class="task-overview-btn">
-                        Delete
+                    <button onclick="deleteTask(${id}); return false" class="task-overview-btn" onmouseover="highlightEditTaskButton('delete')" onmouseleave="turnEditTaskButtonOff('delete')">
+                       <img id="delete-icon" src="./assets/img/delete.png" alt=""> 
+                       <img id="delete-icon-light-blue" class="d-none" src="./assets/img/delete-light-blue.png" alt="">
+                       Delete
                     </button>
-                    <button onclick="editTask(${id}, '${priorityIcon}')"; class="task-overview-btn">
-                        Edit
+                    <span style="height: 100%; width:2px; background: #D1D1D1"></span>
+                    <button onclick="editTask(${id}, '${priorityIcon}')"; class="task-overview-btn" onmouseover="highlightEditTaskButton('pencil')" onmouseleave="turnEditTaskButtonOff('pencil')">
+                       <img id="pencil-icon" src="./assets/img/pencil.png" alt=""> 
+                       <img id="pencil-icon-light-blue" class="d-none" src="./assets/img/pencil-light-blue.png" alt="">
+                       Edit
                     </button>
                 </div>
         </div>
@@ -163,7 +168,7 @@ function editTaskHTML(id, selectedTask) {
         </div>
     </div>
     </div>
-    <span id="advice-container" class="advice-container"></span>
+    <span id="advice-container-edit-task" class="advice-container-edit-task d-none"></span>
   `)
 }
 
@@ -288,10 +293,10 @@ function addTaskOverviewHTML() {
  */
 function assigneeCheckedHTML(j, assignee) {
     return /*html*/ `
-        <div id="assignee-edit-task${j}" class="assignee">
+        <div onclick="selectAssigneesForEditTask(${j})" id="assignee-edit-task${j}" class="assignee">
             <span style="background: ${assignee.badge_color}" class="contact-badge-task-overview">${assignee.first_name.charAt(0)}${assignee.last_name.charAt(0)}</span>
             <span class="assignee-name">${assignee.first_name} ${assignee.last_name}</span>
-            <input onclick="selectAssigneeEditTask(${j}, this)" id="input-checkbox-${j}" type="checkbox" checked="true">
+            <input id="input-checkbox-assignees-edit-task${j}" type="checkbox" checked="true">
         </div>
     `
 }
@@ -304,10 +309,10 @@ function assigneeCheckedHTML(j, assignee) {
  */
 function assigneeNoCheckedHTML(j, assignee) {
     return /*html*/ `
-        <div id="assignee-edit-task${j}" class="assignee">
+        <div onclick="selectAssignees(${j})" id="assignee-edit-task${j}" class="assignee">
             <span class="contact-badge-task-overview" style="background:${assignee.badge_color}">${assignee.first_name.charAt(0)}${assignee.last_name.charAt(0)}</span>
             <span>${assignee.first_name} ${assignee.last_name}</span>
-            <input onclick="selectAssigneeEditTask(${j}, this)" id="input-checkbox-${j}" type="checkbox">
+            <input id="input-checkbox-assignees${j}" type="checkbox">
         </div>
     `
 }

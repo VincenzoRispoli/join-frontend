@@ -255,6 +255,7 @@ function setTasksInRelatedContainer() {
  * @param {string} state - The state of the task being created.
  */
 function showCreateTaskOverview(state) {
+    selectedAssignees = [];
     creationTaskState = state;
     let opacityAddTaskContainer = document.getElementById('opacity-add-task-container');
     opacityAddTaskContainer.classList.remove('d-none');
@@ -506,6 +507,7 @@ async function showTask(id) {
  * @returns {Promise<void>} - A promise that resolves once the edit form is displayed.
  */
 async function editTask(id) {
+    selectedAssignees = [];
     let findIndexOfSelectedTask = tasks.findIndex(task => task.id == id);
     let selectedTask = tasks[findIndexOfSelectedTask];
     let opacitySingleTaskContainer = document.getElementById('opacity-single-task-container');
@@ -562,25 +564,6 @@ async function loadAllAssigneesFromDataBase(id, contacts) {
             allAssigneesEditTaskContainer.innerHTML += assigneeCheckedHTML(j, assignee)
         } else {
             allAssigneesEditTaskContainer.innerHTML += assigneeNoCheckedHTML(j, assignee);
-        }
-    }
-}
-
-/**
- * Handles the selection or deselection of an assignee when editing a task.
- * 
- * @param {number} j - The index of the assignee in the assignees list.
- * @param {HTMLInputElement} checkbox - The checkbox element that was clicked.
- */
-function selectAssigneeEditTask(j, checkbox) {
-    let selectedAssignee = assignees[j];
-    if (checkbox && checkbox.checked) {
-        console.log(checkbox);
-        selectedAssignees.push(selectedAssignee.id);
-    } else if (checkbox) {
-        let indexOfSelectedAssignee = selectedAssignees.indexOf(selectedAssignee.id);
-        if (indexOfSelectedAssignee != -1) {
-            selectedAssignees.splice(indexOfSelectedAssignee, 1)
         }
     }
 }
@@ -677,28 +660,6 @@ function confirmContentEditingSubtask(i, event) {
     document.getElementById(`icon-separator-edit-subtask${i}`).classList.add('d-none');
     subtaskIsClicked = false;
 }
-
-// /**
-//  * Reverts the input value of a subtask to its original value.
-//  * 
-//  * @param {number} i - The index of the subtask whose value is being reverted.
-//  */
-// function turnTheOriginalInputValueOfSubtaskBack(i) {
-//     if (subtaskChangesConfirmed == false) {
-//         document.getElementById(`subtask-edit-task-overview${i}`).innerText = actualValueInputEditSubtask;
-//         disableContentEditingSubtask(i)
-//     }
-// }
-
-// function disableContentEditingSubtask(i) {
-//     let listItem = document.getElementById(`subtask-edit-task-overview${i}`);
-//     listItem.setAttribute("contenteditable", "false");
-//     document.getElementById(`subtask-edit-task-overview-container${i}`).style.background = 'none';
-//     document.getElementById(`pencil-icon-edit${i}`).classList.add('d-none');
-//     document.getElementById(`delete-icon-edit${i}`).classList.add('d-none');
-//     document.getElementById(`check-icon-edit${i}`).classList.add('d-none');
-//     document.getElementById(`icon-separator-edit-subtask${i}`).classList.add('d-none');
-// }
 
 /**
  * Adds a new subtask to the edit task.
