@@ -186,6 +186,7 @@ function findIndexOfCreatedContact(createdContactData) {
     let index = contacts.findIndex(c => c.id == createdContactData.id);
     showContactInTheDetails(index);
     setTimeout(() => {
+        document.getElementById('created-or-deleted-contact-advice').innerText = "Contact successfully created"
         document.getElementById('created-or-deleted-contact-advice').classList.remove('hide-contact-created-advice');
     }, 500);
 
@@ -441,6 +442,7 @@ async function getDataAndShowAdvice(data) {
     let createdOrDeletedContactAdvice = document.getElementById('created-or-deleted-contact-advice');
     createdOrDeletedContactAdvice.innerHTML = data
     setTimeout(() => {
+        createdOrDeletedContactAdvice.innerText = "Contact successfully deleted"
         createdOrDeletedContactAdvice.classList.remove('hide-contact-created-advice')
     }, 500)
 
