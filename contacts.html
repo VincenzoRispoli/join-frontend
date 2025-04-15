@@ -15,15 +15,15 @@
 <body onload="initContacts()">
     <main class="main-container-contacts">
         <aside id="sidenav" w3-include-html="./assets/templates/sidenav.html"></aside>
+        <!-- Edit Contact overlay -->
+        <div onclick="closeContactOverlay('opacity-edit-contact-overlay')" id="opacity-edit-contact-overlay"
+            class="opacity-edit-contact-overlay d-none">
+
+        </div>
+        <!-- End Edit Contact overlay -->
         <div class="header-and-content-container">
             <header id="header" w3-include-html="./assets/templates/header.html"></header>
             <div id="content-container-contacts" class="content-container-contacts">
-                <!-- Edit Contact overlay -->
-                <div onclick="closeContactOverlay('opacity-edit-contact-overlay')" id="opacity-edit-contact-overlay"
-                    class="opacity-edit-contact-overlay d-none">
-
-                </div>
-                <!-- End Edit Contact overlay -->
                 <div id="contact-list-container" class="contact-list-container">
                     <span onclick="showContactOverlay('add-contact-overlay-container')" class="add-contact-btn">Add new
                         contact
