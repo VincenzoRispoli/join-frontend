@@ -442,7 +442,6 @@ async function getDataAndShowAdvice(data) {
     let createdOrDeletedContactAdvice = document.getElementById('created-or-deleted-contact-advice');
     createdOrDeletedContactAdvice.innerHTML = data
     setTimeout(() => {
-        createdOrDeletedContactAdvice.innerText = "Contact successfully deleted"
         createdOrDeletedContactAdvice.classList.remove('hide-contact-created-advice')
     }, 500)
 
