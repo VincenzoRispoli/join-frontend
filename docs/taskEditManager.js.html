@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: taskEditManager.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: taskEditManager.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Edits a task by loading the edit form with the current task details.
+ * @param {number} id - The ID of the task to edit.
+ * @returns {Promise&lt;void>} - A promise that resolves once the edit form is displayed.
+ */
+async function editTask(id) {
+    selectedAssignees = [];
+    let findIndexOfSelectedTask = tasks.findIndex(task => task.id == id);
+    let selectedTask = tasks[findIndexOfSelectedTask];
+    let opacitySingleTaskContainer = document.getElementById('opacity-single-task-container');
+    opacitySingleTaskContainer.innerHTML = editTaskHTML(id, selectedTask);
+    loadDateInEditTask(selectedTask.due_date, id);
+    await loadAssigneedContactsListToEditTask(id, selectedTask)
+    await loadAllAssigneesFromDataBase(id, selectedTask.contacts);
+    highlightPriorityBtn(selectedTask);
+    await getSubtaskForEditTask(id)
+}
+
+/**
+ * Edits the priority of a task and updates the button highlight.
+ * @param {string} prio - The priority level to set.
+ * @param {Event} event - The event object triggered by the button click.
+ */
+function editPriority(prio, event) {
+    choosedPriorityEditTask = prio;
+    highlightBtnOnClick(prio.toLowerCase());
+    event.stopPropagation();
+}
+
+/**
+ * Displays the details of a selected task in a modal.
+ * @param {number} id - The ID of the task to display.
+ * @returns {Promise&lt;void>} - A promise that resolves once the task details are shown.
+ */
+async function showTask(id) {
+    let selectedTaskIndex = tasks.findIndex(task => task.id == id);
+    let selectedTask = tasks[selectedTaskIndex];
+    let categoryTitleColor = setTheColorOfCategoryTitle(selectedTask);
+    let priorityIcon = setIconOfPriorityBtn(selectedTask);
+    let opacityContainer = document.getElementById('opacity-single-task-container');
+    opacityContainer.innerHTML = taskCardOverviewHTML(id, selectedTask, categoryTitleColor, priorityIcon);
+    loadAssigneeList(id, selectedTask);
+    await getSubtasks(id);
+    document.getElementById('opacity-single-task-container').classList.remove('d-none');
+}
+
+/**
+ * Loads the list of assigned contacts for a task into the edit form.
+ * @param {number} id - The ID of the task.
+ * @param {Task} selectedTask - The task object to get the assignees from.
+ * @returns {Promise&lt;void>} - A promise that resolves once the assignees are loaded.
+ */
+async function loadAssigneedContactsListToEditTask(id, selectedTask) {
+    let assigneeListEditTask = document.getElementById(`task-assignedTo-list-edit-task-${id}`);
+    assigneeListEditTask.innerHTML = "";
+    for (let i = 0; i &lt; selectedTask.contacts.length; i++) {
+        let contact = selectedTask.contacts[i]
+        assigneeListEditTask.innerHTML += `
+         &lt;span id="assignee-edit-task-${id}-${i}" style="background: ${contact.badge_color}" class="contact-badge-task-overview">${contact.first_name.charAt(0).toUpperCase()}${contact.last_name.charAt(0).toUpperCase()}&lt;/span>
+        `
+    }
+}
+
+/**
+ * Loads all assignees from the database and updates the assignee list for the task edit form.
+ * @param {number} id - The ID of the task.
+ * @param {Array} contacts - The list of contacts currently assigned to the task.
+ * @returns {Promise&lt;void>} - A promise that resolves once the assignees are loaded.
+ */
+async function loadAllAssigneesFromDataBase(id, contacts) {
+    let response = await fetch(contactsUrl);
+    assignees = await response.json();
+    let allAssigneesEditTaskContainer = document.getElementById(`all-assignee-task-edit-container-${id}`);
+    allAssigneesEditTaskContainer.innerHTML = "";
+    for (let j = 0; j &lt; assignees.length; j++) {
+        let assignee = assignees[j];
+        let isAssigned = contacts.some(contact => contact.id == assignee.id);
+        if (isAssigned) {
+            selectedAssignees.push(assignee.id);
+            allAssigneesEditTaskContainer.innerHTML += assigneeCheckedHTML(j, assignee)
+        } else {
+            allAssigneesEditTaskContainer.innerHTML += assigneeNoCheckedHTML(j, assignee);
+        }
+    }
+}
+
+/**
+ * Retrieves the subtasks of a task.
+ * 
+ * @param {number} taskId - The ID of the task whose subtasks are being fetched.
+ */
+async function getSubtasks(taskId) {
+    try {
+        await getSubtasksData(taskId)
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+/**
+ * Retrieves the subtasks of a task for editing purposes.
+ * 
+ * @param {number} taskId - The ID of the task whose subtasks are being fetched for editing.
+ */
+async function getSubtaskForEditTask(taskId) {
+    try {
+        getSubtasksDataForEditTask(taskId);
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+/**
+ * Allows editing of a subtask in the task overview.
+ * 
+ * @param {number} i - The index of the subtask being edited.
+ */
+function editSubtaskEditOverview(i, event) {
+    event.stopPropagation();
+    actualValueInputEditSubtask = document.getElementById(`subtask-edit-task-overview${i}`).innerText;
+    subtaskIsClicked = true;
+    let listItem = document.getElementById(`subtask-edit-task-overview${i}`);
+    listItem.setAttribute("contenteditable", "true");
+    listItem.focus();
+    document.getElementById(`pencil-icon-edit${i}`).classList.add('d-none');
+    document.getElementById(`check-icon-edit${i}`).classList.remove('d-none');
+}
+
+/**
+ * Disables content editing for a subtask.
+ * 
+ * @param {number} i - The index of the subtask being edited.
+ */
+function confirmContentEditingSubtask(i, event) {
+    event.stopPropagation();
+    let listItem = document.getElementById(`subtask-edit-task-overview${i}`);
+    listItem.setAttribute("contenteditable", "false");
+    document.getElementById(`subtask-edit-task-overview-container${i}`).style.background = 'none';
+    document.getElementById(`pencil-icon-edit${i}`).classList.add('d-none');
+    document.getElementById(`delete-icon-edit${i}`).classList.add('d-none');
+    document.getElementById(`check-icon-edit${i}`).classList.add('d-none');
+    document.getElementById(`icon-separator-edit-subtask${i}`).classList.add('d-none');
+    subtaskIsClicked = false;
+}
+
+/**
+ * Adds a new subtask to the edit task.
+ * 
+ * @param {number} id - The ID of the task to which the subtask is being added.
+ * @param {Event} event - The event that triggered the function call.
+ */
+async function addSubtaskEditTask(id, event) {
+    let subtaskTitle = document.getElementById(`input-subtask-edit-task${id}`);
+    if (subtaskTitle.value.length > 0) {
+        let newSubtask = new Subtask(subtaskTitle.value);
+        newSubtask.task_id = id
+        try {
+            await postAndTheGetNewSubtaskEditTask(newSubtask);
+            clearAddSubtaskInputEdit(id, event);
+        } catch (e) {
+            console.log(e);
+        }
+    } else {
+        clearAddSubtaskInputEdit(id, event);
+    }
+}
+
+/**
+ * Updates the title of a subtask related to a task.
+ * 
+ * @param {number} i - The index of the subtask being edited.
+ * @param {number} taskId - The ID of the task to which the subtask belongs.
+ */
+async function updateTitleTaskRelatedSubtask(i, taskId, event) {
+    confirmContentEditingSubtask(i, event)
+    let editedSubtask = taskRelatedSubtaskList[i];
+    let id = editedSubtask.id
+    editedSubtask.task_id = taskId
+    editedSubtask.title = document.getElementById(`subtask-edit-task-overview${i}`).innerText;
+    try {
+        await updateEditedTitle(id, editedSubtask);
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+/**
+ * Updates the completion status of a subtask related to a task.
+ * 
+ * @param {number} i - The index of the subtask being updated.
+ * @param {number} taskId - The ID of the task to which the subtask belongs.
+ * @param {HTMLInputElement} checkbox - The checkbox element indicating the completion status.
+ */
+async function updateTaskRelatedSubtask(i, taskId, checkbox) {
+    let selectedSubtask = taskRelatedSubtaskList[i];
+    selectedSubtask.task_id = taskId
+    let id = selectedSubtask.id
+    if (checkbox &amp;&amp; checkbox.checked) {
+        selectedSubtask.is_completed = true;
+    } else if (checkbox) {
+        selectedSubtask.is_completed = false;
+    }
+    try {
+        updateCompletedStatusOfSubtask(id, selectedSubtask)
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+/**
+ * Clears the input field used for adding a new subtask.
+ * 
+ * @param {number} id - The ID of the task for which the subtask is being added.
+ */
+function clearInputAddSubtask(id) {
+    document.getElementById(`input-subtask-edit-task${id}`).value = "";
+}
+
+/**
+ * Deletes a task from the database.
+ * 
+ * @param {number} id - The ID of the task to be deleted.
+ */
+async function deleteTask(id) {
+    let singleTaskUrl = tasksUrl + `${id}/`;
+    try {
+        await deleteTaskData(singleTaskUrl);
+    } catch (e) {
+        console.error(e);
+    }
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#actualValueInputEditSubtask">actualValueInputEditSubtask</a></li><li><a href="global.html#addSubtaskEditTask">addSubtaskEditTask</a></li><li><a href="global.html#awaitFeedBack">awaitFeedBack</a></li><li><a href="global.html#backToAllTask">backToAllTask</a></li><li><a href="global.html#capitalizeAssignee">capitalizeAssignee</a></li><li><a href="global.html#checkSearchTextAndBackToAllTasksButtons">checkSearchTextAndBackToAllTasksButtons</a></li><li><a href="global.html#choosedPriorityEditTask">choosedPriorityEditTask</a></li><li><a href="global.html#clearInputAddSubtask">clearInputAddSubtask</a></li><li><a href="global.html#closeAddTaskOverview">closeAddTaskOverview</a></li><li><a href="global.html#closeDragTasksMobile">closeDragTasksMobile</a></li><li><a href="global.html#closeTaskOverview">closeTaskOverview</a></li><li><a href="global.html#confirmContentEditingSubtask">confirmContentEditingSubtask</a></li><li><a href="global.html#creationTaskState">creationTaskState</a></li><li><a href="global.html#deleteTask">deleteTask</a></li><li><a href="global.html#divideTaskByCategory">divideTaskByCategory</a></li><li><a href="global.html#dones">dones</a></li><li><a href="global.html#dragTaskMobile">dragTaskMobile</a></li><li><a href="global.html#dropDownMenuClosed">dropDownMenuClosed</a></li><li><a href="global.html#editAndCreateNewTask">editAndCreateNewTask</a></li><li><a href="global.html#editPriority">editPriority</a></li><li><a href="global.html#editSubtaskEditOverview">editSubtaskEditOverview</a></li><li><a href="global.html#editTask">editTask</a></li><li><a href="global.html#getLoggedUser">getLoggedUser</a></li><li><a href="global.html#getSubtaskForEditTask">getSubtaskForEditTask</a></li><li><a href="global.html#getSubtasks">getSubtasks</a></li><li><a href="global.html#inProgress">inProgress</a></li><li><a href="global.html#initBoard">initBoard</a></li><li><a href="global.html#iterateTheMobileStatesInTheMobileOptionsContainer">iterateTheMobileStatesInTheMobileOptionsContainer</a></li><li><a href="global.html#loadAllAssigneesFromDataBase">loadAllAssigneesFromDataBase</a></li><li><a href="global.html#loadAssigneedContactsListToEditTask">loadAssigneedContactsListToEditTask</a></li><li><a href="global.html#loadAssigneesInTheCard">loadAssigneesInTheCard</a></li><li><a href="global.html#loadAwaitFeedbackContainer">loadAwaitFeedbackContainer</a></li><li><a href="global.html#loadDateInEditTask">loadDateInEditTask</a></li><li><a href="global.html#loadDoneContainer">loadDoneContainer</a></li><li><a href="global.html#loadSubtasksInTheCardOverview">loadSubtasksInTheCardOverview</a></li><li><a href="global.html#loadSubtasksInTheEditTaskOverview">loadSubtasksInTheEditTaskOverview</a></li><li><a href="global.html#loadTasks">loadTasks</a></li><li><a href="global.html#loadTodoContainer">loadTodoContainer</a></li><li><a href="global.html#loadinProgressContainer">loadinProgressContainer</a></li><li><a href="global.html#mobileStates">mobileStates</a></li><li><a href="global.html#modifyCardCategory">modifyCardCategory</a></li><li><a href="global.html#mooveTo">mooveTo</a></li><li><a href="global.html#priorityType">priorityType</a></li><li><a href="global.html#rotateCard">rotateCard</a></li><li><a href="global.html#searchTasks">searchTasks</a></li><li><a href="global.html#sendEditedTask">sendEditedTask</a></li><li><a href="global.html#setIconOfPriorityBtn">setIconOfPriorityBtn</a></li><li><a href="global.html#setTasksInRelatedContainer">setTasksInRelatedContainer</a></li><li><a href="global.html#setTheColorOfCategoryTitle">setTheColorOfCategoryTitle</a></li><li><a href="global.html#setTheNewStateToMoovedTask">setTheNewStateToMoovedTask</a></li><li><a href="global.html#showCreateTaskOverview">showCreateTaskOverview</a></li><li><a href="global.html#showDropDownAssigneesEditTask">showDropDownAssigneesEditTask</a></li><li><a href="global.html#showPopUpDragTaskMobile">showPopUpDragTaskMobile</a></li><li><a href="global.html#showProgressBarAndCountInfos">showProgressBarAndCountInfos</a></li><li><a href="global.html#showTask">showTask</a></li><li><a href="global.html#showTaskActionFailedAdvice">showTaskActionFailedAdvice</a></li><li><a href="global.html#showTaskDragUpdateFailedAdvice">showTaskDragUpdateFailedAdvice</a></li><li><a href="global.html#subtaskIsClicked">subtaskIsClicked</a></li><li><a href="global.html#taskRelatedSubtaskList">taskRelatedSubtaskList</a></li><li><a href="global.html#tasks">tasks</a></li><li><a href="global.html#tasksUrl">tasksUrl</a></li><li><a href="global.html#todos">todos</a></li><li><a href="global.html#updateTaskRelatedSubtask">updateTaskRelatedSubtask</a></li><li><a href="global.html#updateTitleTaskRelatedSubtask">updateTitleTaskRelatedSubtask</a></li><li><a href="global.html#windowWidthLessThan1110PxAndBoardSite">windowWidthLessThan1110PxAndBoardSite</a></li><li><a href="global.html#windowWidthMoreThan1110PxAndBoardSite">windowWidthMoreThan1110PxAndBoardSite</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Tue Apr 15 2025 11:24:56 GMT+0200 (Mitteleuropäische Sommerzeit)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

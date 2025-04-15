@@ -32,6 +32,7 @@ h1 {
 .add-task-overview-wrapper {
     width: 80%;
     height: 80%;
+    max-height: 650px;
     padding: 48px 0px 48px 40px;
     background: #fff;
     border-radius: 30px;
@@ -150,6 +151,10 @@ h1 {
     flex-direction: column;
 }
 
+.assigned-to-title {
+    margin-bottom: 16px;
+}
+
 .task-assigned-to-list {
     margin-top: 16px;
     display: flex;
@@ -211,8 +216,8 @@ h1 {
     font-weight: 400;
 }
 
-.task-overview-btn:hover{
-   color: #29ABE2;
+.task-overview-btn:hover {
+    color: #29ABE2;
 }
 
 .advice-container-edit-task {
@@ -542,7 +547,7 @@ h1 {
     cursor: pointer;
 }
 
-.confirm-edit-task-btn:hover{
+.confirm-edit-task-btn:hover {
     background: #29ABE2;
 }
 
@@ -580,8 +585,6 @@ h1 {
     margin-top: 8px;
     height: 120px;
     overflow-y: scroll;
-    padding: 4px;
-    border: 1px solid rgb(209, 209, 209);
     border-radius: 10px;
     transition: all 0.3s cubic-bezier(.215, .61, .355, 1);
     height: 0px

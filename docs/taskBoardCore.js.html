@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: taskBoardCore.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: taskBoardCore.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Array containing all tasks.
+ * @type {Array}
+ */
+let tasks = [];
+
+let cardContainer;
+let currentDraggedCard;
+
+/**
+ * Array of tasks in the "To-Do" state.
+ * @type {Array}
+ */
+let todos;
+
+/**
+ * Array of tasks in the "In Progress" state.
+ * @type {Array}
+ */
+let inProgress;
+
+/**
+ * Array of tasks in the "Await Feedback" state.
+ * @type {Array}
+ */
+let awaitFeedBack;
+
+/**
+ * Array of tasks in the "Done" state.
+ * @type {Array}
+ */
+let dones;
+
+let todoContainer;
+let inProgressContainer;
+let awaitFeedbackContainer;
+let doneContainer;
+
+/**
+ * Tracks the current task creation state.
+ * @type {boolean}
+ */
+let creationTaskState;
+
+/**
+ * API endpoint for fetching task data.
+ * @type {string}
+ */
+let tasksUrl = 'http://127.0.0.1:8000/kanban/tasks/';
+
+/**
+ * List of subtasks related to a specific task.
+ * @type {Array}
+ */
+let taskRelatedSubtaskList = [];
+
+/**
+ * Indicates whether the dropdown menu is closed.
+ * @type {boolean}
+ */
+let dropDownMenuClosed = true;
+
+/**
+ * Stores the selected priority level for editing a task.
+ * @type {string}
+ */
+let choosedPriorityEditTask;
+
+/**
+ * Stores the priority type of a task.
+ * @type {string}
+ */
+let priorityType;
+
+/**
+ * Indicates whether a subtask has been clicked.
+ * @type {boolean}
+ */
+let subtaskIsClicked = false;
+
+let subtaskChangesConfirmed = false;
+
+/**
+ * Stores the current value of an input field when editing a subtask.
+ * @type {string}
+ */
+let actualValueInputEditSubtask;
+
+let selectedTaskToDragMobile;
+
+/**
+ * List of  task states for mobile views.
+ * @type {Array&lt;{technical-state: string, state: string}>}
+ */
+let mobileStates = [
+    {
+        'technical-state': 'todo',
+        'state': 'To-Do'
+    },
+    {
+        'technical-state': 'in-progress',
+        'state': 'In Progress'
+    },
+    {
+        'technical-state': 'await-feedback',
+        'state': 'Await Feedback'
+    },
+    {
+        'technical-state': 'done',
+        'state': 'Done'
+    }
+];
+
+/**
+ * Initializes the Kanban board by verifying authentication and loading tasks.
+ * Redirects to the login page if the user is not authenticated.
+ * @async
+ */
+async function initBoard() {
+    authenticated = JSON.parse(localStorage.getItem('authenticated'));
+    if (authenticated) {
+        await includeHTML();
+        highlightNavLink();
+        loggedUser = await getLoggedUser();
+        await setInitialsCurrentUserInTheHeader(loggedUser);
+        await loadTasks();
+    } else {
+        window.location.href = 'login.html';
+    }
+}
+
+/**
+ * Retrieves the currently logged-in user from local storage.
+ * @async
+ * @returns {Promise&lt;Object>} The logged-in user object.
+ */
+async function getLoggedUser() {
+    let user = JSON.parse(localStorage.getItem('currentUser'));
+    return user;
+}
+
+/**
+ * Loads tasks from the backend and categorizes them.
+ * If the user is on the board page, tasks are displayed in their respective containers.
+ * @async
+ */
+async function loadTasks() {
+    try {
+        await getTaskData();
+    } catch (e) {
+        console.log(e);
+    }
+    searchTasks();
+    divideTaskByCategory();
+
+    if (window.location.href === 'http://127.0.0.1:5500/board.html') {
+        setTasksInRelatedContainer();
+        await assignRelatedSubtaskToTask();
+    }
+}
+
+/**
+ * Updates the progress bars and subtask counts for each task.
+ * @param {Array} subtasksData - The list of all subtasks.
+ */
+function showProgressBarAndCountInfos(subtasksData) {
+    tasks.forEach(task => {
+        let relatedSubtasks = subtasksData.filter(subtask => subtask.task == task.id);
+        let completedSubtask = relatedSubtasks.filter(subtask => subtask['is_completed'] == true);
+        let percentual;
+        if (relatedSubtasks.length == 0) {
+            percentual = 0;
+        } else {
+            percentual = (completedSubtask.length / relatedSubtasks.length) * 100;
+        }
+        document.getElementById(`progress-bar-${task.id}`).style.width = `${percentual}%`;
+        document.getElementById(`completed-subtasks-${task.id}`).innerHTML = completedSubtask.length + ' /';
+        document.getElementById(`subtasks-count-${task.id}`).innerHTML = relatedSubtasks.length + ' subtasks';
+    });
+}
+
+/**
+ * Filters tasks based on the search input.
+ */
+function searchTasks() {
+    let searchText = checkSearchTextAndBackToAllTasksButtons();
+    if (searchText &amp;&amp; searchText.value.length > 0) {
+        let matchedTasks = tasks.filter(t => t.title.toLowerCase().includes(searchText.value.toLowerCase()));
+        tasks = matchedTasks;
+    }
+}
+
+/**
+ * Checks the search input field and toggles the "back to all tasks" button visibility.
+ * @returns {HTMLElement} The search input element.
+ */
+function checkSearchTextAndBackToAllTasksButtons() {
+    let searchText;
+    if (windowWidthMoreThan1110PxAndBoardSite()) {
+        searchText = document.getElementById('search-tasks-input');
+        if (searchText.value.length > 0) {
+            document.getElementById('all-tasks-btn').classList.remove('d-none');
+        }
+    } else if (windowWidthLessThan1110PxAndBoardSite()) {
+        searchText = document.getElementById('search-tasks-input-mobile');
+        if (searchText.value.length > 0) {
+            document.getElementById('cross-icon-search-input-mobile').classList.remove('d-none');
+        }
+    }
+    return searchText;
+}
+
+/**
+ * Checks if the window width is greater than 1110px and if the user is on the board page.
+ * @returns {boolean} True if the conditions are met, otherwise false.
+ */
+function windowWidthMoreThan1110PxAndBoardSite() {
+    return windowWidth > 1110 &amp;&amp; window.location.href == 'http://127.0.0.1:5500/board.html';
+}
+
+/**
+ * Checks if the window width is 1110px or less and if the user is on the board page.
+ * @returns {boolean} True if the conditions are met, otherwise false.
+ */
+function windowWidthLessThan1110PxAndBoardSite() {
+    return windowWidth &lt;= 1110 &amp;&amp; window.location.href == 'http://127.0.0.1:5500/board.html';
+}
+
+/**
+ * Categorizes tasks into different states: To-Do, In Progress, Await Feedback, and Done.
+ */
+function divideTaskByCategory() {
+    todos = tasks.filter(t => t['state'] == 'todo');
+    inProgress = tasks.filter(t => t['state'] == 'in-progress');
+    awaitFeedBack = tasks.filter(t => t['state'] == 'await-feedback');
+    dones = tasks.filter(t => t['state'] == 'done');
+}
+
+/**
+ * Rotates a task card when it is dragged.
+ * @param {number} i - The index of the task card.
+ * @param {string} id - The ID of the dragged task.
+ */
+function rotateCard(i, id) {
+    currentDraggedCard = id;
+    let getDraggedCard = tasks.filter(t => t.id == id)
+    let currentstate = getDraggedCard[0]['state'];
+    document.getElementById(`${currentstate}-card${i}`).classList.add('rotate-card')
+}
+
+/**
+ * Moves a task to a new state (e.g., from one column to another).
+ * @param {string} state - The new state to move the task to.
+ * @returns {Promise&lt;void>} - A promise that resolves once the task is moved.
+ */
+async function mooveTo(state) {
+    let singleTaskUrl = `http://127.0.0.1:8000/kanban/tasks/${currentDraggedCard}/`;
+    let movedTask = setTheNewStateToMoovedTask(state);
+    try {
+        await updateTaskState(movedTask, singleTaskUrl);
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+/**
+ * Sets the new state for a moved task.
+ * @param {string} state - The new state of the task.
+ * @returns {Task} - The task with the updated state.
+ */
+function setTheNewStateToMoovedTask(state) {
+    let indexOfMovedTask = tasks.findIndex(task => task.id == currentDraggedCard);
+    let movedTask = tasks[indexOfMovedTask];
+    movedTask.state = state;
+    return movedTask
+}
+
+/**
+ * Drags a task to a new state on mobile.
+ * 
+ * @param {string} state - The new state to which the task is being dragged.
+ */
+async function dragTaskMobile(state) {
+    let contacts_ids = selectedTaskToDragMobile.contacts.map(contact => contact.id);
+    selectedTaskToDragMobile.state = state;
+    selectedTaskToDragMobile.contacts_ids = contacts_ids
+    let id = selectedTaskToDragMobile.id;
+    let response = await fetch(tasksUrl + `${id}/`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Token ${loggedUser.token}`
+        },
+        body: JSON.stringify(selectedTaskToDragMobile)
+    });
+    if (response.ok) {
+        await loadTasks();
+        closeDragTasksMobile();
+    }
+}
+
+/**
+ * Closes the mobile drag task popup.
+ */
+function closeDragTasksMobile() {
+    document.getElementById('drag-tasks-mobile-container').classList.add('d-none');
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#actualValueInputEditSubtask">actualValueInputEditSubtask</a></li><li><a href="global.html#addSubtaskEditTask">addSubtaskEditTask</a></li><li><a href="global.html#awaitFeedBack">awaitFeedBack</a></li><li><a href="global.html#backToAllTask">backToAllTask</a></li><li><a href="global.html#capitalizeAssignee">capitalizeAssignee</a></li><li><a href="global.html#checkSearchTextAndBackToAllTasksButtons">checkSearchTextAndBackToAllTasksButtons</a></li><li><a href="global.html#choosedPriorityEditTask">choosedPriorityEditTask</a></li><li><a href="global.html#clearInputAddSubtask">clearInputAddSubtask</a></li><li><a href="global.html#closeAddTaskOverview">closeAddTaskOverview</a></li><li><a href="global.html#closeDragTasksMobile">closeDragTasksMobile</a></li><li><a href="global.html#closeTaskOverview">closeTaskOverview</a></li><li><a href="global.html#confirmContentEditingSubtask">confirmContentEditingSubtask</a></li><li><a href="global.html#creationTaskState">creationTaskState</a></li><li><a href="global.html#deleteTask">deleteTask</a></li><li><a href="global.html#divideTaskByCategory">divideTaskByCategory</a></li><li><a href="global.html#dones">dones</a></li><li><a href="global.html#dragTaskMobile">dragTaskMobile</a></li><li><a href="global.html#dropDownMenuClosed">dropDownMenuClosed</a></li><li><a href="global.html#editAndCreateNewTask">editAndCreateNewTask</a></li><li><a href="global.html#editPriority">editPriority</a></li><li><a href="global.html#editSubtaskEditOverview">editSubtaskEditOverview</a></li><li><a href="global.html#editTask">editTask</a></li><li><a href="global.html#getLoggedUser">getLoggedUser</a></li><li><a href="global.html#getSubtaskForEditTask">getSubtaskForEditTask</a></li><li><a href="global.html#getSubtasks">getSubtasks</a></li><li><a href="global.html#inProgress">inProgress</a></li><li><a href="global.html#initBoard">initBoard</a></li><li><a href="global.html#iterateTheMobileStatesInTheMobileOptionsContainer">iterateTheMobileStatesInTheMobileOptionsContainer</a></li><li><a href="global.html#loadAllAssigneesFromDataBase">loadAllAssigneesFromDataBase</a></li><li><a href="global.html#loadAssigneedContactsListToEditTask">loadAssigneedContactsListToEditTask</a></li><li><a href="global.html#loadAssigneesInTheCard">loadAssigneesInTheCard</a></li><li><a href="global.html#loadAwaitFeedbackContainer">loadAwaitFeedbackContainer</a></li><li><a href="global.html#loadDateInEditTask">loadDateInEditTask</a></li><li><a href="global.html#loadDoneContainer">loadDoneContainer</a></li><li><a href="global.html#loadSubtasksInTheCardOverview">loadSubtasksInTheCardOverview</a></li><li><a href="global.html#loadSubtasksInTheEditTaskOverview">loadSubtasksInTheEditTaskOverview</a></li><li><a href="global.html#loadTasks">loadTasks</a></li><li><a href="global.html#loadTodoContainer">loadTodoContainer</a></li><li><a href="global.html#loadinProgressContainer">loadinProgressContainer</a></li><li><a href="global.html#mobileStates">mobileStates</a></li><li><a href="global.html#modifyCardCategory">modifyCardCategory</a></li><li><a href="global.html#mooveTo">mooveTo</a></li><li><a href="global.html#priorityType">priorityType</a></li><li><a href="global.html#rotateCard">rotateCard</a></li><li><a href="global.html#searchTasks">searchTasks</a></li><li><a href="global.html#sendEditedTask">sendEditedTask</a></li><li><a href="global.html#setIconOfPriorityBtn">setIconOfPriorityBtn</a></li><li><a href="global.html#setTasksInRelatedContainer">setTasksInRelatedContainer</a></li><li><a href="global.html#setTheColorOfCategoryTitle">setTheColorOfCategoryTitle</a></li><li><a href="global.html#setTheNewStateToMoovedTask">setTheNewStateToMoovedTask</a></li><li><a href="global.html#showCreateTaskOverview">showCreateTaskOverview</a></li><li><a href="global.html#showDropDownAssigneesEditTask">showDropDownAssigneesEditTask</a></li><li><a href="global.html#showPopUpDragTaskMobile">showPopUpDragTaskMobile</a></li><li><a href="global.html#showProgressBarAndCountInfos">showProgressBarAndCountInfos</a></li><li><a href="global.html#showTask">showTask</a></li><li><a href="global.html#showTaskActionFailedAdvice">showTaskActionFailedAdvice</a></li><li><a href="global.html#showTaskDragUpdateFailedAdvice">showTaskDragUpdateFailedAdvice</a></li><li><a href="global.html#subtaskIsClicked">subtaskIsClicked</a></li><li><a href="global.html#taskRelatedSubtaskList">taskRelatedSubtaskList</a></li><li><a href="global.html#tasks">tasks</a></li><li><a href="global.html#tasksUrl">tasksUrl</a></li><li><a href="global.html#todos">todos</a></li><li><a href="global.html#updateTaskRelatedSubtask">updateTaskRelatedSubtask</a></li><li><a href="global.html#updateTitleTaskRelatedSubtask">updateTitleTaskRelatedSubtask</a></li><li><a href="global.html#windowWidthLessThan1110PxAndBoardSite">windowWidthLessThan1110PxAndBoardSite</a></li><li><a href="global.html#windowWidthMoreThan1110PxAndBoardSite">windowWidthMoreThan1110PxAndBoardSite</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Tue Apr 15 2025 11:24:56 GMT+0200 (Mitteleuropäische Sommerzeit)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -60,7 +60,7 @@ function taskCardOverviewHTML(id, selectedTask, categoryTitleColor, priorityIcon
                     </div>
                 </div>
                 <div class="assigned-to-container-task-overview"> 
-                <span>Assigned To:</span>
+                <span class="assigned-to-title">Assigned To:</span>
                 <div id="task-assignedTo-list-${id}" class="task-assigned-to-list">
                     <!-- Assigned contacts will be loaded here -->
                 </div>
@@ -135,7 +135,7 @@ function editTaskHTML(id, selectedTask) {
             </div>
         </div>
         <div class="assigned-to-container-task-overview">
-           <span>Assigned To:</span>
+           <span class="assigned-to-title">Assigned To:</span>
            <div class="input-search-assignee-container" onclick="showDropDownAssigneesEditTask(${id})">
                 <span class="input-search-assignee">Select contact to assign</span>
                 <img id="arrow-drop-down" class="arrow-drop-down" src="./assets/img/arrow_drop_down.png" alt="">
