@@ -221,6 +221,19 @@ function splitName(name) {
 }
 
 /**
+ * Clears all input fields in the "Add Contact" form.
+ * Prevents the event from bubbling up the DOM tree.
+ *
+ * @param {Event} event - The event object triggered by the cancel button click.
+ */
+function clearAddContactForm(event) {
+    event.stopPropagation();
+    document.getElementById('input-name').value = "";
+    document.getElementById('input-email').value = "";
+    document.getElementById('input-phone').value = "";
+}
+
+/**
  * Displays the contact overlay modal for adding or editing contacts.
  * @param {string} containerId - The ID of the container element for the overlay.
  */
@@ -499,4 +512,22 @@ function showEditOrDeleteContactBtnMobile(event) {
  */
 function closeEditOrDeleteContactBtnMobile() {
     document.getElementById('btn-contacts-details-container').classList.add('right-200');
+}
+
+/**
+ * Highlights the cancel button in the "Add Contact" form.
+ * Hides the default cross icon and shows the light blue version to indicate focus or hover.
+ */
+function highlightCancelBtnAddContact() {
+    document.getElementById('cross-icon-add-contact').classList.add('d-none');
+    document.getElementById('cross-light-blue-add-contact').classList.remove('d-none');
+}
+
+/**
+ * Reverts the cancel button in the "Add Contact" form to its default state.
+ * Shows the default cross icon and hides the light blue version.
+ */
+function turnCancelBtnAddContactOff() {
+    document.getElementById('cross-icon-add-contact').classList.remove('d-none');
+    document.getElementById('cross-light-blue-add-contact').classList.add('d-none');
 }

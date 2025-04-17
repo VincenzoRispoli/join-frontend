@@ -290,6 +290,14 @@
     .create-contact-advice {
         margin-bottom: 150px;
     }
+
+    .check-icon-add-contact {
+        height: 12px;
+    }
+
+    .cross-icon-add-contact {
+        height: 20px;
+    }
 }
 
 @media (max-width: 430px) {
@@ -323,5 +331,9 @@
     .create-contact-advice {
         margin-bottom: 170px;
         font-size: 16px;
+    }
+
+    .check-icon-add-contact {
+        height: 10px;
     }
 }

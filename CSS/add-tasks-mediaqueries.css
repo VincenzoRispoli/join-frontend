@@ -50,7 +50,7 @@
     .buttons-and-required-fields-advice-container {
         flex-direction: column-reverse;
         gap: 16px;
-        margin-bottom: 110px;
+        margin-bottom: 0;
         width: 100%;
     }
 
