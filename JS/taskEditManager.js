@@ -150,6 +150,7 @@ function confirmContentEditingSubtask(i, event) {
  * @param {Event} event - The event that triggered the function call.
  */
 async function addSubtaskEditTask(id, event) {
+    event.stopPropagation();
     let subtaskTitle = document.getElementById(`input-subtask-edit-task${id}`);
     if (subtaskTitle.value.length > 0) {
         let newSubtask = new Subtask(subtaskTitle.value);

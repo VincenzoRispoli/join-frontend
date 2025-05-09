@@ -7,7 +7,7 @@ form {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    gap: 96px;
+    gap: 85px;
     height: 100%;
 }
 
@@ -312,6 +312,14 @@ option {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.required-fields-advice {
+    width: 100%;
+    text-align: center;
+    color: red;
+    font-size: 21px;
+    font-weight: 500;
 }
 
 .buttons-and-required-fields-advice-container {

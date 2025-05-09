@@ -98,22 +98,33 @@
                             </div>
                             <form onsubmit="createContact(event); return false">
                                 <span class="add-contact-input-container">
-                                    <input id="input-name" placeholder="Name" class="add-contact-input" type="text">
+                                    <input id="input-first-name" placeholder="First Name" class="add-contact-input"
+                                        type="text">
                                     <img class="input-icon" src="./assets/img/person-icon.png" alt="">
                                 </span>
+                                <span style="color:red" class="error-add-contact-advice" id="error-advice-first-name"></span>
+                                <span class="add-contact-input-container">
+                                    <input id="input-last-name" placeholder="Last Name" class="add-contact-input"
+                                        type="text">
+                                    <img class="input-icon" src="./assets/img/person-icon.png" alt="">
+                                </span>
+                                <span style="color:red" class="error-add-contact-advice" id="error-advice-last-name"></span>
                                 <span class="add-contact-input-container">
                                     <input id="input-email" placeholder="Email" class="add-contact-input" type="email">
                                     <img class="input-icon" src="./assets/img/mail-icon.png" alt="">
                                 </span>
+                                <span style="color: red;" class="error-add-contact-advice" id="error-advice-email"></span>
                                 <span class="add-contact-input-container">
                                     <input id="input-phone" placeholder="Phone" class="add-contact-input" type="number">
                                     <img class="input-icon" src="./assets/img/phone-icon.png" alt="">
                                 </span>
+                                <span style="color: red;" class="error-add-contact-advice" id="error-advice-phone"></span>
                                 <span class="add-contact-overlay-btn-container">
                                     <button type="button" onclick="clearAddContactForm(event);return false"
                                         onmouseover="highlightCancelBtnAddContact()"
                                         onmouseleave="turnCancelBtnAddContactOff()" class="cancel-btn">Cancel
-                                        <img id="cross-icon-add-contact" class="cross-icon-add-contact" src="./assets/img/cross.png" alt="">
+                                        <img id="cross-icon-add-contact" class="cross-icon-add-contact"
+                                            src="./assets/img/cross.png" alt="">
                                         <img id="cross-light-blue-add-contact" class="cross-icon-add-contact d-none"
                                             src="./assets/img/cross-light-blue.png" alt="">
                                     </button>
@@ -140,7 +151,6 @@
 <script src="./JS/taskBoardCore.js"></script>
 <script src="./JS/taskCardRenderer.js"></script>
 <script src="./JS/taskEditManager.js"></script>
-<!-- <script src="./JS/board.js"></script> -->
 <script src="./templateFunctions/template-functions-contact.js"></script>
 <script src="./JS/contacts.js"></script>
 

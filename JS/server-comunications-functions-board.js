@@ -136,7 +136,7 @@ async function postAndTheGetNewSubtaskEditTask(newSubtask) {
         body: JSON.stringify(newSubtask)
     })
     let fetchedSubtask = await response.json();
-    let taskId = fetchedSubtask.task;
+    let taskId = fetchedSubtask.data.task;
     getSubtaskForEditTask(taskId);
 }
 

@@ -342,12 +342,12 @@ function createNewTaskFromTheForm(event) {
   event.preventDefault();
   title = document.getElementById('title');
   description = document.getElementById('description');
-  due_date = document.getElementById('date');
+  due_date = document.getElementById('date').value == "" ? null : document.getElementById('date').value;
   priority = choosedPriority;
   category = choosedCategory;
   state = checkState();
   contacts_ids = selectedAssignees;
-  let newTask = new Task(title.value, description.value, category, due_date.value, priority, contacts_ids, state);
+  let newTask = new Task(title.value, description.value, category, due_date, priority, contacts_ids, state);
   return newTask;
 }
 
@@ -377,12 +377,49 @@ async function postTheNewCreatedTask(newTask, event) {
       },
       body: JSON.stringify(newTask)
     });
-    if (taskResponse.ok) {
-      await getTaskDataAndPostSubtask(taskResponse);
-      await showSuccessfullTaskCreationAdvice(event)
-    }
+    await checkResponseThenCreateTaskOrThrowErrors(event, taskResponse)
   } catch (e) {
     showFailedTaskCreationAdvice(e);
+  }
+}
+
+/**
+ * Handles the response from a task creation request.
+ * If the response is successful, it retrieves the task data and posts a subtask,
+ * then displays a success message. If there are errors, it shows error messages accordingly.
+ *
+ * @async
+ * @function
+ * @param {Event} event - The event triggered by the task creation process.
+ * @param {Response} taskResponse - The fetch API response object from the task creation request.
+ * @throws Will not explicitly throw an error, but may call functions that update the UI to indicate failure.
+ */
+async function checkResponseThenCreateTaskOrThrowErrors(event, taskResponse) {
+  let response = await taskResponse.json();
+  if (response.ok == true) {
+    await getTaskDataAndPostSubtask(response);
+    await showSuccessfullTaskCreationAdvice(event, response.message)
+  } else {
+    showErrorsOfTaskCreationAdvices(response)
+  }
+}
+
+/**
+ * Displays error messages related to the task creation process.
+ * Updates the DOM to show validation errors for the title and due date fields.
+ *
+ * @function
+ * @param {Object} response - The response object containing error messages.
+ * @param {Object} response.data - An object containing specific error messages.
+ * @param {string} [response.data.title] - Error message related to the task title, if any.
+ * @param {string} [response.data.due_date] - Error message related to the task due date, if any.
+ */
+function showErrorsOfTaskCreationAdvices(response) {
+  if (response.data.title) {
+    document.getElementById('title-error-advice').innerText = response.data.title;
+  }
+  if (response.data.due_date) {
+    document.getElementById('due-date-error-advice').innerText = response.data.due_date;
   }
 }
 
@@ -393,18 +430,18 @@ async function postTheNewCreatedTask(newTask, event) {
  *
  * @param {Event} event - The event triggered when the task is created, used to close the task overview.
  */
-async function showSuccessfullTaskCreationAdvice(event) {
+async function showSuccessfullTaskCreationAdvice(event, message) {
   if (window.location.href == 'http://127.0.0.1:5500/board.html') {
     await loadTasks();
     closeAddTaskOverview(event);
     document.getElementById('task-created-advice-container-board').classList.remove('d-none');
-    document.getElementById('task-created-advice-board').innerText = 'Task successfully created';
+    document.getElementById('task-created-advice-board').innerText = message;
     setTimeout(() => {
       document.getElementById('task-created-advice-container-board').classList.add('d-none');
     }, 2000)
   } else {
     document.getElementById('task-created-advice-container').classList.remove('d-none');
-    document.getElementById('task-created-advice').innerText = 'Task successfully created';
+    document.getElementById('task-created-advice').innerText = message;
     setTimeout(() => {
       document.getElementById('task-created-advice-container').classList.add('d-none');
     }, 2000)
@@ -413,13 +450,12 @@ async function showSuccessfullTaskCreationAdvice(event) {
 
 /**
  * Displays an error message in the UI when task creation fails.
- * Logs the error to the console and updates the appropriate advice element
+ * Updates the appropriate advice element
  * depending on the current page.
  *
  * @param {any} e - The error object or message to be logged and used for debugging.
  */
 function showFailedTaskCreationAdvice(e) {
-  console.log(e);
   if (window.location.href == 'http://127.0.0.1:5500/board.html') {
     document.getElementById('task-created-advice-board').innerText = 'Task not created, a problem occurred';
   } else {
@@ -431,9 +467,9 @@ function showFailedTaskCreationAdvice(e) {
  * Retrieve task data from the response and send the subtasks to the backend.
  * @param {Response} taskResponse - The response object from the task creation.
  */
-async function getTaskDataAndPostSubtask(taskResponse) {
+async function getTaskDataAndPostSubtask(response) {
   try {
-    let taskData = await taskResponse.json();
+    let taskData = response.data
     if (taskData) {
       await sendSubtasks(taskData);
     }
@@ -531,17 +567,6 @@ function switchAllAssigneesCheckboxesToFalse() {
   checkboxes.forEach(c => {
     c.checked = false;
   });
-}
-
-/**
- * Check the validity of the task form inputs and enable the submit button if valid.
- */
-function checkValidityOfFormInputs() {
-  let form = document.getElementById('add-task-form');
-  if (form.checkValidity()) {
-    let submitButton = document.getElementById('submit-btn');
-    submitButton.disabled = false;
-  }
 }
 
 /**

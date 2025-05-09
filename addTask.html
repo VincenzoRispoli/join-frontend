@@ -32,13 +32,14 @@
                         <div class="left-block">
                             <div class="label-and-writeField-container">
                                 <label for="title">Title<b style="color:red">*</b></label>
-                                <input oninput="checkValidityOfFormInputs()" required id="title" minlength="3"
+                                <input id="title"
                                     class="input-title validation-element" type="text" placeholder="Enter a title..."
                                     name="title">
+                                <span style="color:red" id="title-error-advice"></span>
                             </div>
                             <div class="label-and-writeField-container">
                                 <label for="description">Description</label>
-                                <textarea oninput="checkValidityOfFormInputs()" required minlength="3" id="description"
+                                <textarea id="description"
                                     class="textarea validation-element" name="description"
                                     placeholder="Enter a description..." id=""></textarea>
                             </div>
@@ -60,8 +61,9 @@
                         <div class="rigth-block">
                             <div class="due-date-container">
                                 <label for="due-date">Date<b style="color:red">*</b></label>
-                                <input oninput="checkValidityOfFormInputs()" required id="date"
+                                <input id="date"
                                     class="input-date validation-element" type="date" name="due-date">
+                                <span style="color:red" id="due-date-error-advice"></span>
                             </div>
                             <div class="prio-container">
                                 <span>Prio</span>
@@ -108,6 +110,7 @@
                             </div>
                         </div>
                     </div>
+                    <span id="required-fields-advice" class="required-fields-advice"></span>
                     <div class="buttons-and-required-fields-advice-container">
                         <span><b style="color:red">*</b>This field is required</span>
                         <div class="buttons-container">
@@ -119,7 +122,7 @@
                                 <img id="cross-icon-light-blue" class="cross-icon-clear-task d-none"
                                     src="./assets/img/cross-light-blue.png" alt="">
                             </button>
-                            <button id="submit-btn" type="submit" disabled="true" class="form-btn">
+                            <button id="submit-btn" type="submit" class="form-btn">
                                 Create Task
                                 <img src="./assets/img/check-white.png" class="check-icon-clear-task" alt="">
                             </button>
@@ -141,7 +144,6 @@
 <script src="./JS/taskBoardCore.js"></script>
 <script src="./JS/taskCardRenderer.js"></script>
 <script src="./JS/taskEditManager.js"></script>
-<!-- <script src="./JS/board.js"></script> -->
 <script src="./JS/contacts.js"></script>
 <script src="./JS/addTasks.js"></script>
 

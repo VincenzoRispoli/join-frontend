@@ -188,14 +188,15 @@ function addTaskOverviewHTML() {
                     <div class="form-container">
                         <div class="left-block">
                             <div class="label-and-writeField-container">
-                                <label for="title">Title</label>
-                                <input oninput="checkValidityOfFormInputs()" required id="title" minlength="3"
+                                <label for="title">Title<b style="color:red">*</b></label>
+                                <input id="title"
                                     class="input-title validation-element" type="text" placeholder="Enter a title..."
                                     name="title">
+                                <span style="color:red" id="title-error-advice"></span>
                             </div>
                             <div class="label-and-writeField-container">
                                 <label for="description">Description</label>
-                                <textarea oninput="checkValidityOfFormInputs()" required minlength="3" id="description"
+                                <textarea id="description"
                                     class="textarea validation-element" name="description"
                                     placeholder="Enter a description..." id=""></textarea>
                             </div>
@@ -216,9 +217,10 @@ function addTaskOverviewHTML() {
                         <span class="form-separator"></span>
                         <div class="rigth-block">
                             <div class="due-date-container">
-                                <label for="due-date">Date</label>
-                                <input oninput="checkValidityOfFormInputs()" required id="date"
+                                <label for="due-date">Date<b style="color:red">*</b></label>
+                                <input id="date"
                                     class="input-date validation-element" type="date" name="due-date">
+                                <span style="color:red" id="due-date-error-advice"></span>
                             </div>
                             <div class="prio-container">
                                 <span>Prio</span>
@@ -237,7 +239,7 @@ function addTaskOverviewHTML() {
                                 </div>
                             </div>
                             <div class="category-container">
-                                <label for="categories">Category</label>
+                                <label for="categories">Category<b style="color:red">*</b></label>
                                 <select onclick="selectCategory()" name="categories" id="categories" class="categories">
                                     <option id="technical-task" value="technical-task">Technical Task</option>
                                     <option id="user-story" value="user-story">User Story</option>
@@ -266,6 +268,7 @@ function addTaskOverviewHTML() {
                         </div>
                     </div>
                     <div class="buttons-container">
+                    <span><b style="color:red">*</b>This field is required</span>
                     <button onclick="clearAddTaskForm()" onmouseover="highlightClearButton()"
                             onmouseleave="turnClearBtnOff()" class="form-btn-guest-login">
                             Clear
@@ -274,7 +277,7 @@ function addTaskOverviewHTML() {
                             <img id="cross-icon-light-blue" class="cross-icon-clear-task d-none"
                                 src="./assets/img/cross-light-blue.png" alt="">
                         </button>
-                        <button id="submit-btn" type="submit" disabled="true" class="form-btn">
+                        <button id="submit-btn" type="submit" class="form-btn">
                             Create Task
                             <img src="./assets/img/check-white.png" class="check-icon-clear-task" alt="">
                         </button>
@@ -291,12 +294,12 @@ function addTaskOverviewHTML() {
  * @param {Object} assignee - The assignee object containing details like first name, last name, and badge color.
  * @returns {string} The HTML markup for the checked assignee.
  */
-function assigneeCheckedHTML(j, assignee) {
+function assigneeCheckedHTML(i, assignee) {
     return /*html*/ `
-        <div onclick="selectAssigneesForEditTask(${j})" id="assignee-edit-task${j}" class="assignee">
+        <div onclick="selectAssigneesForEditTask(${i})" id="assignee-edit-task${i}" class="assignee">
             <span style="background: ${assignee.badge_color}" class="contact-badge-task-overview">${assignee.first_name.charAt(0)}${assignee.last_name.charAt(0)}</span>
             <span class="assignee-name">${assignee.first_name} ${assignee.last_name}</span>
-            <input id="input-checkbox-assignees-edit-task${j}" type="checkbox" checked="true">
+            <input id="input-checkbox-assignees-edit-task${i}" type="checkbox" checked="true">
         </div>
     `
 }

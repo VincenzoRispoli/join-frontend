@@ -5,9 +5,6 @@ let germanAlphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"
 
 let contactsUrl = 'http://127.0.0.1:8000/kanban/contacts/';
 
-let firstName;
-let lastName;
-
 /**
  * Initializes the contact book by checking authentication status and loading the required data.
  * @async
@@ -140,15 +137,15 @@ function showContactInTheDetails(contactId) {
 async function createContact(event) {
     let loggedUser = JSON.parse(localStorage.getItem('currentUser'));
     event.preventDefault();
-    let name = document.getElementById('input-name');
+    let firstName = document.getElementById('input-first-name');
+    let lastName = document.getElementById('input-last-name');
     let email = document.getElementById('input-email');
     let phone = document.getElementById('input-phone');
     let randomColor = Math.floor(Math.random() * (badgeColors.length - 1));
     let badgeColor = badgeColors[randomColor];
-    splitName(name.value);
-    let newContact = new Contact(loggedUser.user_id, firstName, lastName, email.value, phone.value, badgeColor);
+    let newContact = new Contact(loggedUser.user_id, firstName.value, lastName.value, email.value, phone.value, badgeColor);
     try {
-        await postNewContact(newContact, loggedUser, name, email, phone);
+        await postNewContact(newContact, loggedUser, firstName, lastName, email, phone);
     } catch (e) {
         console.log(e);
     }
@@ -163,7 +160,7 @@ async function createContact(event) {
  * @param {HTMLElement} email - The email input field.
  * @param {HTMLElement} phone - The phone input field.
  */
-async function postNewContact(newContact, loggedUser, name, email, phone) {
+async function postNewContact(newContact, loggedUser, firstName, lastName, email, phone) {
     let response = await fetch(contactsUrl, {
         method: 'POST',
         headers: {
@@ -173,9 +170,13 @@ async function postNewContact(newContact, loggedUser, name, email, phone) {
         body: JSON.stringify(newContact)
     });
     let createdContactData = await response.json();
-    await loadContactBook();
-    await clearFormContactValueAndLoadContacts(name, email, phone);
-    findIndexOfCreatedContact(createdContactData);
+    if (createdContactData.ok == true) {
+        await loadContactBook();
+        await clearFormContactValueAndLoadContacts(firstName, lastName, email, phone);
+        findIndexOfCreatedContact(createdContactData);
+    } else {
+        showErrorsOfContactsCreation(createdContactData);
+    }
 }
 
 /**
@@ -183,15 +184,73 @@ async function postNewContact(newContact, loggedUser, name, email, phone) {
  * @param {Object} createdContactData - The data of the created contact.
  */
 function findIndexOfCreatedContact(createdContactData) {
-    let index = contacts.findIndex(c => c.id == createdContactData.id);
+    let contactData = createdContactData.data
+    let index = contacts.findIndex(c => c.id == contactData.id);
     showContactInTheDetails(index);
     setTimeout(() => {
-        document.getElementById('created-or-deleted-contact-advice').innerText = "Contact successfully created"
+        document.getElementById('created-or-deleted-contact-advice').innerText = createdContactData.message
         document.getElementById('created-or-deleted-contact-advice').classList.remove('hide-contact-created-advice');
     }, 500);
 
     setTimeout(() => {
         document.getElementById('created-or-deleted-contact-advice').classList.add('hide-contact-created-advice');
+    }, 3000);
+}
+
+/**
+ * Displays error messages related to contact creation.
+ * Retrieves HTML elements for each input error field and passes them to a helper function.
+ *
+ * @function
+ * @param {Object} createdContactData - The response object containing error messages for contact fields.
+ */
+function showErrorsOfContactsCreation(createdContactData) {
+    let firstNameInput = document.getElementById('error-advice-first-name')
+    let lastNameInput = document.getElementById('error-advice-last-name')
+    let emailInput = document.getElementById('error-advice-email')
+    let phoneInput = document.getElementById('error-advice-phone');
+
+    showErrorsUnderTheFields(createdContactData, firstNameInput, lastNameInput, emailInput, phoneInput)
+}
+
+/**
+ * Populates error messages below the respective input fields for contact creation.
+ * Also sets a timeout to clear the errors after 3 seconds.
+ *
+ * @function
+ * @param {Object} createdContactData - The object containing field-specific error messages.
+ * @param {HTMLElement} firstNameInput - DOM element where first name error message is displayed.
+ * @param {HTMLElement} lastNameInput - DOM element where last name error message is displayed.
+ * @param {HTMLElement} emailInput - DOM element where email error message is displayed.
+ * @param {HTMLElement} phoneInput - DOM element where phone error message is displayed.
+ */
+function showErrorsUnderTheFields(createdContactData, firstNameInput, lastNameInput, emailInput, phoneInput) {
+    if (createdContactData.data.first_name) {
+        firstNameInput.innerText = createdContactData.data.first_name
+    }
+    if (createdContactData.data.last_name) {
+        lastNameInput.innerText = createdContactData.data.last_name
+    }
+    if (createdContactData.data.email) {
+        emailInput.innerText = createdContactData.data.email
+    }
+    if (createdContactData.data.phone) {
+        phoneInput.innerText = createdContactData.data.phone
+    }
+    setTimeout(hideErrorsAfter3Seconds, 3000)
+}
+
+/**
+ * Clears all error messages related to contact creation after 3 seconds.
+ * Targets all elements with the class 'error-add-contact-advice' and clears their inner text.
+ *
+ * @function
+ */
+function hideErrorsAfter3Seconds() {
+    let errorsAddContactAdvices = document.getElementsByClassName('error-add-contact-advice')
+    let errorsAsArray = [...errorsAddContactAdvices]
+    errorsAsArray.forEach(errorAdvice => {
+        errorAdvice.innerText = ""
     }, 3000);
 }
 
@@ -208,16 +267,6 @@ async function clearFormContactValueAndLoadContacts(name, email, phone) {
     phone.value = "";
     await loadContactBook();
     document.getElementById('add-contact-overlay-container').classList.add('d-none');
-}
-
-/**
- * Splits a contact's full name into first and last names.
- * @param {string} name - The full name of the contact.
- */
-function splitName(name) {
-    let splittedName = name.split(" ");
-    firstName = splittedName[0];
-    lastName = splittedName[1];
 }
 
 /**
@@ -269,7 +318,8 @@ function showEditContactOverview(contactId) {
     let opacityContainer = document.getElementById('opacity-edit-contact-overlay');
     opacityContainer.classList.remove('d-none');
     opacityContainer.innerHTML = editContactOverviewHTML(contactId, contact);
-    document.getElementById(`input-name-${contactId}`).value = `${contact.first_name} ${contact.last_name}`;
+    document.getElementById(`input-first-name-${contactId}`).value = contact.first_name;
+    document.getElementById(`input-last-name-${contactId}`).value = contact.last_name;
     document.getElementById(`input-email-${contactId}`).value = contact.email;
     document.getElementById(`input-phone-${contactId}`).value = contact.phone;
     if (windowWidth <= 1050) {
@@ -326,12 +376,12 @@ async function editContact(contactId) {
     let selectedContact = contacts[contactId];
     let id = selectedContact.id
     let user = selectedContact.user;
-    let name = document.getElementById(`input-name-${contactId}`);
+    let firstName = document.getElementById(`input-first-name-${contactId}`);
+    let lastName = document.getElementById(`input-last-name-${contactId}`);
     let email = document.getElementById(`input-email-${contactId}`);
     let phone = document.getElementById(`input-phone-${contactId}`);
     let badgeColor = selectedContact.badge_color;
-    splitName(name.value);
-    let editedContact = new Contact(user, firstName, lastName, email.value, phone.value, badgeColor);
+    let editedContact = new Contact(user, firstName.value, lastName.value, email.value, phone.value, badgeColor);
     try {
         await updateContact(id, editedContact);
     } catch (e) {
@@ -373,25 +423,15 @@ async function updateContactAndShowAdvices(loggedUser, id, editedContact) {
         body: JSON.stringify(editedContact)
     });
     let responseData = await response.json();
-    checkIfResponseOfUpdateContactIsOk(response, responseData);
-    await loadContactBook();
-    let indexOfContact = contacts.findIndex(contact => contact.id == id);
-    if (indexOfContact != -1) {
-        closeEditContactOverview(indexOfContact);
-    }
-}
-
-/**
- * Checks if the response of the update request is successful and displays an appropriate message.
- * 
- * @param {Response} response - The response object from the server.
- * @param {Object} responseData - The data returned from the server in response to the update request.
- */
-function checkIfResponseOfUpdateContactIsOk(response, responseData) {
-    if (!response.ok) {
-        getDataAndShowAdvice(responseData.detail) // error message
-    } else {
+    if (responseData.ok == true) {
         getDataAndShowAdvice(responseData.message) // success message
+        await loadContactBook();
+        let indexOfContact = contacts.findIndex(contact => contact.id == id);
+        if (indexOfContact != -1) {
+            closeEditContactOverview(indexOfContact);
+        }
+    } else {
+        showUpdateContactErrorMessages(responseData.data);
     }
 }
 
@@ -435,14 +475,10 @@ async function deleteContactAndShowAdvices(id, loggedUser) {
             'Authorization': `Token ${loggedUser.token}`
         }
     })
-    let data = await response.json();
-    if (!response.ok) {
-        getDataAndShowAdvice(data.detail) // error message
-    } else {
-        document.getElementById('contact-details').innerHTML = "";
-        await getDataAndShowAdvice(data.message); // success message
-        await loadContactBook().then(() => showRamdomContactAfterDelete())
-    }
+    let contactData = await response.json();
+    document.getElementById('contact-details').innerHTML = "";
+    await getDataAndShowAdvice(contactData.message); // success message
+    await loadContactBook().then(() => showRamdomContactAfterDelete())
 }
 
 /**
@@ -461,6 +497,23 @@ async function getDataAndShowAdvice(data) {
     setTimeout(() => {
         createdOrDeletedContactAdvice.classList.add('hide-contact-created-advice')
     }, 3000)
+}
+
+function showUpdateContactErrorMessages(data) {
+    if (data.first_name) {
+        document.getElementById('error-advice-first-name').innerText = data.first_name
+    }
+    if (data.last_name) {
+        document.getElementById('error-advice-last-name').innerText = data.last_name
+    }
+    if (data.email) {
+        document.getElementById('error-advice-email').innerText = data.email
+    }
+    if (data.phone) {
+        document.getElementById('error-advice-phone').innerText = data.phone
+    }
+
+    setTimeout(hideErrorsAfter3Seconds, 3000)
 }
 
 /**
