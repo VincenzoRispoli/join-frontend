@@ -19,7 +19,7 @@
     <main class="main-container">
         <aside id="sidenav" w3-include-html="./assets/templates/sidenav.html"></aside>
         <div class="header-and-content-container">
-            <!-- task created or delered advice -->
+            <!-- task created or deleted advice -->
             <div id="task-created-advice-container" class="task-created-advice-container d-none">
                 <span id="task-created-advice" class="task-created-advice"></span>
             </div>
@@ -35,7 +35,7 @@
                                 <input id="title"
                                     class="input-title validation-element" type="text" placeholder="Enter a title..."
                                     name="title">
-                                <span style="color:red" id="title-error-advice"></span>
+                                <span style="color:red" class="error-advice-addTask" id="title-error-advice"></span>
                             </div>
                             <div class="label-and-writeField-container">
                                 <label for="description">Description</label>
@@ -63,7 +63,7 @@
                                 <label for="due-date">Date<b style="color:red">*</b></label>
                                 <input id="date"
                                     class="input-date validation-element" type="date" name="due-date">
-                                <span style="color:red" id="due-date-error-advice"></span>
+                                <span style="color:red" class="error-advice-addTask" id="due-date-error-advice"></span>
                             </div>
                             <div class="prio-container">
                                 <span>Prio</span>

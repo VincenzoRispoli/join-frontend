@@ -89,20 +89,48 @@ async function postRegistrationData(username, firstName, lastName, email, passwo
  */
 async function getPostedRegistData(response) {
     let userData = await response.json();
-    if (response.ok && userData.username != 'Guest') {
+    if (userData.ok == true && userData.data.username != 'Guest') {
         window.location.href = 'login.html';
-    } else if (response.ok && userData.username == 'Guest') {
-        guestUserLogin(userData);
+    } else if (userData.ok == true && userData.data.username == 'Guest') {
+        guestUserLogin();
     }
-    else {
-        for (let field in userData) {
-            if (userData.hasOwnProperty(field)) {
-                document.getElementById('pop-up-validation-advice').classList.remove('d-none');
-                let valMessage = document.getElementById('advice-text');
-                valMessage.innerHTML = `${userData[field]}`;
-            }
+    else if (userData.ok == false) {
+        showErrorsOfUserRegistration(userData)
+    }
+}
+
+/**
+ * Displays validation error messages for user registration fields.
+ * 
+ * This function expects a userData object with a `data` property containing
+ * field names and corresponding error messages. It updates the DOM elements
+ * with IDs following the pattern `error-advice-{field}` with the error messages.
+ * 
+ * @param {Object} userData - The response object containing validation errors.
+ * @param {Object} userData.data - A dictionary of field names and error messages.
+ */
+function showErrorsOfUserRegistration(userData) {
+    let user = userData.data;
+    for (let key in user) {
+        if (user.hasOwnProperty(key) && user[key]) {
+            document.getElementById(`error-advice-${key}`).innerText = user[key];
         }
     }
+    setTimeout(hideValidationsErrorsOfRegistration, 3000);
+}
+
+/**
+ * Clears all validation error messages displayed during registration.
+ * 
+ * This function targets all elements with the class `error-advice-registration`
+ * and removes their inner text after a delay (typically triggered by `setTimeout`).
+ */
+function hideValidationsErrorsOfRegistration() {
+    let errorAdvices = document.getElementsByClassName('error-advice-registration');
+    let errorAdvicesToArray = [...errorAdvices];
+    errorAdvicesToArray.forEach(error => {
+        error.innerText = "";
+    });
 }
 
 /**

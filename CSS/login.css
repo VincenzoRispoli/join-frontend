@@ -143,6 +143,20 @@ button {
     padding: 16px;
 }
 
+.registration-header-and-form-container {
+    max-height: 100vh;
+    overflow-y: scroll;
+}
+
+.registration-header-and-form-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.registration-header-and-form-container::-webkit-scrollbar-thumb {
+    background: #2A3647;
+    border-radius: 100px
+}
+
 .registration-page-header {
     display: flex;
     justify-content: flex-start;

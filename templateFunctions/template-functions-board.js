@@ -192,7 +192,7 @@ function addTaskOverviewHTML() {
                                 <input id="title"
                                     class="input-title validation-element" type="text" placeholder="Enter a title..."
                                     name="title">
-                                <span style="color:red" id="title-error-advice"></span>
+                                <span style="color:red" id="title-error-advice" class="error-advice-addTask"></span>
                             </div>
                             <div class="label-and-writeField-container">
                                 <label for="description">Description</label>
@@ -220,7 +220,7 @@ function addTaskOverviewHTML() {
                                 <label for="due-date">Date<b style="color:red">*</b></label>
                                 <input id="date"
                                     class="input-date validation-element" type="date" name="due-date">
-                                <span style="color:red" id="due-date-error-advice"></span>
+                                <span style="color:red" id="due-date-error-advice" class="error-advice-addTask"></span>
                             </div>
                             <div class="prio-container">
                                 <span>Prio</span>

@@ -35,35 +35,29 @@
                 <form onsubmit="login(); return false" id="login-form" class="form">
                     <div class="form-inputs-wrapper">
                         <div class="login-input-cont">
-                            <input required type="text" placeholder="Username" type="text" id="input-login-username"
-                                class="login-form-input">
-                            <div class="icon-login-cont">
-                                <img class="login-input-icon" src="./assets/img/person-icon.png" alt="">
-                            </div>
-                        </div>
-                        <div class="login-input-cont">
-                            <input required type="text" placeholder="Email" type="email" id="input-login-email"
+                            <input type="text" placeholder="Email" type="email" id="input-login-email"
                                 class="login-form-input">
                             <div class="icon-login-cont">
                                 <img class="login-input-icon" src="./assets/img/mail-icon.png" alt="">
                             </div>
                         </div>
+                        <span id="error-advice-email" class="error-advice-login" style="color:red"></span>
                         <div class="login-input-cont">
-                            <input required placeholder="Password" type="password" id="input-login-password"
+                            <input placeholder="Password" type="password" id="input-login-password"
                                 class="login-form-input">
                             <div class="icon-login-cont">
                                 <img class="login-input-icon" src="./assets/img/lock.png" alt="">
                             </div>
                         </div>
+                        <span id="error-advice-password" class="error-advice-login" style="color:red"></span>
                     </div>
+                    <span id="error-advice-user" class="error-advice-login" style="color: red;text-align:center" ></span>
                     <div class="form-btn-container">
                         <button type="submit" class="form-btn">Log in</button>
                         <button onclick="guestRegistration(); return false" class="form-btn-guest-login">Guest Log
                             in</button>
                     </div>
                 </form>
-                <span id="false-credential-advice" style="color:red" class="false-credentials-advice d-none">Username,
-                    Email or Password are not correct</span>
             </div>
         </div>
     </div>

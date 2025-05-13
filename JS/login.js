@@ -53,14 +53,12 @@ async function joinLogoAnimation() {
 async function login() {
     let email = document.getElementById('input-login-email');
     let password = document.getElementById('input-login-password');
-    let username = document.getElementById('input-login-username');
     if (windowWidth <= 720) {
         document.getElementById('curtain-logo').src = './assets/img/logo-small-white.png'
     }
     document.getElementById('loading-curtain').classList.remove('d-none');
-    await postLoginData(username.value, email, password);
+    await postLoginData(email, password);
     document.getElementById('loading-curtain').classList.add('d-none');
-    username.value = "";
     email.value = "";
     password.value = "";
 }
@@ -72,7 +70,7 @@ async function login() {
  * @param {HTMLElement} email - The email input element.
  * @param {HTMLElement} password - The password input element.
  */
-async function postLoginData(username, email, password) {
+async function postLoginData(email, password) {
     try {
         let response = await fetch(urlLogin, {
             method: 'POST',
@@ -80,7 +78,6 @@ async function postLoginData(username, email, password) {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                'username': username,
                 'email': email.value,
                 'password': password.value
             })
@@ -98,13 +95,30 @@ async function postLoginData(username, email, password) {
  */
 async function getResponseAndPostData(response) {
     let loginData = await response.json();
-    if (loginData.ok) {
+    if (loginData.ok == true) {
         await getPostedLoginData(loginData);
     } else {
+        console.log(loginData);
         authenticated = false
-        document.getElementById('false-credential-advice').classList.remove('d-none')
-        document.getElementById('false-credential-advice').innerHTML = loginData.error
+        showErrorOfLogin(loginData.data)
     }
+}
+
+function showErrorOfLogin(loginData) {
+    for (let key in loginData) {
+        if (loginData.hasOwnProperty(key) && loginData[key] && key != 'token') {
+            document.getElementById(`error-advice-${key}`).innerText = loginData[key]
+        }
+    }
+    setTimeout(hideValidationErrorsOfLogin, 3000)
+}
+
+function hideValidationErrorsOfLogin() {
+    let errorAdvices = document.getElementsByClassName('error-advice-login');
+    let errorAdvicesToArray = [...errorAdvices];
+    errorAdvicesToArray.forEach(error => {
+        error.innerText = "";
+    })
 }
 
 /**
@@ -115,9 +129,6 @@ async function getResponseAndPostData(response) {
 async function getPostedLoginData(loginData) {
     loggedUser = loginData.data;
     await loadContacts();
-    let username = loggedUser.username.toString();
-    let modifiedUsername = username.replace(/-/g, ' ');
-    loggedUser.username = modifiedUsername;
     authenticated = true
     localStorage.setItem('currentUser', JSON.stringify(loggedUser))
     localStorage.setItem('authenticated', JSON.stringify(authenticated));
@@ -172,7 +183,7 @@ async function postTheNewRegisteredContact(newContact, loggedUser) {
  * Logs in as a guest user.
  * @async
  */
-async function guestUserLogin(userData) {
+async function guestUserLogin() {
     document.getElementById('loading-curtain').classList.remove('d-none');
     try {
         let response = await fetch(urlLogin, {
@@ -186,7 +197,8 @@ async function guestUserLogin(userData) {
                 'password': 'guestLogin123'
             })
         })
-        await getPostedGuestLoginData(response);
+        let guestData = await response.json();
+        await getPostedGuestLoginData(guestData);
         document.getElementById('loading-curtain').classList.add('d-none')
     } catch (e) {
         console.log(e);
@@ -199,10 +211,9 @@ async function guestUserLogin(userData) {
  * @async
  * @param {Response} response - The response object from the guest login API.
  */
-async function getPostedGuestLoginData(response) {
-    let guestLoginData = await response.json();
-    if (response.ok) {
-        loggedUser = guestLoginData.data;
+async function getPostedGuestLoginData(guestData) {
+    if (guestData.ok == true) {
+        loggedUser = guestData.data;
         authenticated = true;
         localStorage.setItem('currentUser', JSON.stringify(loggedUser));
         localStorage.setItem('authenticated', JSON.stringify(authenticated));

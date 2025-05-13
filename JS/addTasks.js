@@ -54,12 +54,6 @@ let title;
 let description;
 
 /**
- * The due date for the task.
- * @type {string}
- */
-let due_date;
-
-/**
  * The priority of the task.
  * @type {string}
  */
@@ -83,11 +77,6 @@ let state;
  */
 let contacts_ids = [];
 
-/**
- * List of responses related to the subtasks.
- * @type {Array<Object>}
- */
-let subtasksResponses = [];
 
 /**
  * Initializes the task creation page by checking authentication and loading necessary data.
@@ -342,7 +331,7 @@ function createNewTaskFromTheForm(event) {
   event.preventDefault();
   title = document.getElementById('title');
   description = document.getElementById('description');
-  due_date = document.getElementById('date').value == "" ? null : document.getElementById('date').value;
+  let due_date = document.getElementById('date').value == "" ? null : document.getElementById('date').value;
   priority = choosedPriority;
   category = choosedCategory;
   state = checkState();
@@ -395,12 +384,11 @@ async function postTheNewCreatedTask(newTask, event) {
  * @throws Will not explicitly throw an error, but may call functions that update the UI to indicate failure.
  */
 async function checkResponseThenCreateTaskOrThrowErrors(event, taskResponse) {
-  let response = await taskResponse.json();
-  if (response.ok == true) {
-    await getTaskDataAndPostSubtask(response);
-    await showSuccessfullTaskCreationAdvice(event, response.message)
-  } else {
-    showErrorsOfTaskCreationAdvices(response)
+  let taskData = await taskResponse.json();
+  if (taskData.ok == true) {
+    await getTaskDataAndPostSubtask(event, taskData);
+  } else if (taskData.ok == false) {
+    showErrorsOfTaskCreationAdvices(taskData.data)
   }
 }
 
@@ -414,13 +402,33 @@ async function checkResponseThenCreateTaskOrThrowErrors(event, taskResponse) {
  * @param {string} [response.data.title] - Error message related to the task title, if any.
  * @param {string} [response.data.due_date] - Error message related to the task due date, if any.
  */
-function showErrorsOfTaskCreationAdvices(response) {
-  if (response.data.title) {
-    document.getElementById('title-error-advice').innerText = response.data.title;
+function showErrorsOfTaskCreationAdvices(taskData) {
+  if (taskData.title) {
+    document.getElementById('title-error-advice').innerText = taskData.title;
+  } else {
+    document.getElementById('title-error-advice').innerText = ""
   }
-  if (response.data.due_date) {
-    document.getElementById('due-date-error-advice').innerText = response.data.due_date;
+  if (taskData.due_date) {
+    document.getElementById('due-date-error-advice').innerText = taskData.due_date;
+  } else {
+    document.getElementById('due-date-error-advice').innerText = ""
   }
+  setTimeout(hideErrorOfTaskCreation, 5000)
+}
+
+/**
+ * Hides all error messages related to task creation.
+ * 
+ * This function selects all elements with the class 'error-advice-addTask',
+ * converts the HTMLCollection to an array, and clears their inner text,
+ * effectively hiding any visible error messages.
+ */
+function hideErrorOfTaskCreation() {
+  let errorAdvices = document.getElementsByClassName('error-advice-addTask');
+  let errorAdvicesToArray = [...errorAdvices]
+  errorAdvicesToArray.forEach(error => {
+    error.innerText = "";
+  })
 }
 
 /**
@@ -467,12 +475,9 @@ function showFailedTaskCreationAdvice(e) {
  * Retrieve task data from the response and send the subtasks to the backend.
  * @param {Response} taskResponse - The response object from the task creation.
  */
-async function getTaskDataAndPostSubtask(response) {
+async function getTaskDataAndPostSubtask(event, taskData) {
   try {
-    let taskData = response.data
-    if (taskData) {
-      await sendSubtasks(taskData);
-    }
+    await sendSubtasks(event, taskData);
   } catch (e) {
     console.log(e);
   }
@@ -482,14 +487,9 @@ async function getTaskDataAndPostSubtask(response) {
  * Send subtasks to the backend after the task is created.
  * @param {Object} taskData - The task data received from the backend.
  */
-async function sendSubtasks(taskData) {
+async function sendSubtasks(event, taskData) {
   try {
-    await sendSubtasksToBackend(taskData);
-    let checkFalseResponse = subtasksResponses.some(response => response.ok == false);
-    if (checkFalseResponse == false) {
-      clearAddTaskValues();
-      getAndClearSubtasksHTMLListAfterSend();
-    }
+    await sendSubtasksToBackend(event, taskData);
   } catch (e) {
     console.log(e);
   }
@@ -499,9 +499,9 @@ async function sendSubtasks(taskData) {
  * Send the subtasks to the backend.
  * @param {Object} taskData - The task data containing the task ID.
  */
-async function sendSubtasksToBackend(taskData) {
+async function sendSubtasksToBackend(event, taskData) {
   for (let subtask of subtasksList) {
-    subtask.task_id = taskData.id;
+    subtask.task_id = taskData.data.id;
     let response = await fetch(subtasksUrl, {
       method: 'POST',
       headers: {
@@ -510,12 +510,46 @@ async function sendSubtasksToBackend(taskData) {
       },
       body: JSON.stringify(subtask)
     });
-    if (response.ok) {
-      subtasksResponses.push(response);
-    }
+    await checkTheResponseAndThrowSuccessOrFailAdvices(event, response, taskData);
   }
 }
 
+/**
+ * Handles the response from a subtask creation request and displays the appropriate success or error message.
+ *
+ * If the response indicates success (`ok == true`), it shows a success message, clears the input values,
+ * and resets the subtasks list. If the response indicates failure (`ok == false`), it displays the error message.
+ *
+ * @param {Event} event - The event object triggered by the user action (e.g., form submission or button click).
+ * @param {Response} response - The response object returned from the fetch API containing the server's reply.
+ */
+async function checkTheResponseAndThrowSuccessOrFailAdvices(event, response, taskData) {
+  let subtaskData = await response.json();
+  if (subtaskData.ok == true) {
+    await showSuccessfullTaskCreationAdvice(event, taskData.message)
+    clearAddTaskValues();
+    getAndClearSubtasksHTMLListAfterSend();
+  } else if (subtaskData.ok == false) {
+    showErrorOfSubtaskCreation(subtaskData.error);
+  }
+}
+
+/**
+ * Displays an error message related to subtask creation based on the current page URL.
+ *
+ * If the current URL matches the board page, the error message is displayed
+ * in the element with ID 'task-created-advice-board'. Otherwise, it is shown
+ * in the element with ID 'task-created-advice'.
+ *
+ * @param {string} subtaskError - The error message to display for the subtask creation process.
+ */
+function showErrorOfSubtaskCreation(subtaskError) {
+  if (window.location.href == 'http://127.0.0.1:5500/board.html') {
+    document.getElementById('task-created-advice-board').innerText = subtaskError;
+  } else {
+    document.getElementById('task-created-advice').innerText = subtaskError;
+  }
+}
 /**
  * Clear the list of subtasks in the HTML after sending them to the backend.
  */
@@ -534,7 +568,7 @@ async function getAndClearSubtasksHTMLListAfterSend() {
 function clearAddTaskValues() {
   title.value = "";
   description.value = "";
-  due_date.value = "";
+  document.getElementById('date').value = "";
   removeHighlightsOnPrioButtons();
   priority = "";
   category = "";

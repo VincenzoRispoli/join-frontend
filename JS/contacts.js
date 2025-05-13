@@ -144,6 +144,7 @@ async function createContact(event) {
     let randomColor = Math.floor(Math.random() * (badgeColors.length - 1));
     let badgeColor = badgeColors[randomColor];
     let newContact = new Contact(loggedUser.user_id, firstName.value, lastName.value, email.value, phone.value, badgeColor);
+    console.log(newContact);
     try {
         await postNewContact(newContact, loggedUser, firstName, lastName, email, phone);
     } catch (e) {

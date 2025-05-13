@@ -12,83 +12,88 @@
 </head>
 
 <body>
-    <div class="registration-page-header">
-        <img class="join-logo-registration" src="./assets/img/logo-big.png" alt="join-logo-login">
-    </div>
-    <div class="form-container">
-        <div id="pop-up-validation-advice" class="pop-up-validation-advice d-none">
-            <div id="validation-message-container" class="validation-message-container">
-                <span id="advice-text" class="advice-text"></span>
-                <span onclick="removeValidationAdvice()" class="ok-btn">Ok</span>
+    <div class="registration-header-and-form-container">
+        <div class="registration-page-header">
+            <img class="join-logo-registration" src="./assets/img/logo-big.png" alt="join-logo-login">
+        </div>
+        <div class="form-container">
+            <div id="pop-up-validation-advice" class="pop-up-validation-advice d-none">
+                <div id="validation-message-container" class="validation-message-container">
+                    <span id="advice-text" class="advice-text"></span>
+                    <span onclick="removeValidationAdvice()" class="ok-btn">Ok</span>
+                </div>
+            </div>
+            <div class="form-content-regist">
+                <a href="login.html">
+                    <img class="arrow-blue-regist" src="./assets/img/arrow-left-blue.png" alt="">
+                </a>
+                <div class="log-in-title">
+                    <h1>Sign Up</h1>
+                    <span class="separator-bar"></span>
+                </div>
+                <form onsubmit="register(); return false" action="" id="login-form" class="form">
+                    <div class="form-inputs-wrapper">
+                        <div class="login-input-cont">
+                            <input oninput="replaceSpacesWithUnderscores(event)" placeholder="Username" type="text"
+                                id="input-regist-username" class="login-form-input">
+                            <div class="icon-login-cont">
+                                <img class="login-input-icon" src="./assets/img/person-icon.png" alt="">
+                            </div>
+                        </div>
+                        <span id="error-advice-username" class="error-advice-registration" style="color:red"></span>
+                        <div class="login-input-cont">
+                            <input placeholder="First Name" type="text" id="input-regist-first-name"
+                                class="login-form-input">
+                            <div class="icon-login-cont">
+                                <img class="login-input-icon" src="./assets/img/person-icon.png" alt="">
+                            </div>
+                        </div>
+                        <span id="error-advice-first_name" class="error-advice-registration" style="color:red"></span>
+                        <div class="login-input-cont">
+                            <input placeholder="Last Name" type="text" id="input-regist-last-name"
+                                class="login-form-input">
+                            <div class="icon-login-cont">
+                                <img class="login-input-icon" src="./assets/img/person-icon.png" alt="">
+                            </div>
+                        </div>
+                        <span id="error-advice-last_name" class="error-advice-registration" style="color:red"></span>
+                        <div class="login-input-cont">
+                            <input placeholder="Email" type="email" id="input-regist-email" class="login-form-input">
+                            <div class="icon-login-cont">
+                                <img class="login-input-icon" src="./assets/img/mail-icon.png" alt="">
+                            </div>
+                        </div>
+                        <span id="error-advice-email" class="error-advice-registration" style="color:red"></span>
+                        <div class="login-input-cont">
+                            <input placeholder="Password" type="password" id="input-regist-password"
+                                class="login-form-input">
+                            <div class="icon-login-cont">
+                                <img class="login-input-icon" src="./assets/img/lock.png" alt="">
+                            </div>
+                        </div>
+                        <span id="error-advice-password" class="error-advice-registration" style="color:red"></span>
+                        <div class="login-input-cont">
+                            <input placeholder="Confirm Password" type="password" id="input-regist-repeated-password"
+                                class="login-form-input">
+                            <div class="icon-login-cont">
+                                <img class="login-input-icon" src="./assets/img/lock.png" alt="">
+                            </div>
+                        </div>
+                    </div>
+                    <span class="privacy-policy-container">
+                        <input onclick="acceptPrivacyPolicy(this)" id="checkbox" type="checkbox">
+                        <span class="privacy-policy-banner">I accept the <span class="privacy-policy-title">Privacy
+                                Policy</span></span>
+                    </span>
+                    <span id="privacy-policy-advice" class="d-none" style="color:red">Please accept the privacy
+                        policy</span>
+                    <div class="form-btn-container">
+                        <button class="form-btn">Sign up</button>
+                    </div>
+                </form>
             </div>
         </div>
-        <div class="form-content-regist">
-            <a href="login.html">
-                <img class="arrow-blue-regist" src="./assets/img/arrow-left-blue.png" alt="">
-            </a>
-            <div class="log-in-title">
-                <h1>Sign Up</h1>
-                <span class="separator-bar"></span>
-            </div>
-            <form onsubmit="register(); return false" action="" id="login-form" class="form">
-                <div class="form-inputs-wrapper">
-                    <div class="login-input-cont">
-                        <input oninput="replaceSpacesWithUnderscores(event)" required placeholder="Username" type="text" minlength="3" id="input-regist-username"
-                            class="login-form-input">
-                        <div class="icon-login-cont">
-                            <img class="login-input-icon" src="./assets/img/person-icon.png" alt="">
-                        </div>
-                    </div>
-                    <div class="login-input-cont">
-                        <input required placeholder="First Name" type="text" minlength="3" id="input-regist-first-name"
-                            class="login-form-input">
-                        <div class="icon-login-cont">
-                            <img class="login-input-icon" src="./assets/img/person-icon.png" alt="">
-                        </div>
-                    </div>
-                    <div class="login-input-cont">
-                        <input required placeholder="Last Name" type="text" minlength="3" id="input-regist-last-name"
-                            class="login-form-input">
-                        <div class="icon-login-cont">
-                            <img class="login-input-icon" src="./assets/img/person-icon.png" alt="">
-                        </div>
-                    </div>
-                    <div class="login-input-cont">
-                        <input required placeholder="Email" type="email" id="input-regist-email"
-                            class="login-form-input">
-                        <div class="icon-login-cont">
-                            <img class="login-input-icon" src="./assets/img/mail-icon.png" alt="">
-                        </div>
-                    </div>
-                    <div class="login-input-cont">
-                        <input required placeholder="Password" type="password" minlength="8" id="input-regist-password"
-                            class="login-form-input">
-                        <div class="icon-login-cont">
-                            <img class="login-input-icon" src="./assets/img/lock.png" alt="">
-                        </div>
-                    </div>
-                    <div class="login-input-cont">
-                        <input required placeholder="Confirm Password" minlength="8" type="password"
-                            id="input-regist-repeated-password" class="login-form-input">
-                        <div class="icon-login-cont">
-                            <img class="login-input-icon" src="./assets/img/lock.png" alt="">
-                        </div>
-                    </div>
-                </div>
-                <span class="privacy-policy-container">
-                    <input onclick="acceptPrivacyPolicy(this)" id="checkbox" type="checkbox">
-                    <span class="privacy-policy-banner">I accept the <span class="privacy-policy-title">Privacy
-                            Policy</span></span>
-                </span>
-                <span id="privacy-policy-advice" class="d-none" style="color:red">Please accept the privacy
-                    policy</span>
-                <div class="form-btn-container">
-                    <button class="form-btn">Sign up</button>
-                </div>
-            </form>
-        </div>
     </div>
-
 </body>
 <script src="./models/user-class.js"></script>
 <script src="./JS/registration.js"></script>
