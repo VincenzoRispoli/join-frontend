@@ -119,7 +119,11 @@ async function loadAssignees() {
   for (let i = 0; i < assignees.length; i++) {
     let assignee = assignees[i];
     let initials = assignee.first_name.charAt(0).toUpperCase() + assignee.last_name.charAt(0).toUpperCase();
-    assigneesContainer.innerHTML += assigneeHTML(i, initials, assignee);
+    if (window.location.href == "http://127.0.0.1:5500/addTask.html") {
+      assigneesContainer.innerHTML += assigneeHTML(i, initials, assignee);
+    } else if (window.location.href == "http://127.0.0.1:5500/board.html") {
+      assigneesContainer.innerHTML += assigneeHTMLForAddTaskBoard(i, initials, assignee);
+    }
   }
 }
 
@@ -150,7 +154,22 @@ function selectAssignees(i) {
     }
   }
 }
-
+// --------------------------------------------------------------------------------------------------
+function selectAssigneesForAddTaskBoard(i) {
+  let selectedAssignee = assignees[i];
+  let checkbox = document.getElementById(`input-checkbox-assignees-add-task-board${i}`);
+  if (checkbox && checkbox.checked == false) {
+    checkbox.checked = true;
+    selectedAssignees.push(assignees[i].id);
+  } else if (checkbox && checkbox.checked == true) {
+    checkbox.checked = false;
+    let index = selectedAssignees.indexOf(selectedAssignee.id);
+    if (index !== -1) {
+      selectedAssignees.splice(index, 1);
+    }
+  }
+}
+// --------------------------------------------------------------------------------------------------
 function selectAssigneesForEditTask(i) {
   let selectedAssignee = assignees[i];
   let checkbox = document.getElementById(`input-checkbox-assignees-edit-task${i}`);

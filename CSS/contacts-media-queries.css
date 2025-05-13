@@ -153,7 +153,8 @@
 
 @media (max-width: 768px) {
     .add-contact-overlay {
-        height: 75%;
+        height: 80%;
+        max-height: 76%;
         width: 90%;
     }
 
@@ -172,6 +173,7 @@
 
     .left-side-content-container {
         gap: 16px;
+        margin-bottom: 46px;
     }
 
     .left-side-content-container h3 {
@@ -273,7 +275,7 @@
     }
 
     .badge-and-add-form-container form {
-        gap: 16px;
+        gap: 8px;
     }
 
     .badge-main-container {
