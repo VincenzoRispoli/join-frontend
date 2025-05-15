@@ -129,9 +129,9 @@ function editTaskHTML(id, selectedTask) {
         <div class="priority-container-edit-task-overview">
           Priority:
            <div class="priority-buttons-and-icon-container-edit-task">
-            <button onfocus="editPriority('Urgent', event)" onmouseover="highlightBtnOnHover('urgent')" onmouseleave="turnTheBtnOffOnLeave('urgent')" id="edit-task-urgent-btn" class="prio-btn-edit-task">Urgent <img id="urgent-icon" src="./assets/img/urgent.png" alt=""></button>
-            <button onfocus="editPriority('Medium', event)" onmouseover="highlightBtnOnHover('medium')" onmouseleave="turnTheBtnOffOnLeave('medium')" id="edit-task-medium-btn" class="prio-btn-edit-task">Medium <img id="medium-icon" src="./assets/img/medium.png" alt=""></button>
-            <button onfocus="editPriority('Low', event)" onmouseover="highlightBtnOnHover('low')" onmouseleave="turnTheBtnOffOnLeave('low')" id="edit-task-low-btn" class="prio-btn-edit-task">Low <img id="low-icon" src="./assets/img/low.png" alt=""></button>
+            <button onfocus="editPriority('Urgent', event)" onmouseover="highlightBtnOnHover('urgent')" onmouseleave="turnTheBtnOffOnLeave('urgent')" id="edit-task-urgent-btn" class="prio-btn-edit-task">Urgent <img id="urgent-icon" class="prio-icon" src="./assets/img/urgent.png" alt=""></button>
+            <button onfocus="editPriority('Medium', event)" onmouseover="highlightBtnOnHover('medium')" onmouseleave="turnTheBtnOffOnLeave('medium')" id="edit-task-medium-btn" class="prio-btn-edit-task">Medium <img id="medium-icon" class="prio-icon" src="./assets/img/medium.png" alt=""></button>
+            <button onfocus="editPriority('Low', event)" onmouseover="highlightBtnOnHover('low')" onmouseleave="turnTheBtnOffOnLeave('low')" id="edit-task-low-btn" class="prio-btn-edit-task">Low <img id="low-icon" class="prio-icon" src="./assets/img/low.png" alt=""></button>
             </div>
         </div>
         <div class="assigned-to-container-task-overview">
@@ -249,11 +249,11 @@ function addTaskOverviewHTML() {
                             <div class="subtasks-container">
                                 <label for="input-subtask">Subtask</label>
                                 <div onclick="writeSubtask()" class="subtask-input-container">
-                                    <input id="input-subtask" minlength="3" class="input-subtask"
+                                    <input id="input-subtask-board" minlength="3" class="input-subtask"
                                         placeholder="Add new subtask" type="text">
                                     <div class="icons-subtask-container">
-                                        <img id="add-icon" class="subtask-icon" src="./assets/img/add-blue.png" alt="">
-                                        <div id="cross-and-check-icons-container"
+                                        <img id="add-icon-board" class="subtask-icon" src="./assets/img/add-blue.png" alt="">
+                                        <div id="cross-and-check-icons-container-board"
                                             class="cross-and-check-icons-container d-none">
                                             <img onclick="clearAddSubtaskInput(event)" class="subtask-icon"
                                                 src="./assets/img/cross.png" alt="">
@@ -262,6 +262,7 @@ function addTaskOverviewHTML() {
                                         </div>
                                     </div>
                                 </div>
+                                <span id="error-advice-subtask-add-task-board" style="color:red"></span>
                                 <ul id="subtask-list" class="subtask-list">
 
                                 </ul>

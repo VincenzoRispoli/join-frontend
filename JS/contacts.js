@@ -73,7 +73,7 @@ function contactBookLoops(contactList, matchingLetters) {
         for (let j = 0; j < contacts.length; j++) {
             let contact = contacts[j];
             let contactInitials = contact.first_name.charAt(0) + contact.last_name.charAt(0);
-            if (letterContainer.id.slice(-1) == contactInitials.charAt(0)) {
+            if (letterContainer.id.slice(-1) == contactInitials.charAt(0).toUpperCase()) {
                 letterContainer.innerHTML += generateContactHTML(j, contact, contactInitials);
             }
         }

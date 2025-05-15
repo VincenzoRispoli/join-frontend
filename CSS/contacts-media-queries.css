@@ -187,7 +187,7 @@
     .btn-contacts-details-container {
         position: absolute;
         bottom: 20px;
-        right: 20px;
+        right: 0px;
         padding: 20px;
         background: #fff;
         flex-direction: column;

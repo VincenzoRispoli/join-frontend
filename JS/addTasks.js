@@ -200,74 +200,14 @@ function selectAssigneesForEditTask(i) {
 }
 
 /**
- * Prepares the UI for adding a subtask by displaying additional input options.
+ * Hides the error message shown when trying to add an invalid subtask title.
+ *
+ * @param {HTMLElement} errorAdviceElement - The DOM element displaying the error message.
  */
-function writeSubtask() {
-  document.getElementById('cross-and-check-icons-container').classList.remove('d-none');
-  document.getElementById('add-icon').classList.add('d-none');
-  document.getElementById('input-subtask').focus();
-}
-
-/**
- * Clears the input field for adding a subtask and resets the UI.
- * @param {Event} event - The event triggered by the action.
- */
-function clearAddSubtaskInput(event) {
-  event.stopPropagation();
-  document.getElementById('input-subtask').value = "";
-  document.getElementById('add-icon').classList.remove('d-none');
-  document.getElementById('cross-and-check-icons-container').classList.add('d-none');
-}
-
-/**
- * Prepares the UI for editing a subtask by displaying additional input options.
- * @param {number} id - The ID of the subtask being edited.
- */
-function writeSubtaskEditTask(id) {
-  document.getElementById(`input-subtask-edit-task${id}`).focus();
-  document.getElementById('add-icon').classList.add('d-none');
-  document.getElementById('cross-and-check-icons-container').classList.remove('d-none');
-}
-
-/**
- * Clears the input field for editing a subtask and resets the UI.
- * @param {number} id - The ID of the subtask being edited.
- * @param {Event} event - The event triggered by the action.
- */
-function clearAddSubtaskInputEdit(id, event) {
-  event.stopPropagation();
-  document.getElementById(`input-subtask-edit-task${id}`).value = "";
-  document.getElementById('add-icon').classList.remove('d-none');
-  document.getElementById('cross-and-check-icons-container').classList.add('d-none');
-}
-
-/**
- * Adds a new subtask to the list if the title is provided and updates the UI.
- * @param {Event} event - The event triggered by the action.
- */
-function addSubtasks(event) {
-  event.stopPropagation();
-  let subtaskTitle = document.getElementById('input-subtask');
-  if (subtaskTitle.value.length > 0) {
-    let subtaskListContainer = document.getElementById('subtask-list');
-    let newSubtask = new Subtask(subtaskTitle.value, false);
-    subtasksList.push(newSubtask);
-    subtaskListContainer.innerHTML = '';
-    loadCreatedSubtasksInTheListContainer(subtasksList, subtaskListContainer);
-    clearAddSubtaskInput(event);
-  }
-}
-
-/**
- * Loads the list of created subtasks into the container.
- * @param {Array<Subtask>} subtasksList - The list of subtasks to display.
- * @param {HTMLElement} subtaskListContainer - The container to display the subtasks in.
- */
-function loadCreatedSubtasksInTheListContainer(subtasksList, subtaskListContainer) {
-  for (let i = 0; i < subtasksList.length; i++) {
-    let subtask = subtasksList[i];
-    subtaskListContainer.innerHTML += subtaskHTML(i, subtask);
-  }
+function hideErrorOfAddingSubtaskInTheSubtaskList(errorAdviceElement) {
+  setTimeout(() => {
+    errorAdviceElement.innerText = "";
+  }, 3000)
 }
 
 /**
@@ -419,7 +359,12 @@ async function postTheNewCreatedTask(newTask, event) {
 async function checkResponseThenCreateTaskOrThrowErrors(event, taskResponse) {
   let taskData = await taskResponse.json();
   if (taskData.ok == true) {
-    await getTaskDataAndPostSubtask(event, taskData);
+    if (subtasksList.length > 0) {
+      await getTaskDataAndPostSubtask(event, taskData);
+    } else {
+      await showSuccessfullTaskCreationAdvice(event, taskData.message)
+      clearAddTaskValues();
+    }
   } else if (taskData.ok == false) {
     showErrorsOfTaskCreationAdvices(taskData.data)
   }
@@ -501,97 +446,6 @@ function showFailedTaskCreationAdvice(e) {
     document.getElementById('task-created-advice-board').innerText = 'Task not created, a problem occurred';
   } else {
     document.getElementById('task-created-advice').innerText = 'Task not created, a problem occurred';
-  }
-}
-
-/**
- * Retrieve task data from the response and send the subtasks to the backend.
- * @param {Response} taskResponse - The response object from the task creation.
- */
-async function getTaskDataAndPostSubtask(event, taskData) {
-  try {
-    await sendSubtasks(event, taskData);
-  } catch (e) {
-    console.log(e);
-  }
-}
-
-/**
- * Send subtasks to the backend after the task is created.
- * @param {Object} taskData - The task data received from the backend.
- */
-async function sendSubtasks(event, taskData) {
-  try {
-    await sendSubtasksToBackend(event, taskData);
-  } catch (e) {
-    console.log(e);
-  }
-}
-
-/**
- * Send the subtasks to the backend.
- * @param {Object} taskData - The task data containing the task ID.
- */
-async function sendSubtasksToBackend(event, taskData) {
-  for (let subtask of subtasksList) {
-    subtask.task_id = taskData.data.id;
-    let response = await fetch(subtasksUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Token ${loggedUser.token}`
-      },
-      body: JSON.stringify(subtask)
-    });
-    await checkTheResponseAndThrowSuccessOrFailAdvices(event, response, taskData);
-  }
-}
-
-/**
- * Handles the response from a subtask creation request and displays the appropriate success or error message.
- *
- * If the response indicates success (`ok == true`), it shows a success message, clears the input values,
- * and resets the subtasks list. If the response indicates failure (`ok == false`), it displays the error message.
- *
- * @param {Event} event - The event object triggered by the user action (e.g., form submission or button click).
- * @param {Response} response - The response object returned from the fetch API containing the server's reply.
- */
-async function checkTheResponseAndThrowSuccessOrFailAdvices(event, response, taskData) {
-  let subtaskData = await response.json();
-  if (subtaskData.ok == true) {
-    await showSuccessfullTaskCreationAdvice(event, taskData.message)
-    clearAddTaskValues();
-    getAndClearSubtasksHTMLListAfterSend();
-  } else if (subtaskData.ok == false) {
-    showErrorOfSubtaskCreation(subtaskData.error);
-  }
-}
-
-/**
- * Displays an error message related to subtask creation based on the current page URL.
- *
- * If the current URL matches the board page, the error message is displayed
- * in the element with ID 'task-created-advice-board'. Otherwise, it is shown
- * in the element with ID 'task-created-advice'.
- *
- * @param {string} subtaskError - The error message to display for the subtask creation process.
- */
-function showErrorOfSubtaskCreation(subtaskError) {
-  if (window.location.href == 'http://127.0.0.1:5500/board.html') {
-    document.getElementById('task-created-advice-board').innerText = subtaskError;
-  } else {
-    document.getElementById('task-created-advice').innerText = subtaskError;
-  }
-}
-/**
- * Clear the list of subtasks in the HTML after sending them to the backend.
- */
-async function getAndClearSubtasksHTMLListAfterSend() {
-  subtasksList = [];
-  if (window.location.href == "board.html") {
-    showCreateTaskOverview();
-  } else {
-    document.getElementById('subtask-list').innerHTML = "";
   }
 }
 

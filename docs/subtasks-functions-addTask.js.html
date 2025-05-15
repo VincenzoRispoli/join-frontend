@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: login.js</title>
+    <title>JSDoc: Source: subtasks-functions-addTask.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: login.js</h1>
+    <h1 class="page-title">Source: subtasks-functions-addTask.js</h1>
 
     
 
@@ -27,225 +27,223 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * URL endpoint for login API.
- * @constant {string}
+ * Prepares the UI for adding a subtask by displaying additional input options.
  */
-let urlLogin = 'http://127.0.0.1:8000/api/auth/login/';
-
-/**
- * Stores the currently logged-in user object.
- * @type {Object}
- */
-let loggedUser;
-
-/**
- * Represents the authentication status of the user.
- * @type {boolean}
- */
-let authenticated;
-
-/**
- * Stores the current window width.
- * @type {number}
- */
-let windowWidth = window.innerWidth;
-
-/**
- * Updates the windowWidth whenever the window is resized.
- */
-window.addEventListener('resize', () => {
-    windowWidth = window.innerWidth;
-});
-
-/**
- * Handles the logo animation during login based on window size.
- * @async
- */
-async function joinLogoAnimation() {
-    if (windowWidth &lt;= 720) {
-        document.getElementById('big-logo-animation-login').src = './assets/img/logo-small-white.png';
-        setTimeout(() => {
-            document.getElementById('big-logo-animation-login').src = './assets/img/logo-small-blue.png';
-        }, 600)
-    }
-    setTimeout(() => {
-        document.getElementById('login-animation-container').classList.add('d-none');
-        document.getElementById('big-logo-animation-login').src = './assets/img/logo-small-blue.png';
-    }, 900)
+function writeSubtask() {
+  if (window.location.href == 'http://127.0.0.1:5500/addTask.html') {
+    document.getElementById('cross-and-check-icons-container').classList.remove('d-none');
+    document.getElementById('add-icon').classList.add('d-none');
+    document.getElementById('input-subtask').focus();
+  } else if (window.location.href == 'http://127.0.0.1:5500/board.html') {
+    document.getElementById('cross-and-check-icons-container-board').classList.remove('d-none');
+    document.getElementById('add-icon-board').classList.add('d-none');
+    document.getElementById('input-subtask-board').focus();
+  }
 }
 
 /**
- * Handles the login process, including form data collection and API call.
- * @async
+ * Clears the input field for adding a subtask and resets the UI.
+ * @param {Event} event - The event triggered by the action.
  */
-async function login() {
-    let email = document.getElementById('input-login-email');
-    let password = document.getElementById('input-login-password');
-    if (windowWidth &lt;= 720) {
-        document.getElementById('curtain-logo').src = './assets/img/logo-small-white.png'
-    }
-    document.getElementById('loading-curtain').classList.remove('d-none');
-    await postLoginData(email, password);
-    document.getElementById('loading-curtain').classList.add('d-none');
-    email.value = "";
-    password.value = "";
+function clearAddSubtaskInput(event) {
+  event.stopPropagation();
+  if (window.location.href == 'http://127.0.0.1:5500/addTask.html') {
+    document.getElementById('input-subtask').value = "";
+    document.getElementById('add-icon').classList.remove('d-none');
+    document.getElementById('cross-and-check-icons-container').classList.add('d-none');
+  } else if (window.location.href == 'http://127.0.0.1:5500/board.html') {
+    document.getElementById('input-subtask-board').value = "";
+    document.getElementById('add-icon-board').classList.remove('d-none');
+    document.getElementById('cross-and-check-icons-container-board').classList.add('d-none');
+  }
 }
 
 /**
- * Sends a POST request with login credentials to the login API.
- * @async
- * @param {string} username - The username input value.
- * @param {HTMLElement} email - The email input element.
- * @param {HTMLElement} password - The password input element.
+ * Prepares the UI for editing a subtask by displaying additional input options.
+ * @param {number} id - The ID of the subtask being edited.
  */
-async function postLoginData(email, password) {
-    try {
-        let response = await fetch(urlLogin, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                'email': email.value,
-                'password': password.value
-            })
-        })
-        await getResponseAndPostData(response);
-    } catch (e) {
-        console.log(e);
-    }
+function writeSubtaskEditTask(id) {
+  document.getElementById(`input-subtask-edit-task${id}`).focus();
+  document.getElementById('add-icon').classList.add('d-none');
+  document.getElementById('cross-and-check-icons-container').classList.remove('d-none');
 }
 
 /**
- * Handles the response from the login API and processes the login data.
- * @async
- * @param {Response} response - The response object from the login API.
+ * Clears the input field for editing a subtask and resets the UI.
+ * @param {number} id - The ID of the subtask being edited.
+ * @param {Event} event - The event triggered by the action.
  */
-async function getResponseAndPostData(response) {
-    let loginData = await response.json();
-    if (loginData.ok == true) {
-        await getPostedLoginData(loginData);
-    } else {
-        authenticated = false
-        showErrorOfLogin(loginData.data)
-    }
-}
-
-function showErrorOfLogin(loginData) {
-    for (let key in loginData) {
-        if (loginData.hasOwnProperty(key) &amp;&amp; loginData[key] &amp;&amp; key != 'token') {
-            document.getElementById(`error-advice-${key}`).innerText = loginData[key]
-        }
-    }
-    setTimeout(hideValidationErrorsOfLogin, 3000)
-}
-
-function hideValidationErrorsOfLogin() {
-    let errorAdvices = document.getElementsByClassName('error-advice-login');
-    let errorAdvicesToArray = [...errorAdvices];
-    errorAdvicesToArray.forEach(error => {
-        error.innerText = "";
-    })
+function clearAddSubtaskInputEdit(id, event) {
+  event.stopPropagation();
+  document.getElementById(`input-subtask-edit-task${id}`).value = "";
+  document.getElementById('add-icon').classList.remove('d-none');
+  document.getElementById('cross-and-check-icons-container').classList.add('d-none');
 }
 
 /**
- * Processes the login data and sets the user as authenticated.
- * @async
- * @param {Object} loginData - The login data returned from the login API.
+ * Adds a new subtask to the list if the title is provided and updates the UI.
+ * @param {Event} event - The event triggered by the action.
  */
-async function getPostedLoginData(loginData) {
-    loggedUser = loginData.data;
-    await loadContacts();
-    authenticated = true
-    localStorage.setItem('currentUser', JSON.stringify(loggedUser))
-    localStorage.setItem('authenticated', JSON.stringify(authenticated));
-    let loggedUserExist = contacts.findIndex(c => c.first_name == loggedUser.first_name &amp;&amp; c.email == loggedUser.email);
-    if (loggedUserExist == -1) {
-        await createContactWithTheRegisteredUser(loggedUser);
-    }
-    if (loggedUser) {
-        window.location.href = 'summary.html'
-    }
+function addSubtasks(event) {
+  event.stopPropagation();
+  let subtaskTitle;
+  let errorAdviceElement;
+  if (window.location.href == 'http://127.0.0.1:5500/addTask.html') {
+    subtaskTitle = document.getElementById('input-subtask');
+    errorAdviceElement = document.getElementById('error-advice-subtask-add-task');
+  } else if (window.location.href == 'http://127.0.0.1:5500/board.html') {
+    subtaskTitle = document.getElementById('input-subtask-board');
+    errorAdviceElement = document.getElementById('error-advice-subtask-add-task-board');
+  }
+  addSubtaskToSubtaskListOrThrowError(event, subtaskTitle, errorAdviceElement);
+  hideErrorOfAddingSubtaskInTheSubtaskList(errorAdviceElement);
 }
 
 /**
- * Creates a contact for the newly registered user.
- * @async
- * @param {Object} loggedUser - The logged-in user object.
+ * Adds a subtask to the subtasks list if the title meets the required length.
+ * If not, displays an error message.
+ *
+ * @param {Event} event - The event triggered by user interaction (e.g., form submission).
+ * @param {HTMLInputElement} subtaskTitle - The input element containing the subtask title.
+ * @param {HTMLElement} errorAdviceElement - The DOM element used to display error messages.
  */
-async function createContactWithTheRegisteredUser(loggedUser) {
-    let firstName = loggedUser.first_name;
-    let lastName = loggedUser.last_name;
-    let email = loggedUser.email;
-    let phone = '12345';
-    let randomColor = Math.floor(Math.random() * (badgeColors.length - 1));
-    let badgeColor = badgeColors[randomColor];
-    let newContact = new Contact(loggedUser.user_id, firstName, lastName, email, phone, badgeColor);
-    try {
-        postTheNewRegisteredContact(newContact, loggedUser);
-    } catch (e) {
-        console.log(e);
-    }
+function addSubtaskToSubtaskListOrThrowError(event, subtaskTitle, errorAdviceElement) {
+  if (subtaskTitle.value.length >= 3) {
+    let subtaskListContainer = document.getElementById('subtask-list');
+    let newSubtask = new Subtask(subtaskTitle.value, false);
+    subtasksList.push(newSubtask);
+    subtaskListContainer.innerHTML = '';
+    loadCreatedSubtasksInTheListContainer(subtasksList, subtaskListContainer);
+    clearAddSubtaskInput(event);
+  } else {
+    errorAdviceElement.innerText = 'Please the subtask must have at least 3 characters.'
+  }
 }
 
 /**
- * Sends a POST request to create a new contact for the logged-in user.
- * @async
- * @param {Object} newContact - The new contact object to be created.
- * @param {Object} loggedUser - The logged-in user object.
+ * Loads the list of created subtasks into the container.
+ * @param {Array&lt;Subtask>} subtasksList - The list of subtasks to display.
+ * @param {HTMLElement} subtaskListContainer - The container to display the subtasks in.
  */
-async function postTheNewRegisteredContact(newContact, loggedUser) {
-    let response = await fetch(contactsUrl, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Token ${loggedUser.token}`
-        },
-        body: JSON.stringify(newContact)
-    })
-    let result = await response.json();
+function loadCreatedSubtasksInTheListContainer(subtasksList, subtaskListContainer) {
+  for (let i = 0; i &lt; subtasksList.length; i++) {
+    let subtask = subtasksList[i];
+    subtaskListContainer.innerHTML += subtaskHTML(i, subtask);
+  }
 }
 
 /**
- * Logs in as a guest user.
- * @async
+ * Deletes a subtask from the subtasks list at the specified index
+ * and updates the DOM to reflect the change.
+ *
+ * @param {number} i - The index of the subtask to be removed from the list.
  */
-async function guestUserLogin() {
-    document.getElementById('loading-curtain').classList.remove('d-none');
-    try {
-        let response = await fetch(urlLogin, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                'username': 'Guest',
-                'email': 'guestlogin@gmail.com',
-                'password': 'guestLogin123'
-            })
-        })
-        let guestData = await response.json();
-        await getPostedGuestLoginData(guestData);
-        document.getElementById('loading-curtain').classList.add('d-none')
-    } catch (e) {
-        console.log(e);
-        document.getElementById('false-credential-advice').classList.remove('d-none')
-    }
+function deleteSubtaskFromSubtaskListAddtask(i) {
+  subtasksList.splice(i, 1);
+  let subtaskListContainer = document.getElementById('subtask-list');
+  subtaskListContainer.innerHTML = "";
+  for (let i = 0; i &lt; subtasksList.length; i++) {
+    let subtask = subtasksList[i]
+    subtaskListContainer.innerHTML += subtaskHTML(i, subtask)
+  }
 }
 
 /**
- * Processes the response for the guest login and sets the user as authenticated.
- * @async
- * @param {Response} response - The response object from the guest login API.
+ * Displays the delete (bin) icon for a subtask input field in the Add Task section.
+ *
+ * @param {number} i - The index of the subtask whose bin icon should be shown.
  */
-async function getPostedGuestLoginData(guestData) {
-    if (guestData.ok == true) {
-        loggedUser = guestData.data;
-        authenticated = true;
-        localStorage.setItem('currentUser', JSON.stringify(loggedUser));
-        localStorage.setItem('authenticated', JSON.stringify(authenticated));
-        window.location.href = 'summary.html';
-    }
+function showBinIconSubtaskAddTask(i) {
+  document.getElementById(`delete-icon-add-task${i}`).classList.remove('d-none')
+}
+
+/**
+ * Hides the delete (bin) icon for a subtask input field in the Add Task section.
+ *
+ * @param {number} i - The index of the subtask whose bin icon should be hidden.
+ */
+function removeBinIconSubtaskAddTask(i) {
+  document.getElementById(`delete-icon-add-task${i}`).classList.add('d-none')
+}
+
+/**
+ * Retrieve task data from the response and send the subtasks to the backend.
+ * @param {Response} taskResponse - The response object from the task creation.
+ */
+async function getTaskDataAndPostSubtask(event, taskData) {
+  try {
+    await sendSubtasksToBackend(event, taskData);
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+/**
+ * Send the subtasks to the backend.
+ * @param {Object} taskData - The task data containing the task ID.
+ */
+async function sendSubtasksToBackend(event, taskData) {
+  for (let subtask of subtasksList) {
+    subtask.task_id = taskData.data.id;
+    let response = await fetch(subtasksUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Token ${loggedUser.token}`
+      },
+      body: JSON.stringify(subtask)
+    });
+    await checkTheResponseAndThrowSuccessOrFailAdvices(event, response, taskData);
+  }
+}
+
+/**
+ * Handles the response from a subtask creation request and displays the appropriate success or error message.
+ *
+ * If the response indicates success (`ok == true`), it shows a success message, clears the input values,
+ * and resets the subtasks list. If the response indicates failure (`ok == false`), it displays the error message.
+ *
+ * @param {Event} event - The event object triggered by the user action (e.g., form submission or button click).
+ * @param {Response} response - The response object returned from the fetch API containing the server's reply.
+ */
+async function checkTheResponseAndThrowSuccessOrFailAdvices(event, response, taskData) {
+  let subtaskData = await response.json();
+  if (subtaskData.ok == true) {
+    await showSuccessfullTaskCreationAdvice(event, taskData.message)
+    clearAddTaskValues();
+    getAndClearSubtasksHTMLListAfterSend();
+  } else if (subtaskData.ok == false) {
+    showErrorOfSubtaskCreation(subtaskData.error);
+  }
+}
+
+/**
+ * Displays an error message related to subtask creation based on the current page URL.
+ *
+ * If the current URL matches the board page, the error message is displayed
+ * in the element with ID 'task-created-advice-board'. Otherwise, it is shown
+ * in the element with ID 'task-created-advice'.
+ *
+ * @param {string} subtaskError - The error message to display for the subtask creation process.
+ */
+function showErrorOfSubtaskCreation(subtaskError) {
+  if (window.location.href == 'http://127.0.0.1:5500/board.html') {
+    document.getElementById('task-created-advice-board').innerText = subtaskError;
+  } else {
+    document.getElementById('task-created-advice').innerText = subtaskError;
+  }
+}
+
+/**
+ * Clear the list of subtasks in the HTML after sending them to the backend.
+ */
+async function getAndClearSubtasksHTMLListAfterSend() {
+  subtasksList = [];
+  if (window.location.href == "board.html") {
+    showCreateTaskOverview();
+  } else {
+    document.getElementById('subtask-list').innerHTML = "";
+  }
 }</code></pre>
         </article>
     </section>

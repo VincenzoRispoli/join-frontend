@@ -26,11 +26,13 @@
     .form-btn {
         padding: 7px 16px;
         font-size: 18px;
+        height: 40px;
     }
 
     .form-btn-guest-login {
         padding: 7px 16px;
         font-size: 18px;
+        height: 40px;
     }
 
     .buttons-and-required-fields-advice-container {

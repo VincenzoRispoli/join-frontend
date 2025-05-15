@@ -25,7 +25,7 @@ h3 {
     display: flex;
     flex-direction: column;
     gap: 16px;
-    height: 80vh;
+    height: 85vh;
 }
 
 .contact-list {
@@ -34,7 +34,7 @@ h3 {
     gap: 16px;
     overflow-y: scroll;
     flex: 1;
-    max-height: 70vh;
+    max-height: 100vh;
 }
 
 .contact-list::-webkit-scrollbar {
@@ -186,6 +186,12 @@ h3 {
 
 .hide-contact-created-advice {
     left: 100%;
+}
+
+.name-and-buttons-contact-details-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
 .contact-details-badge {

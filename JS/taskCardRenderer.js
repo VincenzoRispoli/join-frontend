@@ -305,6 +305,7 @@ function closeTaskOverview(event) {
 function closeAddTaskOverview(event) {
     event.stopPropagation();
     document.getElementById('opacity-add-task-container').classList.add('d-none');
+    subtasksList = [];
 }
 
 /**

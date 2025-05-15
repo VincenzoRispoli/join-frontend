@@ -59,6 +59,9 @@ function assigneeHTMLForAddTaskBoard(i, initials, assignee) {
  */
 function subtaskHTML(i, subtask) {
     return /*html*/ `
-          <li id="subtask${i}">${subtask.title}</li>
+           <div onmouseover="showBinIconSubtaskAddTask(${i})" onmouseleave="removeBinIconSubtaskAddTask(${i})" class="subtask-and-delete-icon-container">
+             <li id="subtask${i}" class="subtask">${subtask.title}</li>
+             <img onclick="deleteSubtaskFromSubtaskListAddtask(${i})" src="./assets/img/delete.png" id="delete-icon-add-task${i}" class="delete-icon-add-task d-none" alt="">
+           </div>  
           `
 }
