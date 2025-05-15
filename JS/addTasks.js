@@ -154,7 +154,14 @@ function selectAssignees(i) {
     }
   }
 }
-// --------------------------------------------------------------------------------------------------
+
+/**
+ * Toggles the selection of an assignee when adding a task from the board.
+ * If the checkbox is unchecked, it will be checked and the assignee's ID will be added to the selectedAssignees array.
+ * If the checkbox is already checked, it will be unchecked and the assignee's ID will be removed.
+ *
+ * @param {number} i - The index of the assignee in the `assignees` array.
+ */
 function selectAssigneesForAddTaskBoard(i) {
   let selectedAssignee = assignees[i];
   let checkbox = document.getElementById(`input-checkbox-assignees-add-task-board${i}`);
@@ -169,7 +176,14 @@ function selectAssigneesForAddTaskBoard(i) {
     }
   }
 }
-// --------------------------------------------------------------------------------------------------
+
+/**
+ * Toggles the selection of an assignee when editing an existing task.
+ * If the checkbox is unchecked, it will be checked and the assignee's ID will be added to the selectedAssignees array.
+ * If the checkbox is already checked, it will be unchecked and the assignee's ID will be removed.
+ *
+ * @param {number} i - The index of the assignee in the `assignees` array.
+ */
 function selectAssigneesForEditTask(i) {
   let selectedAssignee = assignees[i];
   let checkbox = document.getElementById(`input-checkbox-assignees-edit-task${i}`);

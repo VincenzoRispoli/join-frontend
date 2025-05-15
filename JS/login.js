@@ -98,7 +98,6 @@ async function getResponseAndPostData(response) {
     if (loginData.ok == true) {
         await getPostedLoginData(loginData);
     } else {
-        console.log(loginData);
         authenticated = false
         showErrorOfLogin(loginData.data)
     }

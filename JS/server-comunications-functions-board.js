@@ -3,18 +3,18 @@
  * @async
  */
 async function getTaskData() {
-    let response = await fetch(tasksUrl, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Token ${loggedUser.token}`
-        }
-    })
-    if (response.ok) {
-        let fetchedTasks = await response.json();
-        tasks = fetchedTasks;
-    } else {
-        console.log('error');
+    try {
+        let response = await fetch(tasksUrl, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${loggedUser.token}`
+            }
+        })
+        let taskData = await response.json();
+        tasks = taskData;
+    } catch (e) {
+        console.log(e);
     }
 }
 
@@ -118,7 +118,8 @@ async function getSubtasksDataForEditTask(taskId) {
     })
     let fetchedSubtasks = await response.json();
     let subtasks = fetchedSubtasks.filter(s => s.task == taskId);
-    loadSubtasksInTheEditTaskOverview(subtasks, taskId);
+    taskRelatedSubtaskList = subtasks
+    loadSubtasksInTheEditTaskOverview(taskRelatedSubtaskList, taskId);
 }
 
 /**
@@ -126,7 +127,7 @@ async function getSubtasksDataForEditTask(taskId) {
  * @async
  * @param {Object} newSubtask - The new subtask data.
  */
-async function postAndTheGetNewSubtaskEditTask(newSubtask) {
+async function postAndTheGetNewSubtaskEditTask(event, id, newSubtask) {
     let response = await fetch(subtasksUrl, {
         method: 'POST',
         headers: {
@@ -135,9 +136,23 @@ async function postAndTheGetNewSubtaskEditTask(newSubtask) {
         },
         body: JSON.stringify(newSubtask)
     })
-    let fetchedSubtask = await response.json();
-    let taskId = fetchedSubtask.data.task;
-    getSubtaskForEditTask(taskId);
+    let subtaskData = await response.json();
+    if (subtaskData.ok == true) {
+        clearAddSubtaskInputEdit(id, event);
+        getSubtaskForEditTask(id);
+    } else if (subtaskData.ok == false) {
+        showErrorOfSubtaskCreationEditTask(subtaskData, id)
+    }
+}
+
+function showErrorOfSubtaskCreationEditTask(subtaskData, taskId) {
+    if (subtaskData.data.title) {
+        document.getElementById(`error-advice-write-subtask-edit-task${taskId}`).style.color = 'red'
+        document.getElementById(`error-advice-write-subtask-edit-task${taskId}`).innerText = subtaskData.data.title
+        setTimeout(() => {
+            document.getElementById(`error-advice-write-subtask-edit-task${taskId}`).innerText = ""
+        }, 3000)
+    }
 }
 
 /**
@@ -157,10 +172,26 @@ async function deleteSubtaskEditTask(i, taskId) {
                 'Authorization': `Token ${loggedUser.token}`
             }
         })
-        getSubtaskForEditTask(taskId);
+        let subtaskData = await response.json();
+        showErrorOrSuccessOfSubtaskDeleting(subtaskData, taskId)
     } catch (e) {
         console.log(e);
     }
+}
+
+function showErrorOrSuccessOfSubtaskDeleting(subtaskData, taskId) {
+    if (subtaskData.ok == true) {
+        document.getElementById('advice-container-edit-task').classList.remove('d-none');
+        document.getElementById('advice-container-edit-task').innerHTML = subtaskData.message
+    } else {
+        document.getElementById('advice-container-edit-task').classList.remove('d-none');
+        document.getElementById('advice-container-edit-task').innerHTML = 'Subtask not deleted, an error occurred'
+    }
+    setTimeout(() => {
+        getSubtaskForEditTask(taskId);
+        document.getElementById('advice-container-edit-task').innerHTML = "";
+        document.getElementById('advice-container-edit-task').classList.add('d-none');
+    }, 2000)
 }
 
 /**
@@ -169,7 +200,7 @@ async function deleteSubtaskEditTask(i, taskId) {
  * @param {string} id - The ID of the subtask to update.
  * @param {Object} editedSubtask - The edited subtask data.
  */
-async function updateEditedTitle(id, editedSubtask) {
+async function updateEditedTitle(i, id, editedSubtask) {
     let response = await fetch(subtasksUrl + `${id}/`, {
         method: 'PUT',
         headers: {
@@ -179,6 +210,40 @@ async function updateEditedTitle(id, editedSubtask) {
         body: JSON.stringify(editedSubtask)
     })
     let subtasksData = await response.json();
+    showErrorOrSuccesUpdateForSubtask(i, subtasksData);
+    setTimeout(hideErrorOrSuccessMessagesForSubtaskUpdate, 3000)
+}
+
+/**
+ * Displays a success or error message based on the result of a subtask update.
+ * The message is shown in the element corresponding to the given index `i`.
+ *
+ * @param {number} i - The index of the subtask used to target the specific message element.
+ * @param {Object} subtasksData - The response object containing the result of the subtask update.
+ * @param {boolean} subtasksData.ok - Indicates whether the update was successful.
+ * @param {string} subtasksData.message - The success message to display when the update is successful.
+ * @param {string} subtasksData.error - The error message to display when the update fails.
+ */
+function showErrorOrSuccesUpdateForSubtask(i, subtasksData) {
+    if (subtasksData.ok == true) {
+        document.getElementById(`error-advice-subtask-edit${i}`).innerText = subtasksData.message
+        document.getElementById(`error-advice-subtask-edit${i}`).style.color = 'green'
+    } else {
+        document.getElementById(`error-advice-subtask-edit${i}`).innerText = subtasksData.error
+        document.getElementById(`error-advice-subtask-edit${i}`).style.color = 'red'
+    }
+}
+
+/**
+ * Clears all success and error messages related to subtask updates.
+ * Selects all elements with the class 'error-advice-subtask-edit' and resets their content.
+ */
+function hideErrorOrSuccessMessagesForSubtaskUpdate() {
+    let subtasksUpdateAdvices = document.getElementsByClassName('error-advice-subtask-edit');
+    let subtasksUpdateAdvicesToArray = [...subtasksUpdateAdvices];
+    subtasksUpdateAdvicesToArray.forEach(advice => {
+        advice.innerText = "";
+    })
 }
 
 /**

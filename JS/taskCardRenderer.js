@@ -245,13 +245,14 @@ function loadSubtasksInTheCardOverview(id, taskRelatedSubtaskList) {
  * @param {Array} subtasks - The list of subtasks to be loaded.
  * @param {number} taskId - The ID of the task being edited.
  */
-function loadSubtasksInTheEditTaskOverview(subtasks, taskId) {
+function loadSubtasksInTheEditTaskOverview(taskRelatedSubtaskList, taskId) {
     let subtasksListEditTask = document.getElementById(`subtask-list-edit-task-${taskId}`);
     subtasksListEditTask.innerHTML = "";
-    for (let i = 0; i < subtasks.length; i++) {
-        let subtask = subtasks[i];
+    for (let i = 0; i < taskRelatedSubtaskList.length; i++) {
+        let subtask = taskRelatedSubtaskList[i];
         subtasksListEditTask.innerHTML += subtaskForEditTaskOverview(i, taskId, subtask);
     }
+    loadTasks();
 }
 
 /**

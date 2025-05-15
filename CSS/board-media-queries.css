@@ -183,10 +183,6 @@
 
 @media (max-width: 768px) {
 
-    .board-categories-container {
-        margin-bottom: 120px;
-    }
-
     .task-card {
         width: 265px;
         min-width: 265px;

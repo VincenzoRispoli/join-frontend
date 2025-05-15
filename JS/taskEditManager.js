@@ -152,17 +152,12 @@ function confirmContentEditingSubtask(i, event) {
 async function addSubtaskEditTask(id, event) {
     event.stopPropagation();
     let subtaskTitle = document.getElementById(`input-subtask-edit-task${id}`);
-    if (subtaskTitle.value.length > 0) {
-        let newSubtask = new Subtask(subtaskTitle.value);
-        newSubtask.task_id = id
-        try {
-            await postAndTheGetNewSubtaskEditTask(newSubtask);
-            clearAddSubtaskInputEdit(id, event);
-        } catch (e) {
-            console.log(e);
-        }
-    } else {
-        clearAddSubtaskInputEdit(id, event);
+    let newSubtask = new Subtask(subtaskTitle.value);
+    newSubtask.task_id = id
+    try {
+        await postAndTheGetNewSubtaskEditTask(event, id, newSubtask);
+    } catch (e) {
+        console.log(e);
     }
 }
 
@@ -179,7 +174,7 @@ async function updateTitleTaskRelatedSubtask(i, taskId, event) {
     editedSubtask.task_id = taskId
     editedSubtask.title = document.getElementById(`subtask-edit-task-overview${i}`).innerText;
     try {
-        await updateEditedTitle(id, editedSubtask);
+        await updateEditedTitle(i, id, editedSubtask);
     } catch (e) {
         console.log(e);
     }

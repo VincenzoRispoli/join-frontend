@@ -159,6 +159,7 @@ function editTaskHTML(id, selectedTask) {
                     </div>
                 </div>
             </div>
+            <span id="error-advice-write-subtask-edit-task${id}"></span>
             <ul id="subtask-list-edit-task-${id}" class="subtasks-list-overview">
                 <!-- Subtasks for edit will be listed here -->
             </ul>
@@ -267,8 +268,9 @@ function addTaskOverviewHTML() {
                             </div>
                         </div>
                     </div>
-                    <div class="buttons-container">
+                    <div class="buttons-and-required-fields-advice-container">
                     <span><b style="color:red">*</b>This field is required</span>
+                    <div class="buttons-container">
                     <button onclick="clearAddTaskForm()" onmouseover="highlightClearButton()"
                             onmouseleave="turnClearBtnOff()" class="form-btn-guest-login">
                             Clear
@@ -281,6 +283,7 @@ function addTaskOverviewHTML() {
                             Create Task
                             <img src="./assets/img/check-white.png" class="check-icon-clear-task" alt="">
                         </button>
+                    </div>
                     </div>
                 </form>
         </div>
@@ -372,6 +375,7 @@ function subtaskForEditTaskOverview(i, taskId, subtask) {
                     <img onclick="deleteSubtaskEditTask(${i}, ${taskId}, event)" id="delete-icon-edit${i}" class="icon-edit-subtask" src="./assets/img/delete.png" alt="">
                 </div>
     </div>
+    <span id="error-advice-subtask-edit${i}" class="error-advice-subtask-edit"></span>
  `
 }
 

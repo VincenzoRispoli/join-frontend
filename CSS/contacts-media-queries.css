@@ -300,6 +300,10 @@
     .cross-icon-add-contact {
         height: 20px;
     }
+
+    .created-contact-advice {
+        bottom: 235px;
+    }
 }
 
 @media (max-width: 430px) {
@@ -330,8 +334,7 @@
         width: 85%;
     }
 
-    .create-contact-advice {
-        margin-bottom: 170px;
+    .created-contact-advice {
         font-size: 16px;
     }
 

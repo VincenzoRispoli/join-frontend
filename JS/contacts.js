@@ -170,6 +170,7 @@ async function postNewContact(newContact, loggedUser, firstName, lastName, email
         body: JSON.stringify(newContact)
     });
     let createdContactData = await response.json();
+    console.log(createdContactData);
     if (createdContactData.ok == true) {
         await loadContactBook();
         await clearFormContactValueAndLoadContacts(firstName, lastName, email, phone);
@@ -205,10 +206,10 @@ function findIndexOfCreatedContact(createdContactData) {
  * @param {Object} createdContactData - The response object containing error messages for contact fields.
  */
 function showErrorsOfContactsCreation(createdContactData) {
-    let firstNameInput = document.getElementById('error-advice-first-name')
-    let lastNameInput = document.getElementById('error-advice-last-name')
-    let emailInput = document.getElementById('error-advice-email')
-    let phoneInput = document.getElementById('error-advice-phone');
+    let firstNameInput = document.getElementById('error-advice-add-contact-first-name')
+    let lastNameInput = document.getElementById('error-advice-add-contact-last-name')
+    let emailInput = document.getElementById('error-advice-add-contact-email')
+    let phoneInput = document.getElementById('error-advice-add-contact-phone');
 
     showErrorsUnderTheFields(createdContactData, firstNameInput, lastNameInput, emailInput, phoneInput)
 }
@@ -501,16 +502,16 @@ async function getDataAndShowAdvice(data) {
 
 function showUpdateContactErrorMessages(data) {
     if (data.first_name) {
-        document.getElementById('error-advice-first-name').innerText = data.first_name
+        document.getElementById('error-advice-edit-contact-first-name').innerText = data.first_name
     }
     if (data.last_name) {
-        document.getElementById('error-advice-last-name').innerText = data.last_name
+        document.getElementById('error-advice-edit-contact-last-name').innerText = data.last_name
     }
     if (data.email) {
-        document.getElementById('error-advice-email').innerText = data.email
+        document.getElementById('error-advice-edit-contact-email').innerText = data.email
     }
     if (data.phone) {
-        document.getElementById('error-advice-phone').innerText = data.phone
+        document.getElementById('error-advice-edit-contact-phone').innerText = data.phone
     }
 
     setTimeout(hideErrorsAfter3Seconds, 3000)

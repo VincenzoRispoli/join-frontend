@@ -119,22 +119,22 @@ function editContactOverviewHTML(contactId) {
                                     <input id="input-first-name-${contactId}" class="add-contact-input" placeholder="First Name" type="text">
                                     <img class="input-icon" src="./assets/img/person-icon.png" alt="">
                                 </span>
-                                <span style="color:red" class="error-add-contact-advice" id="error-advice-first-name"></span>
+                                <span style="color:red" class="error-add-contact-advice" id="error-advice-edit-contact-first-name"></span>
                                 <span class="add-contact-input-container">
                                     <input id="input-last-name-${contactId}" class="add-contact-input" placeholder="Last Name" type="text">
                                     <img class="input-icon" src="./assets/img/person-icon.png" alt="">
                                 </span>
-                                <span style="color:red" class="error-add-contact-advice" id="error-advice-last-name"></span>
+                                <span style="color:red" class="error-add-contact-advice" id="error-advice-edit-contact-last-name"></span>
                                 <span class="add-contact-input-container">
                                     <input id="input-email-${contactId}" class="add-contact-input" placeholder="Email" type="email">
                                     <img class="input-icon" src="./assets/img/mail-icon.png" alt="">
                                 </span>
-                                <span style="color:red" class="error-add-contact-advice" id="error-advice-email"></span>
+                                <span style="color:red" class="error-add-contact-advice" id="error-advice-edit-contact-email"></span>
                                 <span class="add-contact-input-container">
                                     <input id="input-phone-${contactId}" class="add-contact-input" type="number">
                                     <img class="input-icon" src="./assets/img/phone-icon.png" alt="">
                                 </span>
-                                <span style="color:red" class="error-add-contact-advice" id="error-advice-phone"></span>
+                                <span style="color:red" class="error-add-contact-advice" id="error-advice-edit-contact-phone"></span>
                                 <span class="add-contact-overlay-btn-container">
                                     <button onclick="deleteContact(${contactId})" class="cancel-btn">Delete</button>
                                     <button type="submit" class="create-contact-btn">Save <img class="check-icon-add-contact" src="./assets/img/check-white.png" alt=""></button>
