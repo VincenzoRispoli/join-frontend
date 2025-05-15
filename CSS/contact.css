@@ -19,7 +19,7 @@ h3 {
 }
 
 .contact-list-container {
-    width: 30%;
+    width: 35%;
     height: 100%;
     box-shadow: 4px 0px 6px -6px #000;
     display: flex;
@@ -66,7 +66,7 @@ h3 {
 }
 
 .contacts-header-and-details-container {
-    width: 70%;
+    width: 65%;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -480,6 +480,7 @@ input[type=number]::-webkit-inner-spin-button {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 4px;
     padding: 12px 16px;
     border-radius: 10px;
     transition: all 0.125s cubic-bezier(.215, .61, .355, 1);
