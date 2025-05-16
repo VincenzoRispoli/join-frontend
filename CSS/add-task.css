@@ -311,6 +311,7 @@ option {
     align-items: center;
     border: 1px solid #D1D1D1;
     border-radius: 10px;
+    padding-right: 8px;
 }
 
 .input-subtask {
@@ -341,6 +342,7 @@ option {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 8px;
 }
 
 .required-fields-advice {
