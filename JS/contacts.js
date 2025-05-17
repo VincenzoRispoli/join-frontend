@@ -170,7 +170,6 @@ async function postNewContact(newContact, loggedUser, firstName, lastName, email
         body: JSON.stringify(newContact)
     });
     let createdContactData = await response.json();
-    console.log(createdContactData);
     if (createdContactData.ok == true) {
         await loadContactBook();
         await clearFormContactValueAndLoadContacts(firstName, lastName, email, phone);
