@@ -305,7 +305,7 @@ function createNewTaskFromTheForm(event) {
   title = document.getElementById('title');
   description = document.getElementById('description');
   let due_date = document.getElementById('date').value == "" ? null : document.getElementById('date').value;
-  priority = choosedPriority;
+  priority = choosedPriority || "low";
   category = choosedCategory;
   state = checkState();
   contacts_ids = selectedAssignees;

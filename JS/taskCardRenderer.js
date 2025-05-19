@@ -202,9 +202,9 @@ function setTheColorOfCategoryTitle(selectedTask) {
  * @returns {string} The filename of the icon to be used for the priority button.
  */
 function setIconOfPriorityBtn(selectedTask) {
-    if (selectedTask.priority == 'urgent') {
+    if (selectedTask.priority.toLowerCase() == 'urgent') {
         return 'urgent.png'
-    } else if (selectedTask.priority == 'medium') {
+    } else if (selectedTask.priority.toLowerCase() == 'medium') {
         return 'medium.png'
     } else {
         return 'low.png'
