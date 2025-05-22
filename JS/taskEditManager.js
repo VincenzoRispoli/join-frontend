@@ -220,7 +220,7 @@ function clearInputAddSubtask(id) {
 async function deleteTask(id) {
     let singleTaskUrl = tasksUrl + `${id}/`;
     try {
-        await deleteTaskData(singleTaskUrl);
+        await deleteTaskData(singleTaskUrl, id);
     } catch (e) {
         console.error(e);
     }

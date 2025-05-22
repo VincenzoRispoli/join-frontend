@@ -34,11 +34,11 @@ async function updateTheNewEditedTask(id, newEditedTask) {
             },
             body: JSON.stringify(newEditedTask)
         })
-        if (!response.ok) {
-            let updateData = await response.json();
-            showTaskActionFailedAdvice(updateData.detail);
+        let editedTaskData = await response.json();
+        if (editedTaskData.ok == true) {
+            showTaskSuccessEditedAdvice(id, editedTaskData.message);
         } else {
-            showTaskSuccessEditedAdvice();
+            showTaskActionFailedAdvice(id, editedTaskData.error, editedTaskData.data);
         }
     } catch (e) {
         console.log(e);
@@ -49,14 +49,14 @@ async function updateTheNewEditedTask(id, newEditedTask) {
  * Displays a temporary success message in the UI after a task has been successfully edited.
  * Reloads the tasks and hides the single task view after 2 seconds.
  */
-function showTaskSuccessEditedAdvice() {
-    document.getElementById('advice-container-edit-task').classList.remove('d-none');
-    document.getElementById('advice-container-edit-task').innerText = "Task successfully edited";
+function showTaskSuccessEditedAdvice(id, successMessage) {
+    document.getElementById(`advice-container-edit-task${id}`).classList.remove('d-none');
+    document.getElementById(`advice-container-edit-task${id}`).innerText = successMessage;
     setTimeout(() => {
         loadTasks();
         document.getElementById('opacity-single-task-container').classList.add('d-none');
-        document.getElementById('advice-container-edit-task').classList.add('d-none')
-        document.getElementById('advice-container-edit-task').innerText = "";
+        document.getElementById(`advice-container-edit-task${id}`).classList.add('d-none')
+        document.getElementById(`advice-container-edit-task${id}`).innerText = "";
     }, 2000)
 }
 
@@ -270,7 +270,7 @@ async function updateCompletedStatusOfSubtask(id, selectedSubtask) {
  * @async
  * @param {string} singleTaskUrl - The URL of the task to delete.
  */
-async function deleteTaskData(singleTaskUrl) {
+async function deleteTaskData(singleTaskUrl, id) {
     let response = await fetch(singleTaskUrl, {
         method: 'DELETE',
         headers: {
@@ -278,22 +278,29 @@ async function deleteTaskData(singleTaskUrl) {
             'Authorization': `Token ${loggedUser.token}`
         }
     })
-    if (!response.ok) {
-        let deleteData = await response.json();
-        showDeleteTaskFailedAdvice(deleteData.detail);
+    let deletedTaskData = await response.json();
+    if (deletedTaskData.ok == true) {
+        showSuccessTaskDeletedAdvice(deletedTaskData.message);
     } else {
-        showSuccessTaskDeletedAdvice();
+        showDeleteTaskFailedAdvice(deletedTaskData.permission, id);
     }
 }
 
-function showSuccessTaskDeletedAdvice() {
+/**
+ * Displays a success message after a task has been deleted,
+ * hides the single task view, reloads the task list, and 
+ * shows a temporary confirmation message on the board.
+ *
+ * @param {string} successMessage - The message to be displayed as a confirmation of task deletion.
+ */
+function showSuccessTaskDeletedAdvice(successMessage) {
     loadTasks();
     document.getElementById('opacity-single-task-container').classList.add('d-none');
     document.getElementById('task-created-advice-container-board').classList.remove('d-none');
-    document.getElementById('task-created-advice-board').innerText = 'Task successfully deleted'
+    document.getElementById('task-created-advice-board').innerText = successMessage
     setTimeout(() => {
         document.getElementById('task-created-advice-container-board').classList.add('d-none');
-        document.getElementById('task-created-advice-board').innerText = 'Task successfully deleted'
+        document.getElementById('task-created-advice-board').innerText = ""
     }, 2000)
 }
 
@@ -317,10 +324,12 @@ async function assignRelatedSubtaskToTask() {
  * Displays a message when the task deletion fails.
  * @param {Object} data - The error details of the failed task deletion.
  */
-function showDeleteTaskFailedAdvice(data) {
-    let deleteTaskAdvice = document.getElementById('delete-task-advice');
-    deleteTaskAdvice.innerHTML = `${data}`;
+function showDeleteTaskFailedAdvice(permissionError, id) {
+    let deleteTaskAdvice = document.getElementById(`delete-task-advice${id}`);
+    deleteTaskAdvice.classList.remove('d-none');
+    deleteTaskAdvice.innerHTML = permissionError;
     setTimeout(() => {
         deleteTaskAdvice.innerHTML = "";
+        deleteTaskAdvice.classList.add('d-none');
     }, 2000);
 }

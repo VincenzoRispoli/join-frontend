@@ -150,9 +150,9 @@ function editAndCreateNewTask(id, state, category) {
     loggedUser = JSON.parse(localStorage.getItem('currentUser'));
     let editedTitle = document.getElementById(`task-title-edit${id}`).innerText;
     let editedDescription = document.getElementById(`task-description-edit${id}`).innerText;
-    let editedDate = document.getElementById(`date${id}`);
+    let editedDate = document.getElementById(`date${id}`).value == "" ? null : document.getElementById(`date${id}`).value;
     let editedAssignees = selectedAssignees;
-    let newTask = new Task(editedTitle, editedDescription, category, editedDate.value, choosedPriorityEditTask, editedAssignees, state)
+    let newTask = new Task(editedTitle, editedDescription, category, editedDate, choosedPriorityEditTask, editedAssignees, state)
     return newTask
 }
 
@@ -260,14 +260,37 @@ function loadSubtasksInTheEditTaskOverview(taskRelatedSubtaskList, taskId) {
  * 
  * @param {string} data - The error message to be displayed.
  */
-function showTaskActionFailedAdvice(data) {
-    let adviceContainer = document.getElementById('advice-container');
-    adviceContainer.innerHTML = /*html*/ `
-    <span id="update-task-failed" style="color:white">${data}</span>
-   `
+function showTaskActionFailedAdvice(id, errorMessage, data) {
+    if (data.title) {
+        document.getElementById(`error-advice-title-edit-task${id}`).innerText = data.title;
+    }
+    if (data.due_date) {
+        document.getElementById(`error-advice-title-due-date-edit-task${id}`).innerText = data.due_date;
+    }
+    document.getElementById(`advice-container-edit-task${id}`).classList.remove('d-none')
+    document.getElementById(`advice-container-edit-task${id}`).innerText = errorMessage
+    hideErrorOrMessagesForTaskUpdate(id);
+}
+
+/**
+ * Hides error messages for a specific task update after a delay of 4 seconds.
+ *
+ * This function targets an HTML element with an ID based on the provided task ID and hides it
+ * by adding the 'd-none' class. It also clears any text content from that element.
+ * Additionally, it finds all elements with the class 'error-advice-edit-task' and clears their text content.
+ *
+ * @param {number|string} id - The identifier of the task whose advice message should be hidden.
+ */
+function hideErrorOrMessagesForTaskUpdate(id) {
     setTimeout(() => {
-        adviceContainer.innerHTML = "";
-    }, 3000)
+        document.getElementById(`advice-container-edit-task${id}`).classList.add('d-none');
+        document.getElementById(`advice-container-edit-task${id}`).innerText = "";
+        let errorAdvices = document.getElementsByClassName('error-advice-edit-task');
+        let errorAdvicesToArray = [...errorAdvices];
+        errorAdvicesToArray.forEach(e => {
+            e.innerText = ""
+        })
+    }, 4000)
 }
 
 /**

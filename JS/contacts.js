@@ -111,15 +111,15 @@ function capitalizeContact(contactName) {
  * Displays the details of a contact.
  * @param {number} contactId - The ID of the contact to display.
  */
-function showContactInTheDetails(contactId) {
+function showContactInTheDetails(indexOfContact) {
     let contactDetailsContainer = document.getElementById('contact-details');
-    let selectedContact = contacts[contactId];
+    let selectedContact = contacts[indexOfContact];
     let initials = selectedContact.first_name.charAt(0) + selectedContact.last_name.charAt(0);
-    contactDetailsContainer.innerHTML = showContactDetailsHTML(contactId, selectedContact, initials);
+    contactDetailsContainer.innerHTML = showContactDetailsHTML(indexOfContact, selectedContact, initials);
     contactDetailsContainer.classList.remove('hide-contact-details');
     for (let i = 0; i < contacts.length; i++) {
         document.getElementById(`contact${i}`).classList.remove('contact-on-focus');
-        if (i == contactId) {
+        if (i == indexOfContact) {
             document.getElementById(`contact${i}`).classList.add('contact-on-focus');
         }
     }
@@ -423,13 +423,38 @@ async function updateContactAndShowAdvices(loggedUser, id, editedContact) {
         body: JSON.stringify(editedContact)
     });
     let responseData = await response.json();
+    let indexOfContact = contacts.findIndex(contact => contact.id == id);
+    await showContactUpdateAdviceOrThrowErrors(responseData, indexOfContact)
+}
+
+/**
+ * Handles the response from a contact update request by either showing a success message
+ * or displaying error messages (permission or validation errors).
+ * 
+ * @param {Object} responseData - The response object returned from the server.
+ * @param {boolean} responseData.ok - Indicates whether the update was successful.
+ * @param {string} [responseData.message] - Success message to be shown when update is successful.
+ * @param {string} [responseData.permission] - Permission error message, if any.
+ * @param {Object} [responseData.data] - Validation error messages for contact fields.
+ * @param {number} indexOfContact - Index of the contact being updated, or -1 if not applicable.
+ * 
+ * @returns {Promise<void>} - A promise that resolves when all UI updates are completed.
+ */
+async function showContactUpdateAdviceOrThrowErrors(responseData, indexOfContact) {
     if (responseData.ok == true) {
         getDataAndShowAdvice(responseData.message) // success message
         await loadContactBook();
-        let indexOfContact = contacts.findIndex(contact => contact.id == id);
         if (indexOfContact != -1) {
             closeEditContactOverview(indexOfContact);
         }
+    } else {
+        showPermissionsOrValidationErrorUpdateContact(responseData)
+    }
+}
+
+function showPermissionsOrValidationErrorUpdateContact(responseData) {
+    if (responseData.permission) {
+        showPermissionErrorsUpdateContact(responseData.permission);
     } else {
         showUpdateContactErrorMessages(responseData.data);
     }
@@ -440,9 +465,9 @@ async function updateContactAndShowAdvices(loggedUser, id, editedContact) {
  * 
  * @param {number} id - The unique identifier of the contact to be shown.
  */
-function closeEditContactOverview(id) {
+function closeEditContactOverview(indexOfContact) {
     document.getElementById('opacity-edit-contact-overlay').classList.add('d-none')
-    showContactInTheDetails(id);
+    showContactInTheDetails(indexOfContact);
 }
 
 /**
@@ -476,9 +501,24 @@ async function deleteContactAndShowAdvices(id, loggedUser) {
         }
     })
     let contactData = await response.json();
-    document.getElementById('contact-details').innerHTML = "";
-    await getDataAndShowAdvice(contactData.message); // success message
-    await loadContactBook().then(() => showRamdomContactAfterDelete())
+    if (contactData.permission) {
+        showPermissionErrorsDeleteContact(contactData.permission)
+    } else {
+        document.getElementById('contact-details').innerHTML = "";
+        await getDataAndShowAdvice(contactData.message); // success message
+        await loadContactBook().then(() => showRamdomContactAfterDelete())
+    }
+}
+
+function showPermissionErrorsDeleteContact(permissionError) {
+    let editContactOverlay = document.getElementById('opacity-edit-contact-overlay');
+    if (editContactOverlay) {
+        editContactOverlay.classList.add('d-none');
+    }
+    document.getElementById('permission-error-advice-edit-contact').innerText = permissionError;
+    setTimeout(() => {
+        document.getElementById('permission-error-advice-edit-contact').innerText = "";
+    }, 4000)
 }
 
 /**
@@ -499,6 +539,15 @@ async function getDataAndShowAdvice(data) {
     }, 3000)
 }
 
+/**
+ * Displays error messages for each field in the update contact form.
+ * 
+ * @param {Object} data - An object containing error messages for each contact field.
+ * @param {string} [data.first_name] - Error message for the first name field.
+ * @param {string} [data.last_name] - Error message for the last name field.
+ * @param {string} [data.email] - Error message for the email field.
+ * @param {string} [data.phone] - Error message for the phone field.
+ */
 function showUpdateContactErrorMessages(data) {
     if (data.first_name) {
         document.getElementById('error-advice-edit-contact-first-name').innerText = data.first_name
@@ -514,6 +563,23 @@ function showUpdateContactErrorMessages(data) {
     }
 
     setTimeout(hideErrorsAfter3Seconds, 3000)
+}
+
+/**
+ * Displays a permission error message for a specific contact being edited.
+ * 
+ * @param {string} permissionError - The permission error message to display.
+ * @param {number|string} contactIndex - The index or identifier of the contact.
+ */
+function showPermissionErrorsUpdateContact(permissionError) {
+    let editContactOverlay = document.getElementById('opacity-edit-contact-overlay');
+    if (editContactOverlay) {
+        editContactOverlay.classList.add('d-none');
+    }
+    document.getElementById('permission-error-advice-edit-contact').innerText = permissionError
+    setTimeout(() => {
+        document.getElementById('permission-error-advice-edit-contact').innerText = "";
+    }, 3000)
 }
 
 /**

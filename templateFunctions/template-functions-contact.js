@@ -61,6 +61,7 @@ function showContactDetailsHTML(contactId, selectedContact, initials) {
                     </div>
                 </div>
         </div>
+        <span id="permission-error-advice-edit-contact" style="color:red; font-size:21px"></span>
         <span class="contact-info-title">Contact Information</span>
         <div class="email-and-phone-container">
             <h3>Email</h3>
@@ -136,7 +137,7 @@ function editContactOverviewHTML(contactId) {
                                 </span>
                                 <span style="color:red" class="error-add-contact-advice" id="error-advice-edit-contact-phone"></span>
                                 <span class="add-contact-overlay-btn-container">
-                                    <button onclick="deleteContact(${contactId})" class="cancel-btn">Delete</button>
+                                    <button onclick="deleteContact(${contactId});return false" class="cancel-btn">Delete</button>
                                     <button type="submit" class="create-contact-btn">Save <img class="check-icon-add-contact" src="./assets/img/check-white.png" alt=""></button>
                                 </span>
                             </form>

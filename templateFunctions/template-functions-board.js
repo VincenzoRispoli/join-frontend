@@ -86,7 +86,7 @@ function taskCardOverviewHTML(id, selectedTask, categoryTitleColor, priorityIcon
                 </div>
         </div>
         </div>
-        <span id="delete-task-advice" class="advice-container"></span>
+        <span id="delete-task-advice${id}" class="advice-container d-none"></span>
     `)
 }
 
@@ -124,8 +124,10 @@ function editTaskHTML(id, selectedTask) {
          <img onclick="closeTaskOverview(event)" class="cross-icon" src="./assets/img/cross.png" alt="">
        </div>
        <h2 contenteditable="true" id="task-title-edit${id}" class="task-title">${selectedTask.title}</h2>
+       <span id="error-advice-title-edit-task${id}" class="error-advice-edit-task" style="color: red"></span>
         <p contenteditable="true" id="task-description-edit${id}" class="task-decription-edit">${selectedTask.description}</p>
         <input id="date${id}" class="input-date-edit-task" type="date">
+        <span id="error-advice-title-due-date-edit-task${id}" class="error-advice-edit-task" style="color: red"></span>
         <div class="priority-container-edit-task-overview">
           Priority:
            <div class="priority-buttons-and-icon-container-edit-task">
@@ -169,7 +171,7 @@ function editTaskHTML(id, selectedTask) {
         </div>
     </div>
     </div>
-    <span id="advice-container-edit-task" class="advice-container-edit-task d-none"></span>
+    <span id="advice-container-edit-task${id}" class="advice-container-edit-task d-none"></span>
   `)
 }
 
