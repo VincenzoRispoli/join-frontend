@@ -8,7 +8,7 @@
  */
 function taskCardHTML(task, i) {
     return (/*html*/`
-    <div onclick="showTask(${task.id}, ${i})" id="${task.state}-card${i}" class="task-card" draggable="True" ondragstart="rotateCard(${i}, ${task.id})">
+    <div onclick="showTask(${task.id})" id="${task.state}-card${i}" class="task-card" draggable="True" ondragstart="rotateCard(${i}, ${task.id})">
         <img onclick="showPopUpDragTaskMobile(${task.id},event)" class="drag-icon" src="./assets/img/drag-icon.png" alt="">
         <span id="task-category-${task.state}${i}" class="task-category">${task.category}</span>
             <h3 id="task-title">${task.title}</h3>
