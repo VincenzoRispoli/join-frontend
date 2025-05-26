@@ -170,6 +170,7 @@ async function postNewContact(newContact, loggedUser, firstName, lastName, email
         body: JSON.stringify(newContact)
     });
     let createdContactData = await response.json();
+    console.log(createdContactData);
     if (createdContactData.ok == true) {
         await loadContactBook();
         await clearFormContactValueAndLoadContacts(firstName, lastName, email, phone);
@@ -205,12 +206,19 @@ function findIndexOfCreatedContact(createdContactData) {
  * @param {Object} createdContactData - The response object containing error messages for contact fields.
  */
 function showErrorsOfContactsCreation(createdContactData) {
-    let firstNameInput = document.getElementById('error-advice-add-contact-first-name')
-    let lastNameInput = document.getElementById('error-advice-add-contact-last-name')
-    let emailInput = document.getElementById('error-advice-add-contact-email')
-    let phoneInput = document.getElementById('error-advice-add-contact-phone');
+    if (createdContactData.detail) {
+        document.getElementById('permission-error-advice-add-contact').innerText = createdContactData.detail;
+        setTimeout(() => {
+            document.getElementById('permission-error-advice-add-contact').innerText = "";
+        }, 3000);
+    } else {
+        let firstNameInput = document.getElementById('error-advice-add-contact-first-name')
+        let lastNameInput = document.getElementById('error-advice-add-contact-last-name')
+        let emailInput = document.getElementById('error-advice-add-contact-email')
+        let phoneInput = document.getElementById('error-advice-add-contact-phone');
 
-    showErrorsUnderTheFields(createdContactData, firstNameInput, lastNameInput, emailInput, phoneInput)
+        showErrorsUnderTheFields(createdContactData, firstNameInput, lastNameInput, emailInput, phoneInput)
+    }
 }
 
 /**
@@ -261,8 +269,9 @@ function hideErrorsAfter3Seconds() {
  * @param {HTMLElement} email - The email input field.
  * @param {HTMLElement} phone - The phone input field.
  */
-async function clearFormContactValueAndLoadContacts(name, email, phone) {
-    name.value = "";
+async function clearFormContactValueAndLoadContacts(firstName, lastName, email, phone) {
+    firstName.value = "";
+    lastName.value = "";
     email.value = "";
     phone.value = "";
     await loadContactBook();

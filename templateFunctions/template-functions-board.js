@@ -271,6 +271,7 @@ function addTaskOverviewHTML() {
                             </div>
                         </div>
                     </div>
+                    <span id="required-fields-advice-board" class="required-fields-advice"></span>
                     <div class="buttons-and-required-fields-advice-container">
                     <span><b style="color:red">*</b>This field is required</span>
                     <div class="buttons-container">
@@ -339,6 +340,7 @@ function subtaskForTaskOverviewHTMLChecked(i, id, subtask) {
        <input onclick="updateTaskRelatedSubtask(${i}, ${id}, this)" type="checkbox" checked="true">
        <span>${subtask.title}</span>
     </div>
+    <span id="subtask-checked-error-advice"></span>
       `
 }
 
@@ -355,6 +357,7 @@ function subtaskForTaskOverviewHTMLNoChecked(i, id, subtask) {
        <input onclick="updateTaskRelatedSubtask(${i}, ${id}, this)" type="checkbox">
        <span>${subtask.title}</span>
     </div>
+     <span id="subtask-checked-error-advice"></span>
       `
 }
 

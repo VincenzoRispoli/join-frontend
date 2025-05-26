@@ -38,7 +38,7 @@ async function updateTheNewEditedTask(id, newEditedTask) {
         if (editedTaskData.ok == true) {
             showTaskSuccessEditedAdvice(id, editedTaskData.message);
         } else {
-            showTaskActionFailedAdvice(id, editedTaskData.error, editedTaskData.data);
+            showTaskActionFailedAdvice(id, editedTaskData);
         }
     } catch (e) {
         console.log(e);
@@ -77,9 +77,11 @@ async function updateTaskState(movedTask, singleTaskUrl) {
         },
         body: JSON.stringify(movedTask)
     })
-    if (!response.ok) {
-        let updateTaskData = await response.json();
-        showTaskDragUpdateFailedAdvice(updateTaskData.detail);
+    let taskData = await response.json();
+    if (taskData.ok == false) {
+        if (taskData.permission) {
+            showTaskDragUpdateFailedAdvice(taskData.permission);
+        }
     } else {
         loadTasks();
     }
@@ -137,14 +139,47 @@ async function postAndTheGetNewSubtaskEditTask(event, id, newSubtask) {
         body: JSON.stringify(newSubtask)
     })
     let subtaskData = await response.json();
+    checkAndGetTheNewSubtaskData(event, subtaskData, id);
+}
+
+/**
+ * Checks the result of a subtask submission and triggers appropriate UI updates or error messages.
+ * 
+ * @param {Event} event - The event triggered by the form submission.
+ * @param {Object} subtaskData - The response data from the subtask creation API.
+ * @param {string|number} id - The identifier of the task to which the subtask belongs.
+ */
+function checkAndGetTheNewSubtaskData(event, subtaskData, id) {
     if (subtaskData.ok == true) {
         clearAddSubtaskInputEdit(id, event);
         getSubtaskForEditTask(id);
     } else if (subtaskData.ok == false) {
         showErrorOfSubtaskCreationEditTask(subtaskData, id)
+    } else if (subtaskData.detail) {
+        showPermissionErrorPostSubtask(subtaskData.detail, id);
     }
 }
 
+/**
+ * Displays a permission-related error message for subtask creation in the UI.
+ * 
+ * @param {string} permissionError - The error message returned when the user lacks permission.
+ * @param {string|number} taskId - The identifier of the task for which the error occurred.
+ */
+function showPermissionErrorPostSubtask(permissionError, taskId) {
+    document.getElementById(`error-advice-write-subtask-edit-task${taskId}`).style.color = 'red';
+    document.getElementById(`error-advice-write-subtask-edit-task${taskId}`).innerText = permissionError;
+    setTimeout(() => {
+        document.getElementById(`error-advice-write-subtask-edit-task${taskId}`).innerText = ""
+    }, 3000);
+}
+
+/**
+ * Displays an error message when subtask creation fails due to invalid or missing data.
+ * 
+ * @param {Object} subtaskData - The error response from the subtask creation API.
+ * @param {string|number} taskId - The identifier of the task for which the error occurred.
+ */
 function showErrorOfSubtaskCreationEditTask(subtaskData, taskId) {
     if (subtaskData.data.title) {
         document.getElementById(`error-advice-write-subtask-edit-task${taskId}`).style.color = 'red'
@@ -173,24 +208,43 @@ async function deleteSubtaskEditTask(i, taskId) {
             }
         })
         let subtaskData = await response.json();
-        showErrorOrSuccessOfSubtaskDeleting(subtaskData, taskId)
+        showErrorOrSuccessOfSubtaskDeleting(i, subtaskData, taskId);
     } catch (e) {
         console.log(e);
     }
 }
 
-function showErrorOrSuccessOfSubtaskDeleting(subtaskData, taskId) {
+function showErrorOrSuccessOfSubtaskDeleting(i, subtaskData, taskId) {
     if (subtaskData.ok == true) {
         document.getElementById('advice-container-edit-task').classList.remove('d-none');
         document.getElementById('advice-container-edit-task').innerHTML = subtaskData.message
-    } else {
-        document.getElementById('advice-container-edit-task').classList.remove('d-none');
-        document.getElementById('advice-container-edit-task').innerHTML = 'Subtask not deleted, an error occurred'
+    } else if (subtaskData.ok == false) {
+        if (subtaskData.permission) {
+            document.getElementById(`error-advice-subtask-edit${i}`).style.color = 'red';
+            document.getElementById(`error-advice-subtask-edit${i}`).innerText = subtaskData.permission;
+            hideErrorDeleteSubtaskPermission(i)
+        } else {
+            document.getElementById('advice-container-edit-task').classList.remove('d-none');
+            document.getElementById('advice-container-edit-task').innerHTML = 'Subtask not deleted, an error occurred'
+        }
     }
+    hideErrorOfSubtaskActionsAndGetSubtaskEditTask(taskId);
+}
+
+function hideErrorDeleteSubtaskPermission(i) {
+    setTimeout(() => {
+        document.getElementById(`error-advice-subtask-edit${i}`).innerText = ""
+    }, 3000)
+}
+
+function hideErrorOfSubtaskActionsAndGetSubtaskEditTask(taskId) {
+    let adviceContainerEditTask = document.getElementById('advice-container-edit-task');
     setTimeout(() => {
         getSubtaskForEditTask(taskId);
-        document.getElementById('advice-container-edit-task').innerHTML = "";
-        document.getElementById('advice-container-edit-task').classList.add('d-none');
+        if (adviceContainerEditTask) {
+            adviceContainerEditTask.innerText = "";
+            adviceContainerEditTask.classList.add('d-none');
+        }
     }, 2000)
 }
 
@@ -226,11 +280,15 @@ async function updateEditedTitle(i, id, editedSubtask) {
  */
 function showErrorOrSuccesUpdateForSubtask(i, subtasksData) {
     if (subtasksData.ok == true) {
-        document.getElementById(`error-advice-subtask-edit${i}`).innerText = subtasksData.message
-        document.getElementById(`error-advice-subtask-edit${i}`).style.color = 'green'
-    } else {
-        document.getElementById(`error-advice-subtask-edit${i}`).innerText = subtasksData.error
-        document.getElementById(`error-advice-subtask-edit${i}`).style.color = 'red'
+        document.getElementById(`error-advice-subtask-edit${i}`).innerText = subtasksData.message;
+        document.getElementById(`error-advice-subtask-edit${i}`).style.color = 'green';
+    } else if (subtasksData.ok == false) {
+        document.getElementById(`error-advice-subtask-edit${i}`).style.color = 'red';
+        if (subtasksData.permission) {
+            document.getElementById(`error-advice-subtask-edit${i}`).innerText = subtasksData.permission;
+        } else {
+            document.getElementById(`error-advice-subtask-edit${i}`).innerText = subtasksData.error;
+        }
     }
 }
 
@@ -262,7 +320,21 @@ async function updateCompletedStatusOfSubtask(id, selectedSubtask) {
         body: JSON.stringify(selectedSubtask)
     })
     let subtaskData = await response.json();
-    await loadTasks();
+    checkSuccessOrErrorOfSubtaskStatusUpdate(subtaskData);
+}
+
+async function checkSuccessOrErrorOfSubtaskStatusUpdate(subtaskData) {
+    if (subtaskData.ok == true) {
+        await loadTasks();
+    } else if (subtaskData.ok == false) {
+        if (subtaskData.permission) {
+            document.getElementById('subtask-checked-error-advice').style.color = 'red'
+            document.getElementById('subtask-checked-error-advice').innerText = subtaskData.permission
+            setTimeout(() => {
+                document.getElementById('subtask-checked-error-advice').innerText = ""
+            }, 2000)
+        }
+    }
 }
 
 /**

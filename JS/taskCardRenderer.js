@@ -260,16 +260,21 @@ function loadSubtasksInTheEditTaskOverview(taskRelatedSubtaskList, taskId) {
  * 
  * @param {string} data - The error message to be displayed.
  */
-function showTaskActionFailedAdvice(id, errorMessage, data) {
-    if (data.title) {
-        document.getElementById(`error-advice-title-edit-task${id}`).innerText = data.title;
+function showTaskActionFailedAdvice(id, editedTaskData) {
+    if (editedTaskData.permission) {
+        document.getElementById(`advice-container-edit-task${id}`).classList.remove('d-none')
+        document.getElementById(`advice-container-edit-task${id}`).innerText = editedTaskData.permission;
+    } else {
+        if (editedTaskData.data.title) {
+            document.getElementById(`error-advice-title-edit-task${id}`).innerText = editedTaskData.data.title;
+        }
+        if (editedTaskData.data.due_date) {
+            document.getElementById(`error-advice-title-due-date-edit-task${id}`).innerText = editedTaskData.data.due_date;
+        }
+        document.getElementById(`advice-container-edit-task${id}`).classList.remove('d-none')
+        document.getElementById(`advice-container-edit-task${id}`).innerText = editedTaskData.error;
     }
-    if (data.due_date) {
-        document.getElementById(`error-advice-title-due-date-edit-task${id}`).innerText = data.due_date;
-    }
-    document.getElementById(`advice-container-edit-task${id}`).classList.remove('d-none')
-    document.getElementById(`advice-container-edit-task${id}`).innerText = errorMessage
-    hideErrorOrMessagesForTaskUpdate(id);
+    hideErrorOrMessagesForTaskUpdate(id, editedTaskData.permission);
 }
 
 /**
@@ -281,16 +286,21 @@ function showTaskActionFailedAdvice(id, errorMessage, data) {
  *
  * @param {number|string} id - The identifier of the task whose advice message should be hidden.
  */
-function hideErrorOrMessagesForTaskUpdate(id) {
+function hideErrorOrMessagesForTaskUpdate(id, permissionError) {
     setTimeout(() => {
-        document.getElementById(`advice-container-edit-task${id}`).classList.add('d-none');
-        document.getElementById(`advice-container-edit-task${id}`).innerText = "";
-        let errorAdvices = document.getElementsByClassName('error-advice-edit-task');
-        let errorAdvicesToArray = [...errorAdvices];
-        errorAdvicesToArray.forEach(e => {
-            e.innerText = ""
-        })
-    }, 4000)
+        if (permissionError) {
+            document.getElementById(`advice-container-edit-task${id}`).classList.add('d-none');
+            document.getElementById(`advice-container-edit-task${id}`).innerText = "";
+        } else {
+            document.getElementById(`advice-container-edit-task${id}`).classList.add('d-none');
+            document.getElementById(`advice-container-edit-task${id}`).innerText = "";
+            let errorAdvices = document.getElementsByClassName('error-advice-edit-task');
+            let errorAdvicesToArray = [...errorAdvices];
+            errorAdvicesToArray.forEach(e => {
+                e.innerText = ""
+            })
+        }
+    }, 4000);
 }
 
 /**

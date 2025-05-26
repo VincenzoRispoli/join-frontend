@@ -367,7 +367,22 @@ async function checkResponseThenCreateTaskOrThrowErrors(event, taskResponse) {
     }
   } else if (taskData.ok == false) {
     showErrorsOfTaskCreationAdvices(taskData.data)
+  } else if (taskData.detail) {
+    showPermissionErrorTaskCreation(taskData.detail)
   }
+}
+
+function showPermissionErrorTaskCreation(permissionError) {
+  let requiredFieldAdviceContainer;
+  if (window.location.href == "http://127.0.0.1:5500/addTask.html") {
+    requiredFieldAdviceContainer = document.getElementById('required-fields-advice');
+  } else if (window.location.href == "http://127.0.0.1:5500/board.html") {
+    requiredFieldAdviceContainer = document.getElementById('required-fields-advice-board');
+  }
+  requiredFieldAdviceContainer.innerText = permissionError
+  setTimeout(() => {
+    requiredFieldAdviceContainer.innerText = "";
+  }, 3000)
 }
 
 /**
